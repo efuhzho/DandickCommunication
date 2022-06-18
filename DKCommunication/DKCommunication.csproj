@@ -32,8 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,12 +46,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CRCSupport.cs" />
+    <Compile Include="BasicFramework\SoftBasic.cs" />
+    <Compile Include="BasicFramework\SoftVersion.cs" />
+    <Compile Include="Core\ByteTransformHelper.cs" />
+    <Compile Include="Core\DataFormat.cs" />
+    <Compile Include="Core\IByteTransform.cs" />
+    <Compile Include="Core\IDataTransfer.cs" />
+    <Compile Include="Core\IReadWriteNet.cs" />
+    <Compile Include="Core\OperateResult.cs" />
+    <Compile Include="Core\ThreadLock.cs" />
+    <Compile Include="Language\DefaultLanguage.cs" />
+    <Compile Include="Language\English.cs" />
+    <Compile Include="LogNet\Core\ILogNet.cs" />
+    <Compile Include="LogNet\Core\LogBase.cs" />
+    <Compile Include="LogNet\Core\Types.cs" />
+    <Compile Include="LogNet\LogNetManagment.cs" />
+    <Compile Include="Serial\CRCSupport.cs" />
+    <Compile Include="DKSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PTSource.cs" />
+    <Compile Include="Serial\SerialBase.cs" />
+    <Compile Include="Serial\SerialDeviceBase.cs" />
+    <Compile Include="Serial\SoftLRC.cs" />
+    <Compile Include="StringResources.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DK\" />
-    <Folder Include="PTS\" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,22 @@
+﻿using DKCommunication.Serial;
+byte[] buffer =
+    {0x81, 0x00,
+0x00,
+0x1F, 0x00,
+0x32,
+0xCD, 0xCC, 0x66, 0x42,
+00, 00 ,0xC8 ,0x42,
+00, 00, 0x5C ,0x43,
+00, 00, 0x80, 0x3F,
+00 ,00, 00, 0x40,
+00, 00,0x40, 0x40,
+0x62
+};
+//byte[] a = SoftCRC81.CRC8(buffer);
+bool a=SoftCRC81.CheckCRC8(buffer);
+Console.WriteLine(a);
+
+//foreach (var item in a)
+//{
+//    Console.WriteLine(item.ToString("x2"));
+//}
