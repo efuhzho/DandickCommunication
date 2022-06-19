@@ -620,8 +620,7 @@ namespace DKCommunication.BasicFramework
                         i++;
                     }
                 }
-            }
-
+            }            
             byte[] result = ms.ToArray( );
             ms.Dispose( );
             return result;
