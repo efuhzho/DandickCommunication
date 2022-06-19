@@ -124,14 +124,14 @@ namespace DKCommunication.Serial
     /// <summary>
     /// Dandick 0x81系列通信规约的CRC校验
     /// </summary>
-    public class SoftCRC81
+    public class DK81CRC
     {
         /// <summary>
         /// 获取对应的数据的CRC校验码
         /// </summary>
         /// <param name="value">需要校验的数据，不包含CRC字节，包含报文头0x81</param>
         /// <returns>返回带CRC校验码的字节数据，可用于串口发送</returns>
-        public static byte[] CRC8(byte[] value)
+        public static byte[] CRCcalculator(byte[] value)
         {
             byte[] buf = new byte[value.Length + 1];
             value.CopyTo(buf, 0);
@@ -149,11 +149,11 @@ namespace DKCommunication.Serial
         }
 
         /// <summary>
-        /// 指定多项式码来校验对应的接收数据的CRC校验码
+        /// 校验对应的接收数据的CRC校验码
         /// </summary>
         /// <param name="value">需要校验的数据，带CRC校验码</param>
         /// <returns>返回校验成功与否</returns>
-        public static bool CheckCRC8(byte[] value)
+        public static bool CheckCRC(byte[] value)
         {
             if (value == null) return false;
             if (value.Length < 2) return false;
@@ -162,7 +162,7 @@ namespace DKCommunication.Serial
             byte[] buf = new byte[length - 1];
             Array.Copy(value, 0, buf, 0, buf.Length);
 
-            byte[] CRCbuf = CRC8(buf);
+            byte[] CRCbuf = CRCcalculator(buf);
             if (CRCbuf[length - 1] == value[length - 1])
             {
                 return true;
