@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using DKCommunication.Core;
+using DKCommunication.LogNet;
+using System;
 using System.IO.Ports;
 using System.Threading;
-using DKCommunication.Core;
-using DKCommunication.LogNet;
 
 namespace DKCommunication.Serial
 {
@@ -192,7 +189,7 @@ namespace DKCommunication.Serial
         {
             return OperateResult.CreateSuccessResult();
         }
-
+        
         #endregion
 
         #region Private Method
@@ -243,10 +240,10 @@ namespace DKCommunication.Serial
                     {
                         if ((DateTime.Now - start).TotalMilliseconds > ReceiveTimeout)
                         {
-                            ms.Dispose();
-                            return new OperateResult<byte[]>($"Time out: {ReceiveTimeout}");
+                            ms.Dispose();   //超时释放资源
+                            return new OperateResult<byte[]>($"Time out: {ReceiveTimeout}");    //返回带超时信息结果对象
                         }
-                        else if (ms.Length > 0)
+                        else if (ms.Length > 0) //判断流 是否有数据
                         {
                             break;
                         }
@@ -263,6 +260,7 @@ namespace DKCommunication.Serial
                     // 继续接收数据
                     int sp_receive = serialPort.Read(buffer, 0, buffer.Length);
                     ms.Write(buffer, 0, sp_receive);
+                    //break;    //?是否需要break跳出循环？待测试--周付宏 2022年6月21日
                 }
                 catch (Exception ex)
                 {
@@ -271,7 +269,7 @@ namespace DKCommunication.Serial
                 }
             }
 
-            // resetEvent.Set( );
+            //resetEvent.Set();
             byte[] result = ms.ToArray();
             ms.Dispose();
             return OperateResult.CreateSuccessResult(result);
