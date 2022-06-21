@@ -156,7 +156,7 @@ namespace DKCommunication.Serial
 
         #endregion
 
-        #region virtual Method
+        #region virtual Method ： CheckReceiveBytes
 
         /// <summary>
         /// 检查当前接收的字节数据是否正确的
@@ -236,7 +236,7 @@ namespace DKCommunication.Serial
                 Thread.Sleep(sleepTime);
                 try
                 {
-                    if (serialPort.BytesToRead < 1)
+                    if (serialPort.BytesToRead < 1) 
                     {
                         if ((DateTime.Now - start).TotalMilliseconds > ReceiveTimeout)
                         {
