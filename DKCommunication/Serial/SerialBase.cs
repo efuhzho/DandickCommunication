@@ -21,8 +21,8 @@ namespace DKCommunication.Serial
         /// </summary>
         public SerialBase( )
         {
-            SP_ReadData = new SerialPort( );
-            hybirdLock = new SimpleHybirdLock( );
+            SP_ReadData = new SerialPort();
+            hybirdLock = new SimpleHybirdLock();
         }
 
         #endregion
@@ -30,12 +30,12 @@ namespace DKCommunication.Serial
         #region Public Method
 
         /// <summary>
-        /// 初始化串口信息，9600波特率，8位数据位，1位停止位，无奇偶校验
+        /// 初始化串口信息，115200波特率，8位数据位，1位停止位，无奇偶校验
         /// </summary>
         /// <param name="portName">端口号信息，例如"COM3"</param>
-        public void SerialPortInni( string portName )
+        public void SerialPortInni(string portName)
         {
-            SerialPortInni( portName, 9600 );
+            SerialPortInni(portName, 115200);
         }
 
         /// <summary>
@@ -43,9 +43,9 @@ namespace DKCommunication.Serial
         /// </summary>
         /// <param name="portName">端口号信息，例如"COM3"</param>
         /// <param name="baudRate">波特率</param>
-        public void SerialPortInni( string portName, int baudRate )
+        public void SerialPortInni(string portName, int baudRate)
         {
-            SerialPortInni( portName, baudRate, 8, StopBits.One, Parity.None );
+            SerialPortInni(portName, baudRate, 8, StopBits.One, Parity.None);
         }
 
         /// <summary>
@@ -56,36 +56,36 @@ namespace DKCommunication.Serial
         /// <param name="dataBits">数据位</param>
         /// <param name="stopBits">停止位</param>
         /// <param name="parity">奇偶校验</param>
-        public void SerialPortInni( string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity )
+        public void SerialPortInni(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity)
         {
             if (SP_ReadData.IsOpen)
             {
                 return;
             }
-            SP_ReadData.PortName     = portName;    // 串口
-            SP_ReadData.BaudRate     = baudRate;    // 波特率
-            SP_ReadData.DataBits     = dataBits;    // 数据位
-            SP_ReadData.StopBits     = stopBits;    // 停止位
-            SP_ReadData.Parity       = parity;      // 奇偶校验
+            SP_ReadData.PortName = portName;    // 串口
+            SP_ReadData.BaudRate = baudRate;    // 波特率
+            SP_ReadData.DataBits = dataBits;    // 数据位
+            SP_ReadData.StopBits = stopBits;    // 停止位
+            SP_ReadData.Parity = parity;      // 奇偶校验
         }
 
         /// <summary>
-        /// 根据自定义初始化方法进行初始化串口信息
+        /// 根据自定义初始化方法进行初始化串口信息:自定义的初始化方法是委托给"initi"实例的串口初始化方法。
         /// </summary>
         /// <param name="initi">初始化的委托方法</param>
-        public void SerialPortInni( Action<SerialPort> initi )
+        public void SerialPortInni(Action<SerialPort> initi)
         {
             if (SP_ReadData.IsOpen)
             {
                 return;
             }
             SP_ReadData.PortName = "COM5";
-            SP_ReadData.BaudRate = 9600;
+            SP_ReadData.BaudRate = 115200;
             SP_ReadData.DataBits = 8;
             SP_ReadData.StopBits = StopBits.One;
             SP_ReadData.Parity = Parity.None;
 
-            initi.Invoke( SP_ReadData );
+            initi.Invoke(SP_ReadData);
         }
 
         /// <summary>
@@ -95,8 +95,8 @@ namespace DKCommunication.Serial
         {
             if (!SP_ReadData.IsOpen)
             {
-                SP_ReadData.Open( );
-                InitializationOnOpen( );
+                SP_ReadData.Open();
+                InitializationOnOpen();
             }
         }
 
@@ -114,10 +114,10 @@ namespace DKCommunication.Serial
         /// </summary>
         public void Close( )
         {
-            if(SP_ReadData.IsOpen)
+            if (SP_ReadData.IsOpen)
             {
-                ExtraOnClose( );
-                SP_ReadData.Close( );
+                ExtraOnClose();
+                SP_ReadData.Close();
             }
         }
 
@@ -128,19 +128,22 @@ namespace DKCommunication.Serial
         /// <returns>带接收字节的结果对象</returns>
         public OperateResult<byte[]> ReadBase(byte[] send)
         {
-            hybirdLock.Enter( );
+            hybirdLock.Enter();
 
-            if (IsClearCacheBeforeRead) ClearSerialCache( );
-
-            OperateResult sendResult = SPSend( SP_ReadData, send );
-            if (!sendResult.IsSuccess)
+            if (IsClearCacheBeforeRead)
             {
-                hybirdLock.Leave( );
-                return OperateResult.CreateFailedResult<byte[]>( sendResult );
+                ClearSerialCache();
             }
 
-            OperateResult<byte[]> receiveResult = SPReceived( SP_ReadData, true );
-            hybirdLock.Leave( );
+            OperateResult sendResult = SPSend(SP_ReadData, send);
+            if (!sendResult.IsSuccess)
+            {
+                hybirdLock.Leave();
+                return OperateResult.CreateFailedResult<byte[]>(sendResult);
+            }
+
+            OperateResult<byte[]> receiveResult = SPReceived(SP_ReadData, true);
+            hybirdLock.Leave();
 
             return receiveResult;
         }
@@ -151,7 +154,7 @@ namespace DKCommunication.Serial
         /// <returns>是否操作成功的方法</returns>
         public OperateResult<byte[]> ClearSerialCache( )
         {
-            return SPReceived( SP_ReadData, false );
+            return SPReceived(SP_ReadData, false);
         }
 
         #endregion
@@ -163,7 +166,7 @@ namespace DKCommunication.Serial
         /// </summary>
         /// <param name="rBytes">输入字节</param>
         /// <returns>检查是否正确</returns>
-        protected virtual bool CheckReceiveBytes(byte[] rBytes )
+        protected virtual bool CheckReceiveBytes(byte[] rBytes)
         {
             return true;
         }
@@ -178,7 +181,7 @@ namespace DKCommunication.Serial
         /// <returns>是否初始化成功</returns>
         protected virtual OperateResult InitializationOnOpen( )
         {
-            return OperateResult.CreateSuccessResult( );
+            return OperateResult.CreateSuccessResult();
         }
 
         /// <summary>
@@ -187,36 +190,36 @@ namespace DKCommunication.Serial
         /// <returns>当断开连接时额外的操作结果</returns>
         protected virtual OperateResult ExtraOnClose( )
         {
-            return OperateResult.CreateSuccessResult( );
+            return OperateResult.CreateSuccessResult();
         }
 
         #endregion
 
         #region Private Method
-        
+
         /// <summary>
         /// 发送数据到串口里去
         /// </summary>
         /// <param name="serialPort">串口对象</param>
         /// <param name="data">字节数据</param>
         /// <returns>是否发送成功</returns>
-        protected virtual OperateResult SPSend( SerialPort serialPort, byte[] data )
+        protected virtual OperateResult SPSend(SerialPort serialPort, byte[] data)
         {
             if (data != null && data.Length > 0)
             {
                 try
                 {
-                    serialPort.Write( data, 0, data.Length );
-                    return OperateResult.CreateSuccessResult( );
+                    serialPort.Write(data, 0, data.Length);
+                    return OperateResult.CreateSuccessResult();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    return new OperateResult( ex.Message );
+                    return new OperateResult(ex.Message);
                 }
             }
             else
             {
-                return OperateResult.CreateSuccessResult( );
+                return OperateResult.CreateSuccessResult();
             }
         }
 
@@ -226,22 +229,22 @@ namespace DKCommunication.Serial
         /// <param name="serialPort">串口对象</param>
         /// <param name="awaitData">是否必须要等待数据返回</param>
         /// <returns>结果数据对象</returns>
-        protected virtual OperateResult<byte[]> SPReceived( SerialPort serialPort, bool awaitData )
+        protected virtual OperateResult<byte[]> SPReceived(SerialPort serialPort, bool awaitData)
         {
             byte[] buffer = new byte[1024];
-            System.IO.MemoryStream ms = new System.IO.MemoryStream( );
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
             DateTime start = DateTime.Now;                                  // 开始时间，用于确认是否超时的信息
             while (true)
             {
-                Thread.Sleep( sleepTime );
+                Thread.Sleep(sleepTime);
                 try
                 {
                     if (serialPort.BytesToRead < 1)
                     {
                         if ((DateTime.Now - start).TotalMilliseconds > ReceiveTimeout)
                         {
-                            ms.Dispose( );
-                            return new OperateResult<byte[]>( $"Time out: {ReceiveTimeout}" );
+                            ms.Dispose();
+                            return new OperateResult<byte[]>($"Time out: {ReceiveTimeout}");
                         }
                         else if (ms.Length > 0)
                         {
@@ -258,22 +261,22 @@ namespace DKCommunication.Serial
                     }
 
                     // 继续接收数据
-                    int sp_receive = serialPort.Read( buffer, 0, buffer.Length );
-                    ms.Write( buffer, 0, sp_receive );
+                    int sp_receive = serialPort.Read(buffer, 0, buffer.Length);
+                    ms.Write(buffer, 0, sp_receive);
                 }
                 catch (Exception ex)
                 {
-                    ms.Dispose( );
-                    return new OperateResult<byte[]>( ex.Message );
+                    ms.Dispose();
+                    return new OperateResult<byte[]>(ex.Message);
                 }
             }
 
             // resetEvent.Set( );
-            byte[] result = ms.ToArray( );
-            ms.Dispose( );
-            return OperateResult.CreateSuccessResult( result );
+            byte[] result = ms.ToArray();
+            ms.Dispose();
+            return OperateResult.CreateSuccessResult(result);
         }
-        
+
         #endregion
 
         #region Object Override
@@ -282,7 +285,7 @@ namespace DKCommunication.Serial
         /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns>字符串</returns>
-        public override string ToString()
+        public override string ToString( )
         {
             return "SerialBase";
         }
@@ -330,7 +333,7 @@ namespace DKCommunication.Serial
         #endregion
 
         #region Private Member
-        
+
         private SerialPort SP_ReadData = null;                    // 串口交互的核心
         private SimpleHybirdLock hybirdLock;                      // 数据交互的锁
         private ILogNet logNet;                                   // 日志存储

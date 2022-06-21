@@ -73,7 +73,7 @@
     <Compile Include="Serial\CRCSupport.cs" />
     <Compile Include="SerialDevices\DKSources\DKSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerialDevices\PTSource.cs" />
+    <Compile Include="SerialDevices\DKSources\PTSource.cs" />
     <Compile Include="Serial\SerialBase.cs" />
     <Compile Include="Serial\SerialDeviceBase.cs" />
     <Compile Include="Serial\SoftLRC.cs" />
