@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="BasicFramework\SoftBasic.cs" />
     <Compile Include="BasicFramework\SoftVersion.cs" />
+    <Compile Include="Core\Address\DeviceAddressBase.cs" />
+    <Compile Include="Core\Address\ModbusAddress.cs" />
     <Compile Include="Core\TransFer\ByteTransformBase.cs" />
     <Compile Include="Core\TransFer\ByteTransformHelper.cs" />
     <Compile Include="Core\TransFer\DataFormat.cs" />
@@ -65,11 +67,17 @@
     <Compile Include="LogNet\Core\LogBase.cs" />
     <Compile Include="LogNet\Core\Types.cs" />
     <Compile Include="LogNet\LogNetManagment.cs" />
+    <Compile Include="Modbus\ModbusAscii.cs" />
+    <Compile Include="Modbus\ModbusInfo.cs" />
+    <Compile Include="Modbus\ModBusMonitorAddress.cs" />
+    <Compile Include="Modbus\ModBusState.cs" />
+    <Compile Include="Modbus\MonitorAddress.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Modbus\ModbusRtu.cs" />
     <Compile Include="Serial\CRCSupport.cs" />
     <Compile Include="SerialDevices\DKSources\DKSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
