@@ -209,18 +209,38 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public const byte SwithACPointCalibrating = 0x26;
 
-
+        /// <summary>
+        /// 直流源校准
+        /// </summary>
         public const byte DoDCCalibrate = 0x27;
 
+        /// <summary>
+        /// 直流表校准
+        /// </summary>
         public const byte DoDCMeterCalibrate = 0x28;
+        #endregion
+
+        #region 设备信息
+        /// <summary>
+        /// 读取交流标准源档位信息
+        /// </summary>
+        public const byte ReadRangeInfo = 0x11;
+
+        /// <summary>
+        /// 读取直流源档位信息
+        /// </summary>
+        public const byte ReadDCRangeInfo = 0x12;
+
+        /// <summary>
+        /// 读取直流表档位/量程信息
+        /// </summary>
+        public const byte ReadDCMeterRangeInfo = 0x13;
 
         #endregion
 
         #region MyRegion
 
         #endregion
-
-
 
         #endregion
     }
