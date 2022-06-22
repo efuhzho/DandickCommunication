@@ -7,6 +7,22 @@
     {
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         /***********************************************************************************
+        * 
+        *    丹迪克标准源相关信息
+        * 
+        ************************************************************************************/
+        public override string ErrorCodeUa => "Error:Ua;";
+        public override string ErrorCodeUb => "Error:Ub;";
+        public override string ErrorCodeUc => "Error:Uc;";
+        public override string ErrorCodeU0 => "Error:U0;";
+        public override string ErrorCodeIa => "Error:Ia;";
+        public override string ErrorCodeIb => "Error:Ib;";
+        public override string ErrorCodeIc => "Error:Ic;";
+        public override string ErrorCodeI0 => "Error:I0;";
+        public override string ErrorCodeDC => "Error:DC;";
+
+
+        /***********************************************************************************
          * 
          *    Normal Info
          * 
@@ -142,7 +158,7 @@
         public override string PasswordCheckFailed => "Password validation failed";
         public override string DataTransformError => "Data conversion failed, source data: ";
         public override string RemoteClosedConnection => "Remote shutdown of connection";
-        
+
         /***********************************************************************************
          * 
          *    Log related
@@ -233,7 +249,7 @@
          ************************************************************************************/
 
 
-        public override string AllenBradley04 => "The IOI could not be deciphered. Either it was not formed correctly or the match tag does not exist."; 
+        public override string AllenBradley04 => "The IOI could not be deciphered. Either it was not formed correctly or the match tag does not exist.";
         public override string AllenBradley05 => "The particular item referenced (usually instance) could not be found.";
         public override string AllenBradley06 => "The amount of data requested would not fit into the response buffer. Partial data transfer has occurred.";
         public override string AllenBradley0A => "An error has occurred trying to process one of the attributes.";

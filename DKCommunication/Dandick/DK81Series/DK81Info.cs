@@ -278,9 +278,8 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion
 
-
-
         #region Static Helper Method
+
         #region Error_Code Declaration 错误码信息定义
         //public const byte ErrorCodeUa = 0x01;   //0b00000001; 
         //public const byte ErrorCodeUb = 0x02;   //0b00000010; 
@@ -290,81 +289,192 @@ namespace DKCommunication.Dandick.DK81Series
         //public const byte ErrorCodeIc = 0x20;   //0b00100000;
         //public const byte ErrorCodeDC = 0x40;   //0b01000000;
         #endregion
-        public static string GetErrorMessageByErrorCode(byte code)
+
+        /// <summary>
+        /// Error_Code 解析：从错误码中解析错误信息
+        /// </summary>
+        /// <param name="Error_Code"></param>
+        /// <returns></returns>
+        public static string GetErrorMessageByErrorCode(byte Error_Code)
         {
-            string errorInfo = string.Empty;
-            if ((code & 0x01) == 0x01)
+            string errorMessage = StringResources.Language.ExceptionMessage;
+
+            if ((Error_Code & 0x01) == 0x01)
             {
-                errorInfo += StringResources.Language.ErrorCodeUa;
+                errorMessage += StringResources.Language.ErrorCodeUa;
             }
-            if ((code & 0x02) == 0x02)
+            if ((Error_Code & 0x02) == 0x02)
             {
-                errorInfo += StringResources.Language.ErrorCodeUb;
+                errorMessage += StringResources.Language.ErrorCodeUb;
             }
-            if ((code & 0x04) == 0x04)
+            if ((Error_Code & 0x04) == 0x04)
             {
-                errorInfo += StringResources.Language.ErrorCodeUc;
+                errorMessage += StringResources.Language.ErrorCodeUc;
             }
-            if ((code & 0x08) == 0x08)
+            if ((Error_Code & 0x08) == 0x08)
             {
-                errorInfo += StringResources.Language.ErrorCodeIa;
+                errorMessage += StringResources.Language.ErrorCodeIa;
             }
-            if ((code & 0x10) == 0x10)
+            if ((Error_Code & 0x10) == 0x10)
             {
-                errorInfo += StringResources.Language.ErrorCodeIb;
+                errorMessage += StringResources.Language.ErrorCodeIb;
             }
-            if ((code & 0x20) == 0x20)
+            if ((Error_Code & 0x20) == 0x20)
             {
-                errorInfo += StringResources.Language.ErrorCodeIc;
+                errorMessage += StringResources.Language.ErrorCodeIc;
             }
-            if ((code & 0x40) == 0x40)
+            if ((Error_Code & 0x40) == 0x40)
             {
-                errorInfo += StringResources.Language.ErrorCodeDC;
+                errorMessage += StringResources.Language.ErrorCodeDC;
             }
-            return errorInfo;
+            return errorMessage;
         }
+
+        /// <summary>
+        /// FunB解析：从字节解析设备具备了哪些功能
+        /// </summary>
+        /// <param name="FuncB">读取的功能信息</param>
+        /// <returns>含有3个功能指示的数组：1为具备功能，0为不具备；Index(0)=直流源，Index(1)=直流表，Index(2)=电能校验</returns>
+        public static byte[] GetFunctionsInfo(byte FuncB)
+        {
+            byte[] funtions = new byte[3];   //0x01:ACS;0x02:ACM;0x04:DCS;0x08:DCM;0x10:PQ
+
+            funtions[0] = (byte)(((FuncB & 0x04) == 0x04) ? 1 : 0); //直流源
+            funtions[1] = (byte)(((FuncB & 0x08) == 0x08) ? 1 : 0); //直流表
+            funtions[2] = (byte)(((FuncB & 0x10) == 0x10) ? 1 : 0); //电能校验
+            
+            return funtions;
+        }
+        
         #endregion
 
         #region Mode Declaration 系统模式定义
         /// <summary>
         /// 标准源模式
         /// </summary>
-        public const byte ModeStandardSource = 0x00;
+        public const byte ModeStandardSource = 0;
 
         /// <summary>
         /// 标准表模式
         /// </summary>
-        public const byte ModeStandardMeter = 0x01;
+        public const byte ModeStandardMeter = 1;
 
         /// <summary>
         /// 标准表（钳表）模式
         /// </summary>
-        public const byte ModeStandardMeterClamp = 0x02;
+        public const byte ModeStandardMeterClamp = 2;
 
+        //TODO 核实协议里的数字是10进制还是16进制，暂时认为是10进制
         /// <summary>
         /// 标准源校准模式
         /// </summary>
-        public const byte ModeStandardSourceCalibrate = 0x10;     //?需确认是0x10还是0x0A
+        public const byte ModeStandardSourceCalibrate = 10;     //?需确认是0x10还是10
 
         /// <summary>
         /// 标准表校准模式
         /// </summary>
-        public const byte ModeStandardMeterCalibrate = 0x11;
+        public const byte ModeStandardMeterCalibrate = 11;
 
         /// <summary>
         /// 钳表校准模式
         /// </summary>
-        public const byte ModeStandardClampCalibrate = 0x12;
+        public const byte ModeStandardClampCalibrate = 12;
 
         /// <summary>
         /// 直流源校准模式
         /// </summary>
-        public const byte ModeDCSourceCalibrate = 0x13;
+        public const byte ModeDCSourceCalibrate = 13;
 
         /// <summary>
         /// 直流表校准模式
         /// </summary>
-        public const byte ModeDCMeterCalibrate = 0x14;
+        public const byte ModeDCMeterCalibrate = 14;
+        #endregion
+
+        #region Page Declaration 显示页面定义
+        //TODO 确认彩屏显示界面，以下是黑白屏数据，不同型号可能界面不一样
+
+        #region 交流标准源输出
+        /// <summary>
+        /// Menu功能选择界面：仅彩屏有效，黑白屏无效
+        /// </summary>
+        public const byte PageMenu = 0;
+
+        /// <summary>
+        /// 默认的开机界面：交流输出界面
+        /// </summary>
+        public const byte PageDefault = 1;
+
+        /// <summary>
+        /// 相位输出界面：黑白屏，彩屏是波形显示
+        /// </summary>
+        public const byte PagePhase = 2;    //黑白屏，彩屏是波形显示
+
+        /// <summary>
+        /// 矢量显示界面
+        /// </summary>
+        public const byte PagePhasor = 3;
+
+        /// <summary>
+        /// 谐波设置界面
+        /// </summary>
+        public const byte PageHarmony = 4;
+
+        /// <summary>
+        /// 电能校验界面
+        /// </summary>
+        public const byte PageElectricity = 8;
+        #endregion
+
+        #region 直流
+        /// <summary>
+        /// 直流测量界面
+        /// </summary>
+        public const byte PageDCMeter = 5;
+
+        /// <summary>
+        /// 直流输出界面
+        /// </summary>
+        public const byte PageDC = 6;
+        #endregion
+
+        #region 交流标准表
+        /// <summary>
+        /// 参数测量界面
+        /// </summary>
+        public const byte PageStandardMeter = 9;
+
+        /// <summary>
+        /// 相位测量界面：黑白屏，彩屏是波形显示
+        /// </summary>
+        public const byte PageStandardMeterPhase = 10; //黑白屏，彩屏是波形显示
+
+        /// <summary>
+        /// 矢量显示界面
+        /// </summary>
+        public const byte PageStandardMeterPhasor=11;
+
+        #region 标准表钳表
+
+        /// <summary>
+        /// 钳表测量界面
+        /// </summary>
+        public const byte PageClampMesure = 12;
+
+        /// <summary>
+        /// 钳表相位测量界面
+        /// </summary>
+        public const byte PageClampPhase = 13;  //黑白屏，彩屏为波形显示
+
+        /// <summary>
+        /// 钳表测试矢量显示界面
+        /// </summary>
+        public const byte PageClampPhasor=14;
+
+
+        #endregion
+        #endregion
+
         #endregion
     }
 }

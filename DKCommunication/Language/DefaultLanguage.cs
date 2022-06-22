@@ -17,15 +17,15 @@ namespace DKCommunication.Language
          *    丹迪克标准源相关信息
          * 
          ************************************************************************************/
-        public virtual string ErrorCodeUa => "Ua故障：";
-        public virtual string ErrorCodeUb => "Ub故障：";
-        public virtual string ErrorCodeUc => "Uc故障：";
-        public virtual string ErrorCodeU0 => "U0故障：";
-        public virtual string ErrorCodeIa => "Ia故障：";
-        public virtual string ErrorCodeIb => "Ib故障：";
-        public virtual string ErrorCodeIc => "Ic故障：";
-        public virtual string ErrorCodeI0 => "I0故障：";
-        public virtual string ErrorCodeDC => "DC故障：";
+        public virtual string ErrorCodeUa => "故障：Ua；";
+        public virtual string ErrorCodeUb => "故障：Ub；";
+        public virtual string ErrorCodeUc => "故障：Uc；";
+        public virtual string ErrorCodeU0 => "故障：U0；";
+        public virtual string ErrorCodeIa => "故障：Ia；";
+        public virtual string ErrorCodeIb => "故障：Ib；";
+        public virtual string ErrorCodeIc => "故障：Ic；";
+        public virtual string ErrorCodeI0 => "故障：I0；";
+        public virtual string ErrorCodeDC => "故障：DC；";
 
 
         /***********************************************************************************
