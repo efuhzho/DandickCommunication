@@ -11,9 +11,14 @@ namespace DKCommunication.Dandick.DK81Series
     /// </summary>
     public class DK81Info
     {
-        //public const byte FrameID = 0x81;
+        #region 报文头0x81
+        /// <summary>
+        /// 报文头必须为0x81
+        /// </summary>
+        public const byte FrameID = 0x81;
+        #endregion
 
-        #region CommandCode Declaration
+        #region CommandCode Declaration 命令码定义
 
         #region 系统
         /// <summary>
@@ -22,7 +27,7 @@ namespace DKCommunication.Dandick.DK81Series
         public const byte Confirmed = 0x4B;
 
         /// <summary>
-        /// 联机命令，读取终端型号和版本号
+        /// 联机命令，读取终端型号和版本号：Link    ('L')
         /// </summary>
         public const byte HandShake = 0x4C;
 
@@ -238,9 +243,14 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion
 
-        #region MyRegion
+        #endregion
+
+        #region Error Code Declaration 错误码定义
+
 
         #endregion
+
+        #region MyRegion
 
         #endregion
     }
