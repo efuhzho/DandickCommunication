@@ -76,6 +76,7 @@ namespace DKCommunication.Core.Address
         /// </summary>
         public int Function { get; set; }
 
+        
         #endregion
 
         #region Analysis Address

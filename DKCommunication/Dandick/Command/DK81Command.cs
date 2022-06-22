@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DKCommunication.Dandick.Command;
 
-namespace DKCommunication
+namespace DKCommunication.Dandick.Command
 {
-    internal class PTSource
+    public class DK81Command:CommandCodeBase
     {
+
     }
 }
