@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace DKCommunication.Dandick.DK81Series
 {
     /// <summary>
@@ -241,17 +242,129 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public const byte ReadDCMeterRangeInfo = 0x13;
 
+        #region 联机命令读取的型号和版本号
+        /// <summary>
+        /// 终端产品型号
+        /// </summary>
+        public string Model { get; set; }
+
+        /// <summary>
+        /// 设备编号
+        /// </summary>
+        public string Serail { get; set; }
+
+        /// <summary>
+        /// 主版本号
+        /// </summary>
+        public ushort VerA { get; set; }
+
+        /// <summary>
+        /// 次版本号
+        /// </summary>
+        public ushort VerB { get; set; }
+
+        /// <summary>
+        /// 基本功能状态
+        /// </summary>
+        public byte FunB { get; set; }
+
+        /// <summary>
+        /// 特殊功能状态
+        /// </summary>
+        public byte FunS { get; set; }
         #endregion
 
         #endregion
 
-        #region Error Code Declaration 错误码定义
-
-
         #endregion
 
-        #region MyRegion
 
+
+        #region Static Helper Method
+        #region Error_Code Declaration 错误码信息定义
+        //public const byte ErrorCodeUa = 0x01;   //0b00000001; 
+        //public const byte ErrorCodeUb = 0x02;   //0b00000010; 
+        //public const byte ErrorCodeUc = 0x04;   //0b00000100; 
+        //public const byte ErrorCodeIa = 0x08;   //0b00001000;
+        //public const byte ErrorCodeIb = 0x10;   //0b00010000;
+        //public const byte ErrorCodeIc = 0x20;   //0b00100000;
+        //public const byte ErrorCodeDC = 0x40;   //0b01000000;
+        #endregion
+        public static string GetErrorMessageByErrorCode(byte code)
+        {
+            string errorInfo = string.Empty;
+            if ((code & 0x01) == 0x01)
+            {
+                errorInfo += StringResources.Language.ErrorCodeUa;
+            }
+            if ((code & 0x02) == 0x02)
+            {
+                errorInfo += StringResources.Language.ErrorCodeUb;
+            }
+            if ((code & 0x04) == 0x04)
+            {
+                errorInfo += StringResources.Language.ErrorCodeUc;
+            }
+            if ((code & 0x08) == 0x08)
+            {
+                errorInfo += StringResources.Language.ErrorCodeIa;
+            }
+            if ((code & 0x10) == 0x10)
+            {
+                errorInfo += StringResources.Language.ErrorCodeIb;
+            }
+            if ((code & 0x20) == 0x20)
+            {
+                errorInfo += StringResources.Language.ErrorCodeIc;
+            }
+            if ((code & 0x40) == 0x40)
+            {
+                errorInfo += StringResources.Language.ErrorCodeDC;
+            }
+            return errorInfo;
+        }
+        #endregion
+
+        #region Mode Declaration 系统模式定义
+        /// <summary>
+        /// 标准源模式
+        /// </summary>
+        public const byte ModeStandardSource = 0x00;
+
+        /// <summary>
+        /// 标准表模式
+        /// </summary>
+        public const byte ModeStandardMeter = 0x01;
+
+        /// <summary>
+        /// 标准表（钳表）模式
+        /// </summary>
+        public const byte ModeStandardMeterClamp = 0x02;
+
+        /// <summary>
+        /// 标准源校准模式
+        /// </summary>
+        public const byte ModeStandardSourceCalibrate = 0x10;     //?需确认是0x10还是0x0A
+
+        /// <summary>
+        /// 标准表校准模式
+        /// </summary>
+        public const byte ModeStandardMeterCalibrate = 0x11;
+
+        /// <summary>
+        /// 钳表校准模式
+        /// </summary>
+        public const byte ModeStandardClampCalibrate = 0x12;
+
+        /// <summary>
+        /// 直流源校准模式
+        /// </summary>
+        public const byte ModeDCSourceCalibrate = 0x13;
+
+        /// <summary>
+        /// 直流表校准模式
+        /// </summary>
+        public const byte ModeDCMeterCalibrate = 0x14;
         #endregion
     }
 }

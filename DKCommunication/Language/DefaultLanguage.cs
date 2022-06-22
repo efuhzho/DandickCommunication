@@ -11,6 +11,23 @@ namespace DKCommunication.Language
     public class DefaultLanguage
     {
 #pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+
+        /***********************************************************************************
+         * 
+         *    丹迪克标准源相关信息
+         * 
+         ************************************************************************************/
+        public virtual string ErrorCodeUa => "Ua故障：";
+        public virtual string ErrorCodeUb => "Ub故障：";
+        public virtual string ErrorCodeUc => "Uc故障：";
+        public virtual string ErrorCodeU0 => "U0故障：";
+        public virtual string ErrorCodeIa => "Ia故障：";
+        public virtual string ErrorCodeIb => "Ib故障：";
+        public virtual string ErrorCodeIc => "Ic故障：";
+        public virtual string ErrorCodeI0 => "I0故障：";
+        public virtual string ErrorCodeDC => "DC故障：";
+
+
         /***********************************************************************************
          * 
          *    一般的错误信息
