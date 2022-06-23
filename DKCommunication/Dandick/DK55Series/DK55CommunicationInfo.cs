@@ -1,19 +1,21 @@
 ﻿using DKCommunication.Dandick.Communication;
 
-namespace DKCommunication.Dandick.DK81Series
+namespace DKCommunication.Dandick.DK55Series
 {
+    //TODO 待扩展55协议，以下所有数据均复制81协议
+
     /// <summary>
     /// 丹迪克81协议的相关信息
     /// </summary>
-    public class DK81CommunicationInfo
+    public class DK55CommunicationInfo
     {
         #region 扩展定义
         /// <summary>
         /// 标识丹迪克设备的通信协议类型
         /// </summary>
-        public const DKCommunicationTypes CommunicationType = DKCommunicationTypes.DK81CommunicationType;
+        public const DKCommunicationTypes CommunicationType = DKCommunicationTypes.DK55CommunicationType;
 
-        #endregion       
+        #endregion
 
         #region 报文头0x81
         /// <summary>
@@ -296,8 +298,8 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// Error_Code 解析：从错误码中解析错误信息
         /// </summary>
-        /// <param name="Error_Code">接收的下位机错误码</param>
-        /// <returns>错误消息</returns>
+        /// <param name="Error_Code"></param>
+        /// <returns></returns>
         public static string GetErrorMessageByErrorCode(byte Error_Code)
         {
             string errorMessage = StringResources.Language.ExceptionMessage;
@@ -345,11 +347,11 @@ namespace DKCommunication.Dandick.DK81Series
             funtions[0] = (byte)(((FuncB & 0x04) == 0x04) ? 1 : 0); //直流源
             funtions[1] = (byte)(((FuncB & 0x08) == 0x08) ? 1 : 0); //直流表
             funtions[2] = (byte)(((FuncB & 0x10) == 0x10) ? 1 : 0); //电能校验
-            
+
             return funtions;
         }
-              
-        
+
+
         #endregion
 
         #region Mode Declaration 系统模式定义
@@ -456,7 +458,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 矢量显示界面
         /// </summary>
-        public const byte PageStandardMeterPhasor=11;
+        public const byte PageStandardMeterPhasor = 11;
 
         #region 标准表钳表
 
@@ -473,7 +475,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 钳表测试矢量显示界面
         /// </summary>
-        public const byte PageClampPhasor=14;
+        public const byte PageClampPhasor = 14;
 
         #endregion
         #endregion
