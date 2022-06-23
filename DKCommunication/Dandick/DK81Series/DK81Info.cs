@@ -471,7 +471,6 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public const byte PageClampPhasor=14;
 
-
         #endregion
         #endregion
 
