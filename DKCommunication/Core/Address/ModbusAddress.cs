@@ -1,8 +1,6 @@
-﻿using DKCommunication.BasicFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text;
+using DKCommunication.BasicFramework;
 using DKCommunication.ModBus;
 
 namespace DKCommunication.Core.Address

@@ -9,6 +9,6 @@ namespace DKCommunication.Dandick.Command
 {
     public class DK81Command:CommandCodeBase
     {
-
+        
     }
 }
