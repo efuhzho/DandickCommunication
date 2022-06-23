@@ -16,14 +16,24 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         public byte CommandCode { get; set; }
 
+        /// <summary>
+        /// 接收终端的设备ID
+        /// </summary>
+        public byte RxID { get; set; }
+
+        /// <summary>
+        /// 发送终端的设备ID
+        /// </summary>
+        public byte TxID { get; set; }
 
         /// <summary>
         /// 解析字符串形式的命令码
         /// </summary>
         /// <param name="address">地址信息</param>
-        public virtual void AnalysisCommandCode(string commandCode)
+        public virtual void AnalysisID(ushort id)
         {
-            CommandCode = byte.Parse(commandCode);
+            RxID = BitConverter.GetBytes(id)[1];
+            TxID = BitConverter.GetBytes(id)[0];
         }
 
 

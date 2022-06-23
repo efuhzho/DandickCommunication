@@ -8,6 +8,6 @@ namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81
     {
-        
+
     }
 }

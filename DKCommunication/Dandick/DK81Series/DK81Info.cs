@@ -12,6 +12,11 @@ namespace DKCommunication.Dandick.DK81Series
     /// </summary>
     public class DK81Info
     {
+        /// <summary>
+        /// 标识丹迪克设备的通信协议类型
+        /// </summary>
+        public const int CommunicationType = 81;
+       
         #region 报文头0x81
         /// <summary>
         /// 报文头必须为0x81
@@ -345,6 +350,7 @@ namespace DKCommunication.Dandick.DK81Series
             
             return funtions;
         }
+              
         
         #endregion
 
