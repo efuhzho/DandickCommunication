@@ -63,6 +63,7 @@
     <Compile Include="Core\TransFer\ReverseWordTransform.cs" />
     <Compile Include="Dandick\Command\CommandCodeBase.cs" />
     <Compile Include="Dandick\Command\DK81Command.cs" />
+    <Compile Include="Dandick\DK81Series\DK81.cs" />
     <Compile Include="Dandick\DK81Series\DK81Info.cs" />
     <Compile Include="Language\DefaultLanguage.cs" />
     <Compile Include="Language\English.cs" />
