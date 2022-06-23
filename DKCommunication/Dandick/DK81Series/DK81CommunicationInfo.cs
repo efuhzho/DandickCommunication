@@ -10,7 +10,7 @@ namespace DKCommunication.Dandick.DK81Series
     /// <summary>
     /// 丹迪克81协议的相关信息
     /// </summary>
-    public class DK81Info
+    public class DK81CommunicationInfo
     {
         /// <summary>
         /// 标识丹迪克设备的通信协议类型

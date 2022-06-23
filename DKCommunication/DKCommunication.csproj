@@ -61,10 +61,10 @@
     <Compile Include="Core\ThreadLock.cs" />
     <Compile Include="Core\TransFer\ReverseBytesTransform.cs" />
     <Compile Include="Core\TransFer\ReverseWordTransform.cs" />
-    <Compile Include="Dandick\Command\CommandCodeBase.cs" />
-    <Compile Include="Dandick\Command\DK81Command.cs" />
-    <Compile Include="Dandick\DK81Series\DK81.cs" />
-    <Compile Include="Dandick\DK81Series\DK81Info.cs" />
+    <Compile Include="Dandick\Command\DKCommandCodeBase.cs" />
+    <Compile Include="Dandick\Command\DKCommand.cs" />
+    <Compile Include="Dandick\DK81Series\DK81Device.cs" />
+    <Compile Include="Dandick\DK81Series\DK81CommunicationInfo.cs" />
     <Compile Include="Language\DefaultLanguage.cs" />
     <Compile Include="Language\English.cs" />
     <Compile Include="LogNet\Core\ILogNet.cs" />

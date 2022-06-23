@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace DKCommunication.Dandick.Command
 {
     /// <summary>
-    /// 所有丹迪克设备通信协议的命令基础类
+    /// 所有丹迪克设备通信协议的命令码基础类
     /// </summary>
-    public class CommandCodeBase
+    public class DKCommandCodeBase
     {
         /// <summary>
         /// 命令码
@@ -27,9 +27,9 @@ namespace DKCommunication.Dandick.Command
         public byte TxID { get; set; }
 
         /// <summary>
-        /// 解析字符串形式的命令码
+        /// 解析读取的ushort形式的id码
         /// </summary>
-        /// <param name="address">地址信息</param>
+        /// <param name="id">读取的地址</param>
         public virtual void AnalysisID(ushort id)
         {
             RxID = BitConverter.GetBytes(id)[1];
