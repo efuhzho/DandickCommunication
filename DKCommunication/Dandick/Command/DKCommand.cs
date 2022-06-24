@@ -15,14 +15,7 @@ namespace DKCommunication.Dandick.Command
     /// </summary>
     public class DKCommand : DKCommandCodeBase
     {
-        #region Public Properties
-        /// <summary>
-        /// 协议类型：预留支持协议扩展，暂时不用
-        /// </summary>
-
-        #endregion
-
-
+        
         #region Constructor
         /// <summary>
         /// 实例化一个默认的对象，使用默认的地址（0x0000）、默认命令码(0x4C)、默认的协议类型(81)、默认的指令长度（7）
@@ -77,9 +70,9 @@ namespace DKCommunication.Dandick.Command
         }
         #endregion
 
-        #region Create read and write command 
+        #region Create read and write command 读写指令创建方法
 
-        #region Private Create read and write command Helper
+        #region Private Create read and write command Helper 私有读写指令创建方法
         /// <summary>
         /// 创建指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
         /// </summary>
@@ -146,7 +139,7 @@ namespace DKCommunication.Dandick.Command
 
                 #region 待扩展：DK55CommunicationInfo
                 //TODO 待扩展55协议：DK55CommunicationInfo
-                //case DK55CommunicationInfo.CommunicationType:                
+                //case DK55CommunicationInfo.CommunicationType:               
 
                 #endregion
 

@@ -29,6 +29,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 系统应答命令:OK   ('K')
         /// </summary>
         public const byte Confirmed = 0x4B;
+        public const ushort ConfirmedLength = 8;
 
         /// <summary>
         /// 联机命令，读取终端型号和版本号：Link    ('L')
@@ -59,21 +60,27 @@ namespace DKCommunication.Dandick.DK81Series
         /// 交流源关闭命令
         /// </summary>
         public const byte Stop = 0x4F;
+        public const ushort StopLength = 7;
 
         /// <summary>
         /// 交流源打开命令
         /// </summary>
         public const byte Start = 0x54;
+        public const ushort StartLength = 7;
 
         /// <summary>
         /// 设置源档位参数
         /// </summary>
-        public const byte SetRange = 0x31;
+        public const byte WriteRange = 0x31;
+        public const ushort SetRangeLength = 13;  
+        public const ushort SetRangeLength51F = 16;  //TODO !51F具备IPa,IPb,IPc
 
         /// <summary>
         /// 设置源幅度参数
         /// </summary>
         public const byte WriteAmplitude = 0x32;
+        public const ushort WriteAmplitudeLength = 19;    //TODO !UA/UB/UC/IA/IB/IC均为4个字节的幅值，浮点型数据
+        public const ushort WriteAmplitudeLength51F = 25;    //TODO !51F具备IPa,IPb,IPc
 
         /// <summary>
         /// 设置相位参数

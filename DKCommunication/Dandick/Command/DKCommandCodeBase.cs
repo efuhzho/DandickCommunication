@@ -34,7 +34,7 @@ namespace DKCommunication.Dandick.Command
         public byte TxID { get; set; }
 
         /// <summary>
-        /// 解析读取的ushort形式的id码
+        /// 解析读取的ushort类型的id码
         /// </summary>
         /// <param name="id">读取的地址</param>
         public virtual void AnalysisID(ushort id)
