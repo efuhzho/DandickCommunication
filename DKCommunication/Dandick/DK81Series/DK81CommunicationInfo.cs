@@ -71,16 +71,14 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置源档位参数
         /// </summary>
-        public const byte WriteRange = 0x31;
-        public const ushort WriteRangeLength = 13;
-        public const ushort WriteRangeLength51F = 16;  //TODO !51F具备IPa,IPb,IPc
+        public const byte WriteRange = 0x31;        
+        public const ushort WriteRangeLength = 16;  //!51F具备IPa,IPb,IPc
 
         /// <summary>
         /// 设置源幅度参数
         /// </summary>
-        public const byte WriteAmplitude = 0x32;
-        public const ushort WriteAmplitudeLength = 31;
-        public const ushort WriteAmplitudeLength51F = 43;    //TODO !51F具备IPa,IPb,IPc
+        public const byte WriteAmplitude = 0x32;        
+        public const ushort WriteAmplitudeLength = 43; //!51F具备IPa,IPb,IPc
 
         /// <summary>
         /// 设置源相位参数
@@ -512,10 +510,10 @@ namespace DKCommunication.Dandick.DK81Series
     #region Range Declartion 档位定义
     public enum RangeACU : byte
     {
-        Voltage380 = 0,
-        Voltage220 = 1,
-        Voltage100 = 2,
-        Voltage57 = 3,
+        Voltage_380 = 0,
+        Voltage_220 = 1,
+        Voltage_100 = 2,
+        Voltage_57 = 3,
     }
     #endregion
 
