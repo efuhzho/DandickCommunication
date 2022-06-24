@@ -72,35 +72,40 @@ namespace DKCommunication.Dandick.DK81Series
         /// 设置源档位参数
         /// </summary>
         public const byte WriteRange = 0x31;
-        public const ushort SetRangeLength = 13;  
-        public const ushort SetRangeLength51F = 16;  //TODO !51F具备IPa,IPb,IPc
+        public const ushort WriteRangeLength = 13;
+        public const ushort WriteRangeLength51F = 16;  //TODO !51F具备IPa,IPb,IPc
 
         /// <summary>
         /// 设置源幅度参数
         /// </summary>
         public const byte WriteAmplitude = 0x32;
-        public const ushort WriteAmplitudeLength = 19;    //TODO !UA/UB/UC/IA/IB/IC均为4个字节的幅值，浮点型数据
-        public const ushort WriteAmplitudeLength51F = 25;    //TODO !51F具备IPa,IPb,IPc
+        public const ushort WriteAmplitudeLength = 31;
+        public const ushort WriteAmplitudeLength51F = 43;    //TODO !51F具备IPa,IPb,IPc
 
         /// <summary>
-        /// 设置相位参数
+        /// 设置源相位参数
         /// </summary>
         public const byte WriteSetPhase = 0x33;
+        public const ushort WriteSetPhaseLength = 31;
 
         /// <summary>
-        /// 设置源频率参数
+        /// 设置源频率参数:当 Fa=Fb!=Fc 时，Flag=2；Fa=Fb=Fc 时，Flag=3,只设置Fa则三相同频
         /// </summary>
         public const byte WriteFrequency = 0x34;
+        public const ushort WriteFrequencyLength = 20;//注意：设置时 Fa=Fb，Fc 可以设置为与 AB 相不同的频率
+                                                      //也可以只设置 Fa，则默认为三相同频，用于兼容以前的设备通讯程序
 
         /// <summary>
-        /// 设置源接线模式
+        /// 设置源接线模式:
         /// </summary>
-        public const byte SetWireMode = 0x35;
+        public const byte WetWireMode = 0x35;   //TODO 枚举   PAGE 8
+        public const ushort WetWireModeLength = 8;
 
         /// <summary>
-        /// 闭环控制使能命令
+        /// 闭环控制使能命令：HarmonicMode ：谐波模式，0-以真有效值的百分比输入谐波（有效值恒定）；1-以基波值的百分比输入谐波（基波恒定）
         /// </summary>
-        public const byte SetClosedLoop = 0x36;
+        public const byte WriteClosedLoop = 0x36;
+        public const ushort WriteClosedLoopLength = 9;
 
         /// <summary>
         /// 设置电能校验参数
@@ -108,9 +113,10 @@ namespace DKCommunication.Dandick.DK81Series
         public const byte WriteElectricity = 0x37;
 
         /// <summary>
-        /// 设置谐波参数
+        /// 设置谐波参数：注意：建议协议长度不超过 256，超过 256 个字节建议分批发送。
         /// </summary>
         public const byte WriteHarmonics = 0x58;
+        public const short WriteHarmonicsLength = 0x58;
 
         /// <summary>
         /// 读电能误差
@@ -360,142 +366,159 @@ namespace DKCommunication.Dandick.DK81Series
         }
         //TODO 解析FuncS
 
+
+        #endregion      
+
+    }   
+
+    #region Enum Classes
+
+    #region Mode Declaration 系统模式定义
+
+    public enum SystemMode : byte
+    {
+        /// <summary>
+        /// 标准源模式
+        /// </summary>
+        ModeStandardSource = 0,
+
+        /// <summary>
+        /// 标准表模式
+        /// </summary>
+        ModeStandardMeter = 1,
+
+        /// <summary>
+        /// 标准表（钳表）模式
+        /// </summary>
+        ModeStandardMeterClamp = 2,
+
+        //TODO 核实协议里的数字是10进制还是16进制，暂时认为是10进制
+        /// <summary>
+        /// 标准源校准模式
+        /// </summary>
+        ModeStandardSourceCalibrate = 10,    //?需确认是0x10还是10
+
+        /// <summary>
+        /// 标准表校准模式
+        /// </summary>
+        ModeStandardMeterCalibrate = 11,
+
+        /// <summary>
+        /// 钳表校准模式
+        /// </summary>
+        ModeStandardClampCalibrate = 12,
+
+        /// <summary>
+        /// 直流源校准模式
+        /// </summary>
+        ModeDCSourceCalibrate = 13,
+
+        /// <summary>
+        /// 直流表校准模式
+        /// </summary>
+        ModeDCMeterCalibrate = 14
+    }
+
+    #endregion
+
+    #region Page Declaration 显示页面定义
+    //TODO 确认彩屏显示界面，以下是黑白屏数据，不同型号可能界面不一样
+
+    public enum DisplayPage : byte
+    {
+        //TODO 使用【Atribute】特性显示信息
+        #region 交流标准源输出
+        /// <summary>
+        /// Menu功能选择界面：仅彩屏有效，黑白屏无效。需先切换到Menu界面才能继续操作显示其他界面
+        /// </summary>
+        PageMenu = 0,
+
+        /// <summary>
+        /// 默认的开机界面：交流源输出界面
+        /// </summary>
+        PageDefault = 1,
+
+        /// <summary>
+        /// 相位输出界面：黑白屏，彩屏是波形显示
+        /// </summary>
+        PagePhase = 2,     //黑白屏，彩屏是波形显示。
+
+        /// <summary>
+        /// 矢量显示界面
+        /// </summary>
+        PagePhasor = 3,
+
+        /// <summary>
+        /// 谐波设置界面
+        /// </summary>
+        PageHarmony = 4,
+
+        /// <summary>
+        /// 电能校验界面
+        /// </summary>
+        PageElectricity = 8,
         #endregion
 
-        #region Mode Declaration 系统模式定义
+        #region 直流
+        /// <summary>
+        /// 直流测量界面
+        /// </summary>
+        PageDCMeter = 5,
 
-        public enum SystemMode : byte
-        {
-            /// <summary>
-            /// 标准源模式
-            /// </summary>
-            ModeStandardSource = 0,
-
-            /// <summary>
-            /// 标准表模式
-            /// </summary>
-            ModeStandardMeter = 1,
-
-            /// <summary>
-            /// 标准表（钳表）模式
-            /// </summary>
-            ModeStandardMeterClamp = 2,
-
-            //TODO 核实协议里的数字是10进制还是16进制，暂时认为是10进制
-            /// <summary>
-            /// 标准源校准模式
-            /// </summary>
-            ModeStandardSourceCalibrate = 10,    //?需确认是0x10还是10
-
-            /// <summary>
-            /// 标准表校准模式
-            /// </summary>
-            ModeStandardMeterCalibrate = 11,
-
-            /// <summary>
-            /// 钳表校准模式
-            /// </summary>
-            ModeStandardClampCalibrate = 12,
-
-            /// <summary>
-            /// 直流源校准模式
-            /// </summary>
-            ModeDCSourceCalibrate = 13,
-
-            /// <summary>
-            /// 直流表校准模式
-            /// </summary>
-            ModeDCMeterCalibrate = 14
-        }
-
+        /// <summary>
+        /// 直流输出界面
+        /// </summary>
+        PageDC = 6,
         #endregion
 
-        #region Page Declaration 显示页面定义
-        //TODO 确认彩屏显示界面，以下是黑白屏数据，不同型号可能界面不一样
-        
-        public enum DisplayPage : byte
-        {
-            //TODO 使用【Atribute】特性显示信息
-            #region 交流标准源输出
-            /// <summary>
-            /// Menu功能选择界面：仅彩屏有效，黑白屏无效。需先切换到Menu界面才能继续操作显示其他界面
-            /// </summary>
-            PageMenu = 0,
+        #region 交流标准表
+        /// <summary>
+        /// 参数测量界面
+        /// </summary>
+        PageStandardMeter = 9,
 
-            /// <summary>
-            /// 默认的开机界面：交流源输出界面
-            /// </summary>
-            PageDefault = 1,
+        /// <summary>
+        /// 相位测量界面：黑白屏，彩屏是波形显示
+        /// </summary>
+        PageStandardMeterPhase = 10, //黑白屏，彩屏是波形显示
 
-            /// <summary>
-            /// 相位输出界面：黑白屏，彩屏是波形显示
-            /// </summary>
-            PagePhase = 2,     //黑白屏，彩屏是波形显示。
+        /// <summary>
+        /// 矢量显示界面
+        /// </summary>
+        PageStandardMeterPhasor = 11,
 
-            /// <summary>
-            /// 矢量显示界面
-            /// </summary>
-            PagePhasor = 3,
+        #region 标准表钳表
 
-            /// <summary>
-            /// 谐波设置界面
-            /// </summary>
-            PageHarmony = 4,
+        /// <summary>
+        /// 钳表测量界面
+        /// </summary>
+        PageClampMesure = 12,
 
-            /// <summary>
-            /// 电能校验界面
-            /// </summary>
-            PageElectricity = 8,
-            #endregion
+        /// <summary>
+        /// 钳表相位测量界面
+        /// </summary>
+        PageClampPhase = 13, //黑白屏，彩屏为波形显示
 
-            #region 直流
-            /// <summary>
-            /// 直流测量界面
-            /// </summary>
-            PageDCMeter = 5,
+        /// <summary>
+        /// 钳表测试矢量显示界面
+        /// </summary>
+        PageClampPhasor = 14,
 
-            /// <summary>
-            /// 直流输出界面
-            /// </summary>
-            PageDC = 6,
-            #endregion
-
-            #region 交流标准表
-            /// <summary>
-            /// 参数测量界面
-            /// </summary>
-            PageStandardMeter = 9,
-
-            /// <summary>
-            /// 相位测量界面：黑白屏，彩屏是波形显示
-            /// </summary>
-            PageStandardMeterPhase = 10, //黑白屏，彩屏是波形显示
-
-            /// <summary>
-            /// 矢量显示界面
-            /// </summary>
-            PageStandardMeterPhasor = 11,
-
-            #region 标准表钳表
-
-            /// <summary>
-            /// 钳表测量界面
-            /// </summary>
-            PageClampMesure = 12,
-
-            /// <summary>
-            /// 钳表相位测量界面
-            /// </summary>
-            PageClampPhase = 13, //黑白屏，彩屏为波形显示
-
-            /// <summary>
-            /// 钳表测试矢量显示界面
-            /// </summary>
-            PageClampPhasor = 14,
-
-            #endregion
-            #endregion
-        }
+        #endregion
         #endregion
     }
+    #endregion
+
+    #region Range Declartion 档位定义
+    public enum RangeACU : byte
+    {
+        Voltage380 = 0,
+        Voltage220 = 1,
+        Voltage100 = 2,
+        Voltage57 = 3,
+    }
+    #endregion
+
+    #endregion
+
 }

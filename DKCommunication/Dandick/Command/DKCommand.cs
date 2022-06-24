@@ -15,12 +15,12 @@ namespace DKCommunication.Dandick.Command
     /// </summary>
     public class DKCommand : DKCommandCodeBase
     {
-        
+
         #region Constructor
         /// <summary>
         /// 实例化一个默认的对象，使用默认的地址（0x0000）、默认命令码(0x4C)、默认的协议类型(81)、默认的指令长度（7）
         /// </summary>
-        public DKCommand( )
+        public DKCommand()
         {
             DKCommunicationType = DK81CommunicationInfo.CommunicationType;
             AnalysisID(0);
@@ -77,7 +77,7 @@ namespace DKCommunication.Dandick.Command
         /// 创建指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
         /// </summary>
         /// <returns>commandMissData:【缺少CRC数据】的完整指令长度的字节数组</returns>
-        private byte[] CreateCommandHelper( )
+        private byte[] CreateCommandHelper()
         {
             switch (DKCommunicationType)
             {
@@ -130,7 +130,7 @@ namespace DKCommunication.Dandick.Command
         /// 根据丹迪克协议类型创建一个【联机指令】对象
         /// </summary>
         /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
-        public byte[] CreateHandShake( )
+        public byte[] CreateHandShake()
         {
             switch (DKCommunicationType)
             {
@@ -152,7 +152,7 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         /// <param name="mode">系统模式</param>
         /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
-        public byte[] CreateSystemMode(DK81CommunicationInfo.SystemMode mode)
+        public byte[] CreateSystemMode(SystemMode mode)
         {
             switch (DKCommunicationType)
             {
@@ -176,11 +176,11 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         /// <param name="page">当前显示页面</param>
         /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
-        public byte[] CreateDisplayPage(DK81CommunicationInfo.DisplayPage page)
+        public byte[] CreateDisplayPage(DisplayPage page)
         {
             switch (DKCommunicationType)
             {
-                case DK81CommunicationInfo.CommunicationType:                    
+                case DK81CommunicationInfo.CommunicationType:
                     return CreateCommandHelper(page);
 
                 #region 待扩展：DK55CommunicationInfo
@@ -195,7 +195,69 @@ namespace DKCommunication.Dandick.Command
         #endregion
 
         #region 交流表源命令
+        /// <summary>
+        /// 创建一个【源关闭】命令
+        /// </summary>
+        /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
+        public byte[] CreateStop()
+        {
+            switch (DKCommunicationType)
+            {
+                case DK81CommunicationInfo.CommunicationType:
+                    return CreateCommandHelper();
 
+                #region 待扩展：DK55CommunicationInfo
+                //TODO 待扩展55协议：DK55CommunicationInfo
+                //case DK55CommunicationInfo.CommunicationType:               
+
+                #endregion
+
+                default: return default;    //返回null
+            }
+        }
+
+        /// <summary>
+        /// 创建一个【源打开】命令
+        /// </summary>
+        /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
+        public byte[] CreateStart()
+        {
+            switch (DKCommunicationType)
+            {
+                case DK81CommunicationInfo.CommunicationType:
+                    return CreateCommandHelper();
+
+                #region 待扩展：DK55CommunicationInfo
+                //TODO 待扩展55协议：DK55CommunicationInfo
+                //case DK55CommunicationInfo.CommunicationType:               
+
+                #endregion
+
+                default: return default;    //返回null
+            }
+        }
+
+        /// <summary>
+        /// 根据丹迪克协议类型创建一个：【当前显示页面】指令对象
+        /// </summary>
+        /// <param name="page">当前显示页面</param>
+        /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
+        public byte[] CreateRange(DisplayPage page)
+        {
+            switch (DKCommunicationType)
+            {
+                case DK81CommunicationInfo.CommunicationType:
+                    return CreateCommandHelper(page);
+
+                #region 待扩展：DK55CommunicationInfo
+                //TODO 待扩展55协议：DK55CommunicationInfo
+                //case DK55CommunicationInfo.CommunicationType:
+
+                #endregion
+
+                default: return default;    //返回null
+            }
+        }
         #endregion
 
         #endregion
