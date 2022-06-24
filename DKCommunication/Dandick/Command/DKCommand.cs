@@ -108,7 +108,13 @@ namespace DKCommunication.Dandick.Command
             }
         }
 
-        private byte[] CreateCommandHelper<T>(T data) 
+        /// <summary>
+        /// 创建指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
+        /// </summary>
+        /// <typeparam name="T">泛型类，必须可以被转换为byte</typeparam>
+        /// <param name="data">数据</param>
+        /// <returns>【缺少CRC数据】的完整指令长度的字节数组</returns>
+        private byte[] CreateCommandHelper<T>(T data) /*where T: Enum*/ //TODO 添加T类型约束
         {
             byte[] buffer = CreateCommandHelper();
             for (int i = 6; i < CommandLength - 1; i++)
