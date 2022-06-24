@@ -345,54 +345,59 @@ namespace DKCommunication.Dandick.DK81Series
             funtions[0] = (byte)(((FuncB & 0x04) == 0x04) ? 1 : 0); //直流源
             funtions[1] = (byte)(((FuncB & 0x08) == 0x08) ? 1 : 0); //直流表
             funtions[2] = (byte)(((FuncB & 0x10) == 0x10) ? 1 : 0); //电能校验
-            
+
             return funtions;
         }
-              
-        
+
+
         #endregion
 
         #region Mode Declaration 系统模式定义
-        /// <summary>
-        /// 标准源模式
-        /// </summary>
-        public const byte ModeStandardSource = 0;
 
-        /// <summary>
-        /// 标准表模式
-        /// </summary>
-        public const byte ModeStandardMeter = 1;
+        public enum SystemMode : byte
+        {
+            /// <summary>
+            /// 标准源模式
+            /// </summary>
+            ModeStandardSource = 0,
 
-        /// <summary>
-        /// 标准表（钳表）模式
-        /// </summary>
-        public const byte ModeStandardMeterClamp = 2;
+            /// <summary>
+            /// 标准表模式
+            /// </summary>
+            ModeStandardMeter = 1,
 
-        //TODO 核实协议里的数字是10进制还是16进制，暂时认为是10进制
-        /// <summary>
-        /// 标准源校准模式
-        /// </summary>
-        public const byte ModeStandardSourceCalibrate = 10;     //?需确认是0x10还是10
+            /// <summary>
+            /// 标准表（钳表）模式
+            /// </summary>
+            ModeStandardMeterClamp = 2,
 
-        /// <summary>
-        /// 标准表校准模式
-        /// </summary>
-        public const byte ModeStandardMeterCalibrate = 11;
+            //TODO 核实协议里的数字是10进制还是16进制，暂时认为是10进制
+            /// <summary>
+            /// 标准源校准模式
+            /// </summary>
+            ModeStandardSourceCalibrate = 10,    //?需确认是0x10还是10
 
-        /// <summary>
-        /// 钳表校准模式
-        /// </summary>
-        public const byte ModeStandardClampCalibrate = 12;
+            /// <summary>
+            /// 标准表校准模式
+            /// </summary>
+            ModeStandardMeterCalibrate = 11,
 
-        /// <summary>
-        /// 直流源校准模式
-        /// </summary>
-        public const byte ModeDCSourceCalibrate = 13;
+            /// <summary>
+            /// 钳表校准模式
+            /// </summary>
+            ModeStandardClampCalibrate = 12,
 
-        /// <summary>
-        /// 直流表校准模式
-        /// </summary>
-        public const byte ModeDCMeterCalibrate = 14;
+            /// <summary>
+            /// 直流源校准模式
+            /// </summary>
+            ModeDCSourceCalibrate = 13,
+
+            /// <summary>
+            /// 直流表校准模式
+            /// </summary>
+            ModeDCMeterCalibrate = 14
+        }
+
         #endregion
 
         #region Page Declaration 显示页面定义
@@ -456,7 +461,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 矢量显示界面
         /// </summary>
-        public const byte PageStandardMeterPhasor=11;
+        public const byte PageStandardMeterPhasor = 11;
 
         #region 标准表钳表
 
@@ -473,7 +478,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 钳表测试矢量显示界面
         /// </summary>
-        public const byte PageClampPhasor=14;
+        public const byte PageClampPhasor = 14;
 
         #endregion
         #endregion
