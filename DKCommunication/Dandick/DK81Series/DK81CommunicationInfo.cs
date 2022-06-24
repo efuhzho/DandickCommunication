@@ -402,87 +402,90 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region Page Declaration 显示页面定义
         //TODO 确认彩屏显示界面，以下是黑白屏数据，不同型号可能界面不一样
+        
+        public enum DisplayPage : byte
+        {
+            //TODO 使用【Atribute】特性显示信息
+            #region 交流标准源输出
+            /// <summary>
+            /// Menu功能选择界面：仅彩屏有效，黑白屏无效。需先切换到Menu界面才能继续操作显示其他界面
+            /// </summary>
+            PageMenu = 0,
 
-        #region 交流标准源输出
-        /// <summary>
-        /// Menu功能选择界面：仅彩屏有效，黑白屏无效
-        /// </summary>
-        public const byte PageMenu = 0;
+            /// <summary>
+            /// 默认的开机界面：交流源输出界面
+            /// </summary>
+            PageDefault = 1,
 
-        /// <summary>
-        /// 默认的开机界面：交流输出界面
-        /// </summary>
-        public const byte PageDefault = 1;
+            /// <summary>
+            /// 相位输出界面：黑白屏，彩屏是波形显示
+            /// </summary>
+            PagePhase = 2,     //黑白屏，彩屏是波形显示。
 
-        /// <summary>
-        /// 相位输出界面：黑白屏，彩屏是波形显示
-        /// </summary>
-        public const byte PagePhase = 2;    //黑白屏，彩屏是波形显示
+            /// <summary>
+            /// 矢量显示界面
+            /// </summary>
+            PagePhasor = 3,
 
-        /// <summary>
-        /// 矢量显示界面
-        /// </summary>
-        public const byte PagePhasor = 3;
+            /// <summary>
+            /// 谐波设置界面
+            /// </summary>
+            PageHarmony = 4,
 
-        /// <summary>
-        /// 谐波设置界面
-        /// </summary>
-        public const byte PageHarmony = 4;
+            /// <summary>
+            /// 电能校验界面
+            /// </summary>
+            PageElectricity = 8,
+            #endregion
 
-        /// <summary>
-        /// 电能校验界面
-        /// </summary>
-        public const byte PageElectricity = 8;
-        #endregion
+            #region 直流
+            /// <summary>
+            /// 直流测量界面
+            /// </summary>
+            PageDCMeter = 5,
 
-        #region 直流
-        /// <summary>
-        /// 直流测量界面
-        /// </summary>
-        public const byte PageDCMeter = 5;
+            /// <summary>
+            /// 直流输出界面
+            /// </summary>
+            PageDC = 6,
+            #endregion
 
-        /// <summary>
-        /// 直流输出界面
-        /// </summary>
-        public const byte PageDC = 6;
-        #endregion
+            #region 交流标准表
+            /// <summary>
+            /// 参数测量界面
+            /// </summary>
+            PageStandardMeter = 9,
 
-        #region 交流标准表
-        /// <summary>
-        /// 参数测量界面
-        /// </summary>
-        public const byte PageStandardMeter = 9;
+            /// <summary>
+            /// 相位测量界面：黑白屏，彩屏是波形显示
+            /// </summary>
+            PageStandardMeterPhase = 10, //黑白屏，彩屏是波形显示
 
-        /// <summary>
-        /// 相位测量界面：黑白屏，彩屏是波形显示
-        /// </summary>
-        public const byte PageStandardMeterPhase = 10; //黑白屏，彩屏是波形显示
+            /// <summary>
+            /// 矢量显示界面
+            /// </summary>
+            PageStandardMeterPhasor = 11,
 
-        /// <summary>
-        /// 矢量显示界面
-        /// </summary>
-        public const byte PageStandardMeterPhasor = 11;
+            #region 标准表钳表
 
-        #region 标准表钳表
+            /// <summary>
+            /// 钳表测量界面
+            /// </summary>
+            PageClampMesure = 12,
 
-        /// <summary>
-        /// 钳表测量界面
-        /// </summary>
-        public const byte PageClampMesure = 12;
+            /// <summary>
+            /// 钳表相位测量界面
+            /// </summary>
+            PageClampPhase = 13, //黑白屏，彩屏为波形显示
 
-        /// <summary>
-        /// 钳表相位测量界面
-        /// </summary>
-        public const byte PageClampPhase = 13;  //黑白屏，彩屏为波形显示
+            /// <summary>
+            /// 钳表测试矢量显示界面
+            /// </summary>
+            PageClampPhasor = 14,
 
-        /// <summary>
-        /// 钳表测试矢量显示界面
-        /// </summary>
-        public const byte PageClampPhasor = 14;
-
-        #endregion
-        #endregion
-
+            #endregion
+            #endregion
+        }
         #endregion
     }
 }
