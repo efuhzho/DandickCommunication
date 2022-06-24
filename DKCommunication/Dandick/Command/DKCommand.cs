@@ -116,6 +116,12 @@ namespace DKCommunication.Dandick.Command
         /// <returns>【缺少CRC数据】的完整指令长度的字节数组</returns>
         private byte[] CreateCommandHelper<T>(T data) /*where T: Enum*/ //TODO 添加T类型约束
         {
+            #region 待扩展：DK55CommunicationInfo
+            //TODO 待扩展55协议：DK55CommunicationInfo
+            //case DK55CommunicationInfo.CommunicationType:                
+
+            #endregion
+
             byte[] buffer = CreateCommandHelper();
             for (int i = 6; i < CommandLength - 1; i++)
             {
