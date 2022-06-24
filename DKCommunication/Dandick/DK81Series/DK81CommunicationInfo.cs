@@ -34,11 +34,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// 联机命令，读取终端型号和版本号：Link    ('L')
         /// </summary>
         public const byte HandShake = 0x4C;
+        public const ushort HandShakeCommandLength = 7;
 
         /// <summary>
         /// 设置系统模式
         /// </summary>
         public const byte SetSystemMode = 0x44;
+        public const ushort SetSystemModeCommandLength = 8;
 
         /// <summary>
         /// 发送故障代码，带枚举数据
@@ -49,6 +51,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 设置当前终端显示界面
         /// </summary>
         public const byte SetDisplayPage = 0x4A;
+        public const ushort SetDisplayPageCommandLength = 8;
         #endregion
 
         #region 交流源/表
@@ -340,15 +343,15 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>含有3个功能指示的数组：1为具备功能，0为不具备；Index(0)=直流源，Index(1)=直流表，Index(2)=电能校验</returns>
         public static byte[] GetFunctionsInfo(byte FuncB)
         {
-            byte[] funtions = new byte[3];   //0x01:ACS;0x02:ACM;0x04:DCS;0x08:DCM;0x10:PQ
+            byte[] functions = new byte[3];   //0x01:ACS;0x02:ACM;0x04:DCS;0x08:DCM;0x10:PQ
 
-            funtions[0] = (byte)(((FuncB & 0x04) == 0x04) ? 1 : 0); //直流源
-            funtions[1] = (byte)(((FuncB & 0x08) == 0x08) ? 1 : 0); //直流表
-            funtions[2] = (byte)(((FuncB & 0x10) == 0x10) ? 1 : 0); //电能校验
+            functions[0] = (byte)(((FuncB & 0x04) == 0x04) ? 1 : 0); //直流源
+            functions[1] = (byte)(((FuncB & 0x08) == 0x08) ? 1 : 0); //直流表
+            functions[2] = (byte)(((FuncB & 0x10) == 0x10) ? 1 : 0); //电能校验
 
-            return funtions;
+            return functions;
         }
-
+        //TODO 解析FuncS
 
         #endregion
 

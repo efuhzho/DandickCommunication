@@ -15,33 +15,37 @@ namespace DKCommunication.Dandick.Command
     /// </summary>
     public class DKCommand : DKCommandCodeBase
     {
+        #region Public Properties
         /// <summary>
         /// 协议类型：预留支持协议扩展，暂时不用
         /// </summary>
-        public DKCommunicationTypes DKCommunicationType { get; set; }
+
+        #endregion
+
 
         #region Constructor
         /// <summary>
-        /// 实例化一个默认的对象，使用默认的地址（0x0000）和命令码(0x4C)、默认的协议类型(81)
+        /// 实例化一个默认的对象，使用默认的地址（0x0000）、默认命令码(0x4C)、默认的协议类型(81)、默认的指令长度（7）
         /// </summary>
         public DKCommand( )
         {
             DKCommunicationType = DK81CommunicationInfo.CommunicationType;
-            RxID = 0x00;
-            TxID = 0x00;
+            AnalysisID(0);
             CommandCode = DK81CommunicationInfo.HandShake;
+            CommandLength = DK81CommunicationInfo.HandShakeCommandLength;
         }
 
         /// <summary>
-        /// 实例化一个指定ID的对象，默认的协议类型(81)、使用默认的地址（0x0000）=>>>推介的实例化方法
+        /// 实例化一个指定命令码和指令长度的对象  =>>>推介的实例化方法
         /// </summary>
         /// <param name="id">传入的指定ID</param>
-        public DKCommand(byte commandCode)
+        /// <param name="commandLength">完整的【指令长度】，包含校验码的空字节数据空间</param>
+        public DKCommand(byte commandCode, ushort commandLength)
         {
             DKCommunicationType = DK81CommunicationInfo.CommunicationType;
-            RxID = 0x00;
-            TxID = 0x00;
+            AnalysisID(0);
             CommandCode = commandCode;
+            CommandLength = commandLength;
         }
 
         /// <summary>
@@ -49,12 +53,13 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         /// <param name="commandCode">传入的命令码</param>
         /// <param name="dkType">丹迪克协议类型</param>
-        public DKCommand(byte commandCode, DKCommunicationTypes dkType)
+        /// <param name="commandLength">完整【指令长度】，包含校验码的空字节数据空间</param>
+        public DKCommand(DKCommunicationTypes dkType, byte commandCode, ushort commandLength)
         {
-            RxID = 0x00;
-            TxID = 0x00;
-            CommandCode = commandCode;
             DKCommunicationType = dkType;
+            AnalysisID(0);
+            CommandCode = commandCode;
+            CommandLength = commandLength;
         }
 
         /// <summary>
@@ -62,11 +67,13 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         /// <param name="id">读取的终端ID</param>
         /// <param name="commandCode">传入的命令码</param>
-        public DKCommand(ushort id, byte commandCode, DKCommunicationTypes dkType)
+        /// <param name="commandLength">完整的【指令长度】，包含校验码的空字节数据空间</param>
+        public DKCommand(DKCommunicationTypes dkType, ushort id, byte commandCode, ushort commandLength)
         {
+            DKCommunicationType = dkType;
             AnalysisID(id);
             CommandCode = commandCode;
-            DKCommunicationType = dkType;
+            CommandLength = commandLength;
         }
         #endregion
 
@@ -76,19 +83,18 @@ namespace DKCommunication.Dandick.Command
         /// <summary>
         /// 创建指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
         /// </summary>
-        /// <param name="lenthOverall">完整指令【长度】，包含校验码的空字节数据空间</param>
         /// <returns>commandMissData:【缺少CRC数据】的完整指令长度的字节数组</returns>
-        private byte[] CreateCommandHelper(ushort lenthOverall)
+        private byte[] CreateCommandHelper( )
         {
             switch (DKCommunicationType)
             {
                 case DKCommunicationTypes.DK81CommunicationType:
-                    byte[] commandMissData = new byte[lenthOverall];
+                    byte[] commandMissData = new byte[CommandLength];
                     commandMissData[0] = DK81CommunicationInfo.FrameID;
                     commandMissData[1] = RxID;
                     commandMissData[2] = TxID;
-                    commandMissData[3] = BitConverter.GetBytes(commandMissData.Length)[0];
-                    commandMissData[4] = BitConverter.GetBytes(commandMissData.Length)[1];
+                    commandMissData[3] = BitConverter.GetBytes(CommandLength)[0];
+                    commandMissData[4] = BitConverter.GetBytes(CommandLength)[1];
                     commandMissData[5] = CommandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake
                     return commandMissData;
 
@@ -102,11 +108,21 @@ namespace DKCommunication.Dandick.Command
             }
         }
 
+        private byte[] CreateCommandHelper<T>(T data) 
+        {
+            byte[] buffer = CreateCommandHelper();
+            for (int i = 6; i < CommandLength - 1; i++)
+            {
+                buffer[i] = Convert.ToByte(data);   //如果data为空，返回0
+            }
+            return buffer;
+        }
+
         #endregion
 
         #region 系统命令
         /// <summary>
-        /// 根据丹迪克协议类型创建一个【联机】指令对象
+        /// 根据丹迪克协议类型创建一个【联机指令】对象
         /// </summary>
         /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
         public byte[] CreateHandShake( )
@@ -114,8 +130,7 @@ namespace DKCommunication.Dandick.Command
             switch (DKCommunicationType)
             {
                 case DK81CommunicationInfo.CommunicationType:
-                    byte[] buffer = CreateCommandHelper(7);     //默认即为联机指令，所以无需再处理数据
-                    return buffer;
+                    return CreateCommandHelper();
 
                 #region 待扩展：DK55CommunicationInfo
                 //TODO 待扩展55协议：DK55CommunicationInfo
@@ -137,9 +152,7 @@ namespace DKCommunication.Dandick.Command
             switch (DKCommunicationType)
             {
                 case DK81CommunicationInfo.CommunicationType:
-                    byte[] buffer = CreateCommandHelper(8);
-                    buffer[6] = Convert.ToByte(mode);   //如果mode为空，返回0
-                    return buffer;
+                    return CreateCommandHelper(mode);
 
                 #region 待扩展：DK55CommunicationInfo
                 //TODO 待扩展55协议：DK55CommunicationInfo
@@ -162,10 +175,8 @@ namespace DKCommunication.Dandick.Command
         {
             switch (DKCommunicationType)
             {
-                case DK81CommunicationInfo.CommunicationType:
-                    byte[] buffer = CreateCommandHelper(8);
-                    buffer[6] = Convert.ToByte(page);   //如果mode为空，返回0
-                    return buffer;
+                case DK81CommunicationInfo.CommunicationType:                    
+                    return CreateCommandHelper(page);
 
                 #region 待扩展：DK55CommunicationInfo
                 //TODO 待扩展55协议：DK55CommunicationInfo

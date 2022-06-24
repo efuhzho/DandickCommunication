@@ -1,4 +1,5 @@
 ﻿using System;
+using DKCommunication.Dandick.Communication;
 
 namespace DKCommunication.Dandick.Command
 {
@@ -8,9 +9,19 @@ namespace DKCommunication.Dandick.Command
     public class DKCommandCodeBase
     {
         /// <summary>
+        /// 协议类型：枚举
+        /// </summary>
+        public DKCommunicationTypes DKCommunicationType { get; set; }
+                
+        /// <summary>
         /// 命令码
         /// </summary>
         public byte CommandCode { get; set; }
+
+        /// <summary>
+        /// 指令长度：指的是待发送给串口的完整报文长度
+        /// </summary>
+        public ushort CommandLength { get; set; }
 
         /// <summary>
         /// 接收终端的设备ID
