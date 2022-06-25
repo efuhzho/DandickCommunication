@@ -6,12 +6,11 @@ namespace DKCommunication.Dandick.Command
     /// <summary>
     /// 所有丹迪克设备通信协议的命令码基础类
     /// </summary>
-    public class DKCommandCodeBase
+    public class DKCommandBase
     {
         /// <summary>
         /// 协议类型：枚举
-        /// </summary>
-        public DKCommunicationTypes DKCommunicationType { get; set; }
+        /// </summary>      
 
         /// <summary>
         /// 命令码

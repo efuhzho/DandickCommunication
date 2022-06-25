@@ -133,8 +133,6 @@ namespace DKCommunication.Serial
         /// <returns>返回带CRC校验码的字节数据，可用于串口发送</returns>
         public static byte[] CRCcalculator(byte[] value)
         {
-            byte[] buf = new byte[value.Length + 1];
-            value.CopyTo(buf, 0);
             byte crc = 0;   //CRC寄存器
 
             //从第二个字节开始执行异或，结果返回CRC寄存器
@@ -142,15 +140,14 @@ namespace DKCommunication.Serial
             {
                 crc ^= value[i];
             }
-
-            buf[buf.Length - 1] = crc;
+            value[value.Length - 1] = crc;
 
             //返回最终带有CRC校验码结尾的信息
-            return buf;
+            return value;
         }
 
         /// <summary>
-        /// 校验对应的接收数据的CRC校验码
+        /// 校验接收数据的CRC校验码
         /// </summary>
         /// <param name="value">需要校验的数据，带CRC校验码</param>
         /// <returns>返回校验成功与否</returns>
