@@ -4,24 +4,10 @@ using DKCommunication.Dandick.Communication;
 namespace DKCommunication.Dandick.Command
 {
     /// <summary>
-    /// 所有丹迪克设备通信协议的命令码基础类
+    /// 所有丹迪克设备通信协议的地址基础类
     /// </summary>
     public class DKCommandBase
-    {
-        /// <summary>
-        /// 协议类型：枚举
-        /// </summary>      
-
-        /// <summary>
-        /// 命令码
-        /// </summary>
-        public byte CommandCode { get; set; }
-
-        /// <summary>
-        /// 指令长度：指的是待发送给串口的完整报文长度
-        /// </summary>
-        public ushort CommandLength { get; set; }
-
+    {         
         /// <summary>
         /// 设备ID
         /// </summary>
@@ -54,7 +40,7 @@ namespace DKCommunication.Dandick.Command
         /// <returns>字符串数据</returns>
         public override string ToString()
         {
-            return CommandCode.ToString();
+            return "所有丹迪克设备的地址类";
         }
     }
 }

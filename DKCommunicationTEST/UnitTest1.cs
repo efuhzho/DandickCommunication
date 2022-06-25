@@ -3,11 +3,11 @@ namespace DKCommunicationTEST
 {
     public class UnitTest1
     {
+        DK81CommandBuilder Command = new();
         [Fact]
         public void Handshake()
-        {
-            DK81CommandBuilder dKCommand = new DK81CommandBuilder();
-            dKCommand.CreateHandShake();
+        {          
+            Command.CreateHandShake();
         }
     }
 }
