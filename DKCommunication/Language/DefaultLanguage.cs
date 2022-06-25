@@ -10,22 +10,22 @@ namespace DKCommunication.Language
     /// </summary>
     public class DefaultLanguage
     {
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+//#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
         /***********************************************************************************
          * 
          *    丹迪克标准源相关信息
          * 
          ************************************************************************************/
-        public virtual string ErrorCodeUa => "故障：Ua；";
-        public virtual string ErrorCodeUb => "故障：Ub；";
-        public virtual string ErrorCodeUc => "故障：Uc；";
-        public virtual string ErrorCodeU0 => "故障：U0；";
-        public virtual string ErrorCodeIa => "故障：Ia；";
-        public virtual string ErrorCodeIb => "故障：Ib；";
-        public virtual string ErrorCodeIc => "故障：Ic；";
-        public virtual string ErrorCodeI0 => "故障：I0；";
-        public virtual string ErrorCodeDC => "故障：DC；";
+        public virtual string ErrorUa => "故障：Ua；";
+        public virtual string ErrorUb => "故障：Ub；";
+        public virtual string ErrorUc => "故障：Uc；";
+        public virtual string ErrorU0 => "故障：U0；";
+        public virtual string ErrorIa => "故障：Ia；";
+        public virtual string ErrorIb => "故障：Ib；";
+        public virtual string ErrorIc => "故障：Ic；";
+        public virtual string ErrorI0 => "故障：I0；";
+        public virtual string ErrorDC => "故障：DC；";
 
 
         /***********************************************************************************
@@ -306,6 +306,6 @@ namespace DKCommunication.Language
         public virtual string PanasonicMewStatus67 => "丢失数据错误:要读的数据不存在。（读取没有写入注释寄存区的数据。。";
 
 
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
+//#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     }
 }

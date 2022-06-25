@@ -62,8 +62,8 @@
     <Compile Include="Core\TransFer\ReverseBytesTransform.cs" />
     <Compile Include="Core\TransFer\ReverseWordTransform.cs" />
     <Compile Include="Dandick\Command\DKCommandCodeBase.cs" />
-    <Compile Include="Dandick\Command\DKCommand.cs" />
-    <Compile Include="Dandick\Communication\DKCommunicationTypes.cs" />
+    <Compile Include="Dandick\Command\DKCommandBuilder.cs" />
+    <Compile Include="Dandick\Communications\DKCommunicationTypes.cs" />
     <Compile Include="Dandick\DK55Series\DK55Device.cs" />
     <Compile Include="Dandick\DK55Series\DK55CommunicationInfo.cs" />
     <Compile Include="Dandick\DK81Series\DK81Device.cs" />

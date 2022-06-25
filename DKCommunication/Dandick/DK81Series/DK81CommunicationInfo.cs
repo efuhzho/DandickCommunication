@@ -1,4 +1,5 @@
 ﻿using DKCommunication.Dandick.Communication;
+using System;
 
 namespace DKCommunication.Dandick.DK81Series
 {
@@ -71,13 +72,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置源档位参数
         /// </summary>
-        public const byte WriteRange = 0x31;        
+        public const byte WriteRange = 0x31;
         public const ushort WriteRangeLength = 16;  //!51F具备IPa,IPb,IPc
 
         /// <summary>
         /// 设置源幅度参数
         /// </summary>
-        public const byte WriteAmplitude = 0x32;        
+        public const byte WriteAmplitude = 0x32;
         public const ushort WriteAmplitudeLength = 43; //!51F具备IPa,IPb,IPc
 
         /// <summary>
@@ -296,19 +297,9 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region Static Helper Method
-
-        #region Error_Code Declaration 错误码信息定义
-        //public const byte ErrorCodeUa = 0x01;   //0b00000001; 
-        //public const byte ErrorCodeUb = 0x02;   //0b00000010; 
-        //public const byte ErrorCodeUc = 0x04;   //0b00000100; 
-        //public const byte ErrorCodeIa = 0x08;   //0b00001000;
-        //public const byte ErrorCodeIb = 0x10;   //0b00010000;
-        //public const byte ErrorCodeIc = 0x20;   //0b00100000;
-        //public const byte ErrorCodeDC = 0x40;   //0b01000000;
-        #endregion
-
+        
         /// <summary>
-        /// Error_Code 解析：从错误码中解析错误信息
+        /// Error_Code 解析：从错误码中解析错误信息。此为获取故障码的第一种方式
         /// </summary>
         /// <param name="Error_Code">接收的下位机错误码</param>
         /// <returns>错误消息</returns>
@@ -318,31 +309,31 @@ namespace DKCommunication.Dandick.DK81Series
 
             if ((Error_Code & 0x01) == 0x01)
             {
-                errorMessage += StringResources.Language.ErrorCodeUa;
+                errorMessage += StringResources.Language.ErrorUa;
             }
             if ((Error_Code & 0x02) == 0x02)
             {
-                errorMessage += StringResources.Language.ErrorCodeUb;
+                errorMessage += StringResources.Language.ErrorUb;
             }
             if ((Error_Code & 0x04) == 0x04)
             {
-                errorMessage += StringResources.Language.ErrorCodeUc;
+                errorMessage += StringResources.Language.ErrorUc;
             }
             if ((Error_Code & 0x08) == 0x08)
             {
-                errorMessage += StringResources.Language.ErrorCodeIa;
+                errorMessage += StringResources.Language.ErrorIa;
             }
             if ((Error_Code & 0x10) == 0x10)
             {
-                errorMessage += StringResources.Language.ErrorCodeIb;
+                errorMessage += StringResources.Language.ErrorIb;
             }
             if ((Error_Code & 0x20) == 0x20)
             {
-                errorMessage += StringResources.Language.ErrorCodeIc;
+                errorMessage += StringResources.Language.ErrorIc;
             }
             if ((Error_Code & 0x40) == 0x40)
             {
-                errorMessage += StringResources.Language.ErrorCodeDC;
+                errorMessage += StringResources.Language.ErrorDC;
             }
             return errorMessage;
         }
@@ -367,7 +358,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion      
 
-    }   
+    }
 
     #region Enum Classes
 
@@ -510,12 +501,35 @@ namespace DKCommunication.Dandick.DK81Series
     #region Range Declartion 档位定义
     public enum RangeACU : byte
     {
-        Voltage_380 = 0,
-        Voltage_220 = 1,
-        Voltage_100 = 2,
-        Voltage_57 = 3,
+        ACU_380 = 0,
+        ACU_220 = 1,
+        ACU_100 = 2,
+        ACU_57 = 3,
+    }
+
+    public enum RangACI : byte
+    {
+
     }
     #endregion
+
+    #region Error_Code Declaration 故障码解析
+    /// <summary>
+    /// 故障码定义：枚举。此为获取故障信息的第二种方式
+    /// </summary>
+    [Flags]
+    public enum ErrorCode
+    {
+        ErrorUa = 0b_0000_0001,    // 0x01 // 1
+        ErrorUb = 0b_0000_0010,    // 0x02 // 2
+        ErrorUc = 0b_0000_0100,    // 0x04 // 4
+        ErrorIa = 0b_0000_1000,    // 0x08 // 8
+        ErrorIb = 0b_0001_0000,    // 0x10 // 16
+        ErrorIc = 0b_0010_0000,    // 0x20 // 32
+        ErrorDC = 0b_0100_0000     // 0x40 // 64
+    }
+    #endregion
+
 
     #endregion
 

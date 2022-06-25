@@ -286,7 +286,7 @@ namespace DKCommunication.Dandick.DK55Series
         #region Static Helper Method
 
         #region Error_Code Declaration 错误码信息定义
-        //public const byte ErrorCodeUa = 0x01;   //0b00000001; 
+        //public const byte ErrorUa = 0x01;   //0b00000001; 
         //public const byte ErrorCodeUb = 0x02;   //0b00000010; 
         //public const byte ErrorCodeUc = 0x04;   //0b00000100; 
         //public const byte ErrorCodeIa = 0x08;   //0b00001000;
@@ -306,7 +306,7 @@ namespace DKCommunication.Dandick.DK55Series
 
             if ((Error_Code & 0x01) == 0x01)
             {
-                errorMessage += StringResources.Language.ErrorCodeUa;
+                errorMessage += StringResources.Language.ErrorUa;
             }
             if ((Error_Code & 0x02) == 0x02)
             {

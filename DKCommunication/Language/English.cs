@@ -5,21 +5,21 @@
     /// </summary>
     public class English : DefaultLanguage
     {
-#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+//#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
         /***********************************************************************************
         * 
         *    丹迪克标准源相关信息
         * 
         ************************************************************************************/
-        public override string ErrorCodeUa => "Error:Ua;";
-        public override string ErrorCodeUb => "Error:Ub;";
-        public override string ErrorCodeUc => "Error:Uc;";
-        public override string ErrorCodeU0 => "Error:U0;";
-        public override string ErrorCodeIa => "Error:Ia;";
-        public override string ErrorCodeIb => "Error:Ib;";
-        public override string ErrorCodeIc => "Error:Ic;";
-        public override string ErrorCodeI0 => "Error:I0;";
-        public override string ErrorCodeDC => "Error:DC;";
+        public override string ErrorUa => "Error:Ua;";
+        public override string ErrorUb => "Error:Ub;";
+        public override string ErrorUc => "Error:Uc;";
+        public override string ErrorU0 => "Error:U0;";
+        public override string ErrorIa => "Error:Ia;";
+        public override string ErrorIb => "Error:Ib;";
+        public override string ErrorIc => "Error:Ic;";
+        public override string ErrorI0 => "Error:I0;";
+        public override string ErrorDC => "Error:DC;";
 
 
         /***********************************************************************************
@@ -300,7 +300,7 @@
         public override string PanasonicMewStatus66 => "Address Error: Address (program address, absolute address, etc.) Data encoding form (BCD, hex, etc.), overflow, underflow, or specified range error.";
         public override string PanasonicMewStatus67 => "Missing data error: The data to be read does not exist. (reads data that is not written to the comment register.)";
 
-#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
+//#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
     }
 }

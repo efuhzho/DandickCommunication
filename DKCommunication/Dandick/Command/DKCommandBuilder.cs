@@ -13,17 +13,31 @@ namespace DKCommunication.Dandick.Command
     /// <summary>
     /// 丹迪克81协议的命令格式，可以携带站号（RxID、TxID）、命令码（CommandCode）、可扩展支持的协议类型DKType
     /// </summary>
-    public class DKCommand : DKCommandCodeBase
+    public class DKCommandBuilder : DKCommandCodeBase
     {
+        #region MyRegion
+
+        /// <summary>
+        /// 接收终端的设备ID
+        /// </summary>
+        private readonly byte RxID;
+
+        /// <summary>
+        /// 发送终端的设备ID
+        /// </summary>
+        private readonly byte TxID;
+
+        #endregion
 
         #region Constructor
         /// <summary>
         /// 实例化一个默认的对象，使用默认的地址（0x0000）、默认命令码(0x4C)、默认的协议类型(81)、默认的指令长度（7）
         /// </summary>
-        public DKCommand()
+        public DKCommandBuilder()
         {
             DKCommunicationType = DK81CommunicationInfo.CommunicationType;
-            AnalysisID(0);
+            RxID= AnalysisID(0)[1];
+            TxID = AnalysisID(0)[0];
             CommandCode = DK81CommunicationInfo.HandShake;
             CommandLength = DK81CommunicationInfo.HandShakeCommandLength;
         }
@@ -33,10 +47,11 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         /// <param name="id">传入的指定ID</param>
         /// <param name="commandLength">完整的【指令长度】，包含校验码的空字节数据空间</param>
-        public DKCommand(byte commandCode, ushort commandLength)
+        public DKCommandBuilder(byte commandCode, ushort commandLength)
         {
             DKCommunicationType = DK81CommunicationInfo.CommunicationType;
-            AnalysisID(0);
+            RxID = AnalysisID(0)[1];
+            TxID = AnalysisID(0)[0];
             CommandCode = commandCode;
             CommandLength = commandLength;
         }
@@ -47,10 +62,11 @@ namespace DKCommunication.Dandick.Command
         /// <param name="commandCode">传入的命令码</param>
         /// <param name="dkType">丹迪克协议类型</param>
         /// <param name="commandLength">完整【指令长度】，包含校验码的空字节数据空间</param>
-        public DKCommand(DKCommunicationTypes dkType, byte commandCode, ushort commandLength)
+        public DKCommandBuilder(DKCommunicationTypes dkType, byte commandCode, ushort commandLength)
         {
             DKCommunicationType = dkType;
-            AnalysisID(0);
+            RxID = AnalysisID(0)[1];
+            TxID = AnalysisID(0)[0];
             CommandCode = commandCode;
             CommandLength = commandLength;
         }
@@ -61,10 +77,11 @@ namespace DKCommunication.Dandick.Command
         /// <param name="id">读取的终端ID</param>
         /// <param name="commandCode">传入的命令码</param>
         /// <param name="commandLength">完整的【指令长度】，包含校验码的空字节数据空间</param>
-        public DKCommand(DKCommunicationTypes dkType, ushort id, byte commandCode, ushort commandLength)
+        public DKCommandBuilder(DKCommunicationTypes dkType, ushort id, byte commandCode, ushort commandLength)
         {
             DKCommunicationType = dkType;
-            AnalysisID(id);
+            RxID = AnalysisID(id)[1];
+            TxID = AnalysisID(id)[0];
             CommandCode = commandCode;
             CommandLength = commandLength;
         }
@@ -192,6 +209,8 @@ namespace DKCommunication.Dandick.Command
                 default: return default;    //返回null
             }
         }
+
+
         #endregion
 
         #region 交流表源命令
