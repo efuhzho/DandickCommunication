@@ -36,7 +36,7 @@ namespace DKCommunication.Dandick.Command
         public DKCommandBuilder()
         {
             DKCommunicationType = DK81CommunicationInfo.CommunicationType;
-            RxID= AnalysisID(0)[1];
+            RxID = AnalysisID(0)[1];
             TxID = AnalysisID(0)[0];
             CommandCode = DK81CommunicationInfo.HandShake;
             CommandLength = DK81CommunicationInfo.HandShakeCommandLength;
@@ -96,26 +96,25 @@ namespace DKCommunication.Dandick.Command
         /// <returns>commandMissData:【缺少CRC数据】的完整指令长度的字节数组</returns>
         private byte[] CreateCommandHelper()
         {
+            byte[] commandMissData = new byte[CommandLength];
+
             switch (DKCommunicationType)
             {
                 case DKCommunicationTypes.DK81CommunicationType:
-                    byte[] commandMissData = new byte[CommandLength];
                     commandMissData[0] = DK81CommunicationInfo.FrameID;
                     commandMissData[1] = RxID;
                     commandMissData[2] = TxID;
                     commandMissData[3] = BitConverter.GetBytes(CommandLength)[0];
                     commandMissData[4] = BitConverter.GetBytes(CommandLength)[1];
                     commandMissData[5] = CommandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake
-                    return commandMissData;
-
+                    break;
                 #region 待扩展：DK55CommunicationInfo
                 //TODO 待扩展55协议：DK55CommunicationInfo
                 //case DK55CommunicationInfo.CommunicationType:                
 
-                #endregion
-
-                default: return default;     //返回null
+                #endregion                 
             }
+            return commandMissData;
         }
 
         /// <summary>
@@ -124,7 +123,7 @@ namespace DKCommunication.Dandick.Command
         /// <typeparam name="T">泛型类，必须可以被转换为byte</typeparam>
         /// <param name="data">数据</param>
         /// <returns>【缺少CRC数据】的完整指令长度的字节数组</returns>
-        private byte[] CreateCommandHelper<T>(T data) /*where T: Enum*/ //TODO 添加T类型约束
+        private byte[] CreateCommandHelper<T>(T data) where T : Enum //TODO 添加T类型约束
         {
             #region 待扩展：DK55CommunicationInfo
             //TODO 待扩展55协议：DK55CommunicationInfo
@@ -133,13 +132,13 @@ namespace DKCommunication.Dandick.Command
             #endregion
 
             byte[] buffer = CreateCommandHelper();
-            for (int i = 6; i < CommandLength - 1; i++)
-            {
-                buffer[i] = Convert.ToByte(data);   //如果data为空，返回0
-            }
+            buffer[6] = Convert.ToByte(data);
             return buffer;
         }
-
+        public byte[] Create(int a)
+        {
+            return default;
+        }
         #endregion
 
         #region 系统命令

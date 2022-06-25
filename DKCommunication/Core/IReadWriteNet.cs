@@ -9,12 +9,8 @@ namespace DKCommunication.Core
     /// 所有的和设备或是交互类统一读写标准
     /// </summary>
     /// <remarks>
-    /// Modbus类，PLC类均实现了本接口，可以基于本接口实现统一所有的不同种类的设备的数据交互
-    /// </remarks>
-    /// <example>
-    /// 此处举例实现modbus，三菱，西门子三种设备的统一的数据交互
-    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Core\IReadWriteNet.cs" region="IReadWriteNetExample" title="IReadWriteNet示例" />
-    /// </example>
+    /// 可以基于本接口实现统一所有的不同种类的设备的数据交互
+    /// </remarks>   
     public interface IReadWriteNet
     {
         #region Read Support

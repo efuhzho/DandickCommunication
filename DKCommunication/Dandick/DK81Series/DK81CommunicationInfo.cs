@@ -499,7 +499,7 @@ namespace DKCommunication.Dandick.DK81Series
     #endregion
 
     #region Range Declartion 档位定义
-    public enum RangeACU : byte
+    public enum RangeACU : ushort
     {
         ACU_380 = 0,
         ACU_220 = 1,

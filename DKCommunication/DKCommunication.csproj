@@ -50,6 +50,7 @@
     <Compile Include="BasicFramework\SoftVersion.cs" />
     <Compile Include="Core\Address\DeviceAddressBase.cs" />
     <Compile Include="Core\Address\ModbusAddress.cs" />
+    <Compile Include="Core\IReadWriteDK.cs" />
     <Compile Include="Core\TransFer\ByteTransformBase.cs" />
     <Compile Include="Core\TransFer\ByteTransformHelper.cs" />
     <Compile Include="Core\TransFer\DataFormat.cs" />
