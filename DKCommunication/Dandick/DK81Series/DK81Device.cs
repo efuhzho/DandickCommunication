@@ -23,9 +23,15 @@ namespace DKCommunication.Dandick.DK81Series
             _commandBuilder = new DK81CommandBuilder(id);
         }
 
+
         public byte[] HandShake()//TODO 用operateResult
         {
             return _commandBuilder.CreateHandShake();           
+        }
+
+        public byte[] SetSystemMode(SystemMode mode)
+        {
+            return _commandBuilder.CreateSystemMode(mode);
         }
     }
 }
