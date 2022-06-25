@@ -8,7 +8,7 @@ namespace DKCommunication.Core
 {
     public interface IReadWriteDK
     {
-        OperateResult Handshake();
+        OperateResult<byte[]> Handshake();
 
         #region SetSupport
 

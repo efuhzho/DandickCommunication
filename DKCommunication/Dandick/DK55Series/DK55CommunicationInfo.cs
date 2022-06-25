@@ -310,27 +310,27 @@ namespace DKCommunication.Dandick.DK55Series
             }
             if ((Error_Code & 0x02) == 0x02)
             {
-                errorMessage += StringResources.Language.ErrorCodeUb;
+                errorMessage += StringResources.Language.ErrorUb;
             }
             if ((Error_Code & 0x04) == 0x04)
             {
-                errorMessage += StringResources.Language.ErrorCodeUc;
+                errorMessage += StringResources.Language.ErrorUc;
             }
             if ((Error_Code & 0x08) == 0x08)
             {
-                errorMessage += StringResources.Language.ErrorCodeIa;
+                errorMessage += StringResources.Language.ErrorIa;
             }
             if ((Error_Code & 0x10) == 0x10)
             {
-                errorMessage += StringResources.Language.ErrorCodeIb;
+                errorMessage += StringResources.Language.ErrorIb;
             }
             if ((Error_Code & 0x20) == 0x20)
             {
-                errorMessage += StringResources.Language.ErrorCodeIc;
+                errorMessage += StringResources.Language.ErrorIc;
             }
             if ((Error_Code & 0x40) == 0x40)
             {
-                errorMessage += StringResources.Language.ErrorCodeDC;
+                errorMessage += StringResources.Language.ErrorDC;
             }
             return errorMessage;
         }
