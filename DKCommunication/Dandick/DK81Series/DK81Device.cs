@@ -11,18 +11,21 @@ namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81Device
     {
-        public ushort ID { get; set; }
+        private readonly DK81CommandBuilder _commandBuilder;
 
-        private DK81CommandBuilder _commandBuilder;
-        public DK81Device(ushort id)
+        public DK81Device()
         {
-            ID = id;
             _commandBuilder = new DK81CommandBuilder();
         }
-
-        public void HandShake()
+        public DK81Device(ushort id)
         {
-            byte[] buffer = _commandBuilder.CreateHandShake();
+
+            _commandBuilder = new DK81CommandBuilder(id);
+        }
+
+        public byte[] HandShake()//TODO 用operateResult
+        {
+            return _commandBuilder.CreateHandShake();           
         }
     }
 }

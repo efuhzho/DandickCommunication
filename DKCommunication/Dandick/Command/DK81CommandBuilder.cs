@@ -51,17 +51,18 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         /// <param name="commandCode">命令码</param>
         /// <param name="commandLength">指令长度</param>
-        /// <returns></returns>
+        /// <returns>发送给串口的指令</returns>
         private byte[] CreateCommandHelper(byte commandCode,ushort commandLength)
         {
-            byte[] commandMissData = new byte[commandLength];
-            commandMissData[0] = DK81CommunicationInfo.FrameID;
-            commandMissData[1] = RxID;
-            commandMissData[2] = TxID;
-            commandMissData[3] = BitConverter.GetBytes(commandLength)[0];
-            commandMissData[4] = BitConverter.GetBytes(commandLength)[1];
-            commandMissData[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
-            return commandMissData;
+            byte[] buffer = new byte[commandLength];
+            buffer[0] = DK81CommunicationInfo.FrameID;
+            buffer[1] = RxID;
+            buffer[2] = TxID;
+            buffer[3] = BitConverter.GetBytes(commandLength)[0];
+            buffer[4] = BitConverter.GetBytes(commandLength)[1];
+            buffer[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
+            buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);
+            return buffer;
         }
 
         /// <summary>
@@ -74,11 +75,12 @@ namespace DKCommunication.Dandick.Command
         {
             byte[] buffer = CreateCommandHelper(commandCode, commandLength);
             buffer[6] = Convert.ToByte(data);
+            buffer[7] = DK81CommunicationInfo.CRCcalculator(buffer);
             return buffer;
         }
         #endregion
 
-        #region 指令生产器
+        #region 指令生成器
         #region 系统命令
         /// <summary>
         /// 根据丹迪克协议类型创建一个【联机指令】对象

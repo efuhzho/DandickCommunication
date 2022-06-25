@@ -297,7 +297,7 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region Static Helper Method
-        
+
         /// <summary>
         /// Error_Code 解析：从错误码中解析错误信息。此为获取故障码的第一种方式
         /// </summary>
@@ -359,20 +359,16 @@ namespace DKCommunication.Dandick.DK81Series
         /// 获取对应的数据的CRC校验码
         /// </summary>
         /// <param name="value">需要校验的数据，不包含CRC字节，包含报文头0x81</param>
-        /// <returns>返回带CRC校验码的字节数据，可用于串口发送</returns>
-        public static byte[] CRCcalculator(byte[] value)
+        /// <returns>返回CRC校验码</returns>
+        public static byte CRCcalculator(byte[] value)
         {
             byte crc = 0;   //CRC寄存器
-
-            //从第二个字节开始执行异或，结果返回CRC寄存器
+            //从第二个字节开始执行异或
             for (int i = 1; i < value.Length; i++)
             {
                 crc ^= value[i];
             }
-            value[value.Length - 1] = crc;
-
-            //返回最终带有CRC校验码结尾的信息
-            return value;
+            return crc;
         }
         #endregion      
 
