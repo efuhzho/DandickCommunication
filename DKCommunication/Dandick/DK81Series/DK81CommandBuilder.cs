@@ -30,8 +30,17 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public DK81CommandBuilder()
         {
-            RxID = AnalysisID(0)[1];
-            TxID = AnalysisID(0)[0];
+            var result = AnalysisID(0);
+            if (result.IsSuccess)
+            {
+                RxID = result.Content[1];
+                TxID = result.Content[0];
+            }
+            else
+            {
+                throw new Exception (result.Message);
+            }           
+           
         }      
 
         /// <summary>
@@ -40,8 +49,16 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="id">读取的终端ID</param>
         public DK81CommandBuilder(ushort id)
         {
-            RxID = AnalysisID(id)[1];
-            TxID = AnalysisID(id)[0];           
+            var result = AnalysisID(id);
+            if (result.IsSuccess)
+            {
+                RxID = result.Content[1];
+                TxID = result.Content[0];
+            }
+            else
+            {
+                throw new Exception(result.Message);
+            }
         }
         #endregion
 

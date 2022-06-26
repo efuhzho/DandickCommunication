@@ -17,9 +17,17 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         /// <param name="id">设备ID</param>
         /// <returns>返回：两个字节长度的数组，低位在前</returns>
-        public virtual byte[] AnalysisID(ushort id)
+        public virtual OperateResult<byte[]> AnalysisID(ushort id)
         {
-            return BitConverter.GetBytes(id);   //低位在前
+            try
+            {
+                byte[] twoBytesID = BitConverter.GetBytes(id);  //低位在前
+                return OperateResult.CreateSuccessResult(twoBytesID);
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>() { Message=ex.Message};
+            }            
         }
 
         /// <summary>
@@ -27,9 +35,17 @@ namespace DKCommunication.Dandick.Command
         /// </summary>
         /// <param name="id">设备ID</param>
         /// <returns>字节类型ID</returns>
-        public virtual byte AnalysisIDtoByte(ushort id)
+        public virtual OperateResult< byte> AnalysisIDtoByte(ushort id)
         {
-            return BitConverter.GetBytes(id)[0];   //低位在前
+            try
+            {
+                byte oneByteID = BitConverter.GetBytes(id)[0]; ;  //低位在前
+                return OperateResult.CreateSuccessResult(oneByteID);
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte>() { Message = ex.Message };
+            }            
         }
 
 
