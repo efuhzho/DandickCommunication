@@ -36,6 +36,7 @@ namespace DKCommunication
         /// </summary>
         public OperateResult()
         {
+
         }
 
         /// <summary>

@@ -1,5 +1,4 @@
-﻿using DKCommunication.Dandick.Communication;
-using System;
+﻿using System;
 
 namespace DKCommunication.Dandick.DK81Series
 {
@@ -12,7 +11,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 标识丹迪克设备的通信协议类型
         /// </summary>
-        public const DKCommunicationTypes CommunicationType = DKCommunicationTypes.DK81CommunicationType;
+        //public const DKCommunicationTypes CommunicationType = DKCommunicationTypes.DK81CommunicationType;
 
         #endregion       
 
