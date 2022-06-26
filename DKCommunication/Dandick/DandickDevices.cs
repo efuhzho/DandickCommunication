@@ -11,16 +11,11 @@ namespace DKCommunication.Dandick
     /// <summary>
     /// 实例化一个丹迪克设备对象
     /// </summary>
-    public class DandickDevices:IReadWriteDK
+    public class DandickDevice:IReadWriteDK
     {
-        private ushort _id;
-        
-        private void ExtendModel()
-        {
-
-        }
-
-        public DandickDevices(DK_DeviceModel deviceModel)
+        private ushort _id;       
+       
+        public DandickDevice(DK_DeviceModel deviceModel)
         {
             switch ((int)deviceModel)
             {
@@ -31,7 +26,7 @@ namespace DKCommunication.Dandick
             }
         }
 
-        public DandickDevices(DK_DeviceModel deviceModel,ushort id)
+        public DandickDevice(DK_DeviceModel deviceModel,ushort id)
         {
 
         }

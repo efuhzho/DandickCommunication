@@ -9,7 +9,7 @@ using DKCommunication.Dandick.Command;
 
 namespace DKCommunication.Dandick.DK81Series
 {
-    public class DK81Device
+    public class DK81Device : SerialDeviceBase<RegularByteTransform>
     {
         #region 私有字段
         /// <summary>

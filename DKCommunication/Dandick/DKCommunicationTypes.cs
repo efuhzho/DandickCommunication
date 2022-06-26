@@ -1,9 +1,9 @@
-﻿namespace DKCommunication.Dandick.Communication
+﻿namespace DKCommunication.Dandick
 {
     /// <summary>
     /// 协议类型枚举
     /// </summary>
-    public enum DKCommunicationTypes:byte
+    public enum DKCommunicationType:byte
     {
         /// <summary>
         /// 支持DK-PTS系列
