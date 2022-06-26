@@ -3,20 +3,25 @@ namespace DKCommunicationTEST
 {
     public class UnitTest1
     {
-        DK81Device device = new DK81Device();
+        DandickDevice dandick = new DandickDevice(DK_DeviceModel.DK_34B1,65535);
 
         [Fact]
-        public void Handshake()
+        public void HandshakeTest()
         {
-            var a = device.HandShake();
-            var b = device.SetSystemMode(SystemMode.ModeStandardSourceCalibrate);
-            var c= device.SetSystemMode(SystemMode.ModeStandardMeterCalibrate);
-            
-            Assert.True(a[a.Length-1].Equals(0x4b));
-            Assert.True(b[b.Length-1].Equals(0x46));
-            Assert.True(c[c.Length-1].Equals(0x47));
-
-            
+            var result = dandick.Handshake();
+            if (dandick.Handshake().IsSuccess)
+            {
+                Assert.Equal(DK81CommunicationInfo.HandShakeCommandLength, result.Content.Length);
+            }
+        }
+        [Fact]
+        public void page()
+        {
+            var result = dandick.SetDisplayPage(DisplayPage.PagePhase);
+            if (result.IsSuccess)
+            {
+                Assert.Equal(DK81CommunicationInfo.SetDisplayPageCommandLength, result.Content.Length);
+            }
         }
     }
 }

@@ -9,16 +9,13 @@ using DKCommunication.Dandick.Command;
 
 namespace DKCommunication.Dandick.DK81Series
 {
-    public class DK81Device : SerialDeviceBase<RegularByteTransform>
+    public class DK81Device : /*SerialDeviceBase<RegularByteTransform>,*/IReadWriteDK
     {
         #region 私有字段
         /// <summary>
         ///声明一个指令生成器
         /// </summary>
-        private readonly DK81CommandBuilder _commandBuilder;
-
-        public OperateResult CommandResult { get; set; }
-        
+        private readonly DK81CommandBuilder _commandBuilder;     
         #endregion
 
         #region Constructor   
@@ -28,7 +25,6 @@ namespace DKCommunication.Dandick.DK81Series
         public DK81Device()
         {
             _commandBuilder = new DK81CommandBuilder();
-            CommandResult = new OperateResult();
         }
         /// <summary>
         /// 指定ID的默认构造方法
@@ -37,33 +33,29 @@ namespace DKCommunication.Dandick.DK81Series
         public DK81Device(ushort id)
         {
             _commandBuilder = new DK81CommandBuilder(id);
-            CommandResult = new OperateResult();
         }
         #endregion
 
+        public OperateResult<byte[]> Handshake()
+        {
+            //TODO 添加串口操作
+           return _commandBuilder.CreateHandShake();
+        }
+
+        public OperateResult<byte[]> SetDisplayPage(DisplayPage page)
+        {
+           return _commandBuilder.CreateDisplayPage(page);//TODO 添加串口操作
+        }
+
+        public OperateResult<byte[]> SetSystemMode(SystemMode mode)
+        {
+           return (_commandBuilder.CreateSystemMode(mode));//TODO 添加串口操作
+        }
+        
+
         #region Public Methods 公共方法
 
-        /// <summary>
-        /// 【联机】
-        /// </summary>
-        /// <returns></returns>
-        //public bool HandShake()//TODO 用operateResult类完善返回值
-        //{
-        //    ////byte[] command = _commandBuilder.CreateHandShake();
-        //    //CommandResult = OperateResult.CreateSuccessResult(command);            
-        //    //return CommandResult.IsSuccess;
-        //}
 
-        /// <summary>
-        /// 【设置显示界面】
-        /// </summary>
-        /// <param name="mode"></param>
-        /// <returns></returns>
-        public bool SetSystemMode(SystemMode mode)
-        {
-            _commandBuilder.CreateSystemMode(mode);
-            return true;
-        }
         #endregion
     }
 }

@@ -1,6 +1,4 @@
-﻿using DKCommunication.Dandick.Communication;
-
-namespace DKCommunication.Dandick.DK55Series
+﻿namespace DKCommunication.Dandick.DK55Series
 {
     //TODO 待扩展55协议，以下所有数据均复制81协议
 
@@ -9,13 +7,13 @@ namespace DKCommunication.Dandick.DK55Series
     /// </summary>
     public class DK55CommunicationInfo
     {
-        #region 扩展定义
-        /// <summary>
-        /// 标识丹迪克设备的通信协议类型
-        /// </summary>
-        public const DKCommunicationTypes CommunicationType = DKCommunicationTypes.DK55CommunicationType;
+        //#region 扩展定义
+        ///// <summary>
+        ///// 标识丹迪克设备的通信协议类型
+        ///// </summary>
+        //public const DKCommunicationTypes CommunicationType = DKCommunicationTypes.DK55CommunicationType;
 
-        #endregion
+        //#endregion
 
         #region 报文头0x81
         /// <summary>
