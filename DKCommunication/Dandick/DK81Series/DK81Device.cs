@@ -47,12 +47,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【联机】
         /// </summary>
         /// <returns></returns>
-        public bool HandShake()//TODO 用operateResult类完善返回值
-        {
-            byte[] command = _commandBuilder.CreateHandShake();
-            CommandResult = OperateResult.CreateSuccessResult(command);            
-            return CommandResult.IsSuccess;
-        }
+        //public bool HandShake()//TODO 用operateResult类完善返回值
+        //{
+        //    ////byte[] command = _commandBuilder.CreateHandShake();
+        //    //CommandResult = OperateResult.CreateSuccessResult(command);            
+        //    //return CommandResult.IsSuccess;
+        //}
 
         /// <summary>
         /// 【设置显示界面】

@@ -6,17 +6,17 @@ namespace DKCommunication.Dandick.Command
     /// 所有丹迪克设备通信协议的地址基础类
     /// </summary>
     public class DKCommandBase
-    {         
+    {
         /// <summary>
         /// 设备ID
         /// </summary>
-        public ushort ID { get; set; }        
-        
+        public ushort ID { get; set; }
+
         /// <summary>
         /// 解析ID,转换为两个字节
         /// </summary>
         /// <param name="id">设备ID</param>
-        /// <returns>返回：两个字节长度的数组，低位在前</returns>
+        /// <returns>返回带有信息的结果</returns>
         public virtual OperateResult<byte[]> AnalysisID(ushort id)
         {
             try
@@ -24,28 +24,28 @@ namespace DKCommunication.Dandick.Command
                 byte[] twoBytesID = BitConverter.GetBytes(id);  //低位在前
                 return OperateResult.CreateSuccessResult(twoBytesID);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new OperateResult<byte[]>() { Message=ex.Message};
-            }            
+                return new OperateResult<byte[]>(1001, "请输入正确的ID!");
+            }
         }
 
         /// <summary>
         /// 解析ID，转换为1个字节
         /// </summary>
         /// <param name="id">设备ID</param>
-        /// <returns>字节类型ID</returns>
-        public virtual OperateResult< byte> AnalysisIDtoByte(ushort id)
+        /// <returns>返回带有信息的结果</returns>
+        public virtual OperateResult<byte> AnalysisIDtoByte(ushort id)
         {
             try
             {
                 byte oneByteID = BitConverter.GetBytes(id)[0]; ;  //低位在前
                 return OperateResult.CreateSuccessResult(oneByteID);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return new OperateResult<byte>() { Message = ex.Message };
-            }            
+                return new OperateResult<byte>(1001, "请输入正确的ID!");
+            }
         }
 
 

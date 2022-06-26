@@ -21,7 +21,7 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region 公开属性
-        
+
         #endregion
 
         #region Constructor
@@ -38,10 +38,10 @@ namespace DKCommunication.Dandick.DK81Series
             }
             else
             {
-                throw new Exception (result.Message);
-            }           
-           
-        }      
+                throw new Exception(result.Message);
+            }
+
+        }
 
         /// <summary>
         /// 实例化一个指定ID的对象
@@ -68,18 +68,25 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="commandCode">命令码</param>
         /// <param name="commandLength">指令长度</param>
-        /// <returns>发送给串口的指令</returns>
-        private byte[] CreateCommandHelper(byte commandCode,ushort commandLength)
+        /// <returns>带指令信息的结果</returns>
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength)
         {
-            byte[] buffer = new byte[commandLength];
-            buffer[0] = DK81CommunicationInfo.FrameID;
-            buffer[1] = RxID;
-            buffer[2] = TxID;
-            buffer[3] = BitConverter.GetBytes(commandLength)[0];
-            buffer[4] = BitConverter.GetBytes(commandLength)[1];
-            buffer[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
-            buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);
-            return buffer;
+            try
+            {
+                byte[] buffer = new byte[commandLength];
+                buffer[0] = DK81CommunicationInfo.FrameID;
+                buffer[1] = RxID;
+                buffer[2] = TxID;
+                buffer[3] = BitConverter.GetBytes(commandLength)[0];
+                buffer[4] = BitConverter.GetBytes(commandLength)[1];
+                buffer[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
+                buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);
+                return OperateResult.CreateSuccessResult(buffer);
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(8102, ex.Message);
+            }
         }
 
         /// <summary>
@@ -87,13 +94,28 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <typeparam name="T">泛型类，必须可以被转换为byte</typeparam>
         /// <param name="data">数据</param>
-        /// <returns>【缺少CRC数据】的完整指令长度的字节数组</returns>
-        private byte[] CreateCommandHelper<T>(byte commandCode, ushort commandLength,T data) where T : Enum //TODO 添加T类型约束
+        /// <returns>带指令信息的结果</returns>
+        private OperateResult<byte[]> CreateCommandHelper<T>(byte commandCode, ushort commandLength, T data) where T : Enum //TODO 添加T类型约束
         {
-            byte[] buffer = CreateCommandHelper(commandCode, commandLength);
-            buffer[6] = Convert.ToByte(data);
-            buffer[7] = DK81CommunicationInfo.CRCcalculator(buffer);
-            return buffer;
+            try
+            {
+                var result = CreateCommandHelper(commandCode, commandLength);
+
+                if (result.IsSuccess)
+                {
+                    result.Content[6] = Convert.ToByte(data);
+                    result.Content[7] = DK81CommunicationInfo.CRCcalculator(result.Content);
+                    return OperateResult.CreateSuccessResult(result.Content);
+                }
+                else
+                {
+                    return new OperateResult<byte[]>() { ErrorCode=8103,Message="创建指令失败"};
+                }
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(8104, ex.Message);
+            }            
         }
         #endregion
 
@@ -102,20 +124,20 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 根据丹迪克协议类型创建一个【联机指令】对象
         /// </summary>
-        /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
-        public byte[] CreateHandShake()
+        /// <returns>带指令信息的结果</returns>
+        public OperateResult<byte[]> CreateHandShake()
         {
-           return CreateCommandHelper(DK81CommunicationInfo.HandShake,DK81CommunicationInfo.HandShakeCommandLength);            
+            return CreateCommandHelper(DK81CommunicationInfo.HandShake, DK81CommunicationInfo.HandShakeCommandLength);
         }
 
         /// <summary>
         /// 根据丹迪克协议类型创建一个：【系统模式】指令对象
         /// </summary>
         /// <param name="mode">系统模式</param>
-        /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
-        public byte[] CreateSystemMode(SystemMode mode)
+        /// <returns>带指令信息的结果</returns>
+        public OperateResult<byte[]> CreateSystemMode(SystemMode mode)
         {
-            return CreateCommandHelper(DK81CommunicationInfo.SetSystemMode,DK81CommunicationInfo.SetSystemModeCommandLength,mode);
+            return CreateCommandHelper(DK81CommunicationInfo.SetSystemMode, DK81CommunicationInfo.SetSystemModeCommandLength, mode);
         }
 
         //TODO  建立故障代码监视器：ErrorCodeMonitor. //Page 5
@@ -124,10 +146,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// 根据丹迪克协议类型创建一个：【当前显示页面】指令对象
         /// </summary>
         /// <param name="page">当前显示页面</param>
-        /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
-        public byte[] CreateDisplayPage(DisplayPage page)
+        /// <returns>带指令信息的结果</returns>
+        public OperateResult<byte[]> CreateDisplayPage(DisplayPage page)
         {
-            return CreateCommandHelper(DK81CommunicationInfo.SetDisplayPage,DK81CommunicationInfo.SetDisplayPageCommandLength,page);
+            return CreateCommandHelper(DK81CommunicationInfo.SetDisplayPage, DK81CommunicationInfo.SetDisplayPageCommandLength, page);
         }
 
         #endregion
@@ -136,21 +158,22 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 创建一个【源关闭】命令
         /// </summary>
-        /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
-        public byte[] CreateStop()
+        /// <returns>带指令信息的结果</returns>
+        public OperateResult<byte[]> CreateStop()
         {
-            return CreateCommandHelper(DK81CommunicationInfo.Stop,DK81CommunicationInfo.StopLength);
+            return CreateCommandHelper(DK81CommunicationInfo.Stop, DK81CommunicationInfo.StopLength);
         }
 
         /// <summary>
         /// 创建一个【源打开】命令
         /// </summary>
-        /// <returns>缺少CRC数据的完整指令长度的字节数组</returns>
-        public byte[] CreateStart()
+        /// <returns>带指令信息的结果</returns>
+        public OperateResult<byte[]> CreateStart()
         {
-            return CreateCommandHelper(DK81CommunicationInfo.Start,DK81CommunicationInfo.StartLength);
-        }                
+            return CreateCommandHelper(DK81CommunicationInfo.Start, DK81CommunicationInfo.StartLength);
+        }
         #endregion
+
         #endregion
     }
 }
