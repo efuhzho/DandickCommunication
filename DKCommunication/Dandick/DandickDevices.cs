@@ -46,6 +46,7 @@ namespace DKCommunication.Dandick
         /// <returns></returns>
         public bool Handshake()
         {
+            
             return true;
         }
 

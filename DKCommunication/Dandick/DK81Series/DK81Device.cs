@@ -16,6 +16,9 @@ namespace DKCommunication.Dandick.DK81Series
         ///声明一个指令生成器
         /// </summary>
         private readonly DK81CommandBuilder _commandBuilder;
+
+        public OperateResult CommandResult { get; set; }
+        
         #endregion
 
         #region Constructor   
@@ -25,6 +28,7 @@ namespace DKCommunication.Dandick.DK81Series
         public DK81Device()
         {
             _commandBuilder = new DK81CommandBuilder();
+            CommandResult = new OperateResult();
         }
         /// <summary>
         /// 指定ID的默认构造方法
@@ -33,6 +37,7 @@ namespace DKCommunication.Dandick.DK81Series
         public DK81Device(ushort id)
         {
             _commandBuilder = new DK81CommandBuilder(id);
+            CommandResult = new OperateResult();
         }
         #endregion
 
@@ -44,8 +49,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns></returns>
         public bool HandShake()//TODO 用operateResult类完善返回值
         {
-            _commandBuilder.CreateHandShake();
-            return true;
+            byte[] command = _commandBuilder.CreateHandShake();
+            CommandResult = OperateResult.CreateSuccessResult(command);            
+            return CommandResult.IsSuccess;
         }
 
         /// <summary>

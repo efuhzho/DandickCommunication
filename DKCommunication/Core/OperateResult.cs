@@ -74,7 +74,7 @@ namespace DKCommunication
         /// <summary>
         /// 具体的错误代码
         /// </summary>
-        public int ErrorCode { get; set; } = 10000;
+        public int ErrorCode { get; set; } = 0;
         
         /// <summary>
         /// 获取错误代号及文本描述
