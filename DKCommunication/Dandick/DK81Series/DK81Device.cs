@@ -11,27 +11,53 @@ namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81Device
     {
+        #region 私有字段
+        /// <summary>
+        ///声明一个指令生成器
+        /// </summary>
         private readonly DK81CommandBuilder _commandBuilder;
+        #endregion
 
+        #region Constructor   
+        /// <summary>
+        /// 无参构造方法，默认ID = 0;
+        /// </summary>
         public DK81Device()
         {
             _commandBuilder = new DK81CommandBuilder();
         }
+        /// <summary>
+        /// 指定ID的默认构造方法
+        /// </summary>
+        /// <param name="id"></param>
         public DK81Device(ushort id)
         {
-
             _commandBuilder = new DK81CommandBuilder(id);
         }
+        #endregion
 
+        #region Public Methods 公共方法
 
-        public byte[] HandShake()//TODO 用operateResult
+        /// <summary>
+        /// 【联机】
+        /// </summary>
+        /// <returns></returns>
+        public bool HandShake()//TODO 用operateResult类完善返回值
         {
-            return _commandBuilder.CreateHandShake();           
+            _commandBuilder.CreateHandShake();
+            return true;
         }
 
-        public byte[] SetSystemMode(SystemMode mode)
+        /// <summary>
+        /// 【设置显示界面】
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <returns></returns>
+        public bool SetSystemMode(SystemMode mode)
         {
-            return _commandBuilder.CreateSystemMode(mode);
+            _commandBuilder.CreateSystemMode(mode);
+            return true;
         }
+        #endregion
     }
 }

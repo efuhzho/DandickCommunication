@@ -63,12 +63,14 @@
     <Compile Include="Core\TransFer\ReverseBytesTransform.cs" />
     <Compile Include="Core\TransFer\ReverseWordTransform.cs" />
     <Compile Include="Dandick\Command\DKCommandBase.cs" />
-    <Compile Include="Dandick\Command\DK81CommandBuilder.cs" />
+    <Compile Include="Dandick\DK81Series\DK81CommandBuilder.cs" />
     <Compile Include="Dandick\Communications\DKCommunicationTypes.cs" />
+    <Compile Include="Dandick\DandickDevices.cs" />
     <Compile Include="Dandick\DK55Series\DK55Device.cs" />
     <Compile Include="Dandick\DK55Series\DK55CommunicationInfo.cs" />
     <Compile Include="Dandick\DK81Series\DK81Device.cs" />
     <Compile Include="Dandick\DK81Series\DK81CommunicationInfo.cs" />
+    <Compile Include="Dandick\DK_DeviceInfomation.cs" />
     <Compile Include="Language\DefaultLanguage.cs" />
     <Compile Include="Language\English.cs" />
     <Compile Include="LogNet\Core\ILogNet.cs" />

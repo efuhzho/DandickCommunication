@@ -1,7 +1,7 @@
-﻿using DKCommunication.Dandick.DK81Series;
+﻿using DKCommunication.Dandick.Command;
 using System;
 
-namespace DKCommunication.Dandick.Command
+namespace DKCommunication.Dandick.DK81Series
 {
     /// <summary>
     /// 丹迪克81协议的命令格式，可以携带站号（ID）、命令码（CommandCode）、数据（DATA）
