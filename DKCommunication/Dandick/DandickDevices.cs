@@ -10,9 +10,9 @@ using DKCommunication.Serial;
 namespace DKCommunication.Dandick
 {
     /// <summary>
-    /// 实例化一个丹迪克设备对象
+    /// 实例化一个设备对象。支持的型号：【DK-34B1】【DK-34B2】【DK-34F1】【DK-56B1】
     /// </summary>
-    public class DandickDevice : IReadWriteDK
+    public class DandickDevice/* :*/ /*IReadWriteDK*/
     {
         #region 私有字段
         /// <summary>

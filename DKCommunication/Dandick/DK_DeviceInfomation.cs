@@ -17,4 +17,11 @@ namespace DKCommunication.Dandick
         DK_34F1 = 81,
         DK_PTS1 = 55,
     }
+    public enum RangeACU : ushort
+    {
+        ACU_380 = 0,
+        ACU_220 = 1,
+        ACU_100 = 2,
+        ACU_57 = 3,
+    }
 }

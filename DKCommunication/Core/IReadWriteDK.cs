@@ -17,7 +17,7 @@ namespace DKCommunication.Core
         /// <returns>带信息的结果</returns>
         OperateResult<byte[]> Handshake();
 
-        #region SetSupport:Set意为【不需要用户提供数据】或【选择枚举项】的操作
+        #region SetSupport:Set意为【无需数据返回】的操作
         /// <summary>
         /// 设置【显示界面】
         /// </summary>
@@ -31,6 +31,27 @@ namespace DKCommunication.Core
         /// <param name="mode">模式</param>
         /// <returns>带信息的结果</returns>
         OperateResult<byte[]> SetSystemMode(SystemMode mode);
+
+        /// <summary>
+        /// 交流源关闭命令
+        /// </summary>
+        /// <returns>携带信息的结果</returns>
+        OperateResult<byte[]> Stop( );
+
+        /// <summary>
+        /// 交流源打开命令
+        /// </summary>
+        /// <returns>携带信息的结果</returns>
+        OperateResult<byte[]> Start( );
+
+        OperateResult<byte[]> SetRange(RangeACU rangeACU);
+             //OperateResult<byte[]> 
+             //OperateResult<byte[]>
+             //OperateResult<byte[]> 
+             //OperateResult<byte[]>
+             //OperateResult<byte[]> 
+             //OperateResult<byte[]>
+
         #endregion
 
         #region ReadSupport

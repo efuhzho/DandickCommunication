@@ -172,6 +172,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             return CreateCommandHelper(DK81CommunicationInfo.Start, DK81CommunicationInfo.StartLength);
         }
+
         #endregion
 
         #endregion

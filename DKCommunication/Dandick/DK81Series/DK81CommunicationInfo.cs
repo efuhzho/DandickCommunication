@@ -71,8 +71,8 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置源档位参数
         /// </summary>
-        public const byte WriteRange = 0x31;
-        public const ushort WriteRangeLength = 16;  //!51F具备IPa,IPb,IPc
+        public const byte SetRange = 0x31;
+        public const ushort SetRangeLength = 16;  //!51F具备IPa,IPb,IPc
 
         /// <summary>
         /// 设置源幅度参数
