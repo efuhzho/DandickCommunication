@@ -44,7 +44,7 @@ namespace DKCommunication.Core
         /// <returns>携带信息的结果</returns>
         OperateResult<byte[]> Start( );
 
-        OperateResult<byte[]> SetRange(RangeACU rangeACU);
+        //OperateResult<byte[]> SetRange(RangeACU rangeACU);
              //OperateResult<byte[]> 
              //OperateResult<byte[]>
              //OperateResult<byte[]> 

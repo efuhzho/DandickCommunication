@@ -91,7 +91,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
             catch (Exception ex)
             {
-                return new OperateResult<byte[]>(8102, ex.Message);
+                return new OperateResult<byte[]>(811200, ex.Message);
             }
         }
 
@@ -115,12 +115,12 @@ namespace DKCommunication.Dandick.DK81Series
                 }
                 else
                 {
-                    return new OperateResult<byte[]>() { ErrorCode=8103,Message="创建指令失败"};
+                    return new OperateResult<byte[]>() { ErrorCode=811201,Message="创建指令失败"};
                 }
             }
             catch (Exception ex)
             {
-                return new OperateResult<byte[]>(8104, ex.Message);
+                return new OperateResult<byte[]>(811202, ex.Message);
             }            
         }
         #endregion
