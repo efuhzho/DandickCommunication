@@ -7,10 +7,27 @@ namespace DKCommunication.Dandick.Command
     /// </summary>
     public class DKCommandBase
     {
+        #region Public Properties
         /// <summary>
         /// 设备ID
         /// </summary>
         public ushort ID { get; set; }
+
+        /// <summary>
+        /// 设备型号
+        /// </summary>
+        public string Model { get; set; }
+
+        /// <summary>
+        /// 设备版本号
+        /// </summary>
+        public string Version{ get; set; }
+
+        /// <summary>
+        /// 设备编号
+        /// </summary>
+        public string Serial { get; set; }
+        #endregion
 
         /// <summary>
         /// 解析ID,转换为两个字节

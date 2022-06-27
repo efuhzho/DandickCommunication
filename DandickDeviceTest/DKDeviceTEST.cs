@@ -6,10 +6,10 @@ namespace DandickDeviceTest
 {
     public class DKDeviceTEST
     {
-        DandickDevice dandick = new DandickDevice(DK_DeviceModel.DK_34B1);
+        DandickDevice dandick = new(DK_DeviceModel.DK_34B1);
 
         [Fact]
-        public void HandshakeTest( )
+        public void HandshakeTEST( )
         {
             var result = dandick.Handshake();
             if (dandick.Handshake().IsSuccess)
@@ -19,7 +19,7 @@ namespace DandickDeviceTest
         }
 
         [Fact]
-        public void page( )
+        public void SetDisplayPageTEST( )
         {
             var result = dandick.SetDisplayPage(DisplayPage.PagePhase);
             if (result.IsSuccess)
