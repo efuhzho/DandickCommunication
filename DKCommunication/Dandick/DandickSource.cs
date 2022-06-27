@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DKCommunication.Core;
 using DKCommunication.Dandick.DK81Series;
 using DKCommunication.Serial;
+using DKCommunication.Dandick.Base;
 
 namespace DKCommunication.Dandick
 {
@@ -19,6 +20,7 @@ namespace DKCommunication.Dandick
         /// 动态设备类型
         /// </summary>
         private readonly dynamic _device;
+        
         #endregion
 
         //#region 公开属性 ?用于尝试第二种方式：属性赋值再实例化对象
@@ -38,11 +40,11 @@ namespace DKCommunication.Dandick
         /// </summary>
         /// <param name="deviceModel">设备型号</param>
         public DandickSource(DK_DeviceModel deviceModel)    //TODO 尝试采用构造函数先给属性赋值再实例化对象的方式
-        {
+        {            
             switch ((int)deviceModel)
             {
                 case 55:
-                    _device = new DK81Device();
+                    _device = new DK81Device();                    
                     break;
                 case 81:
                     _device = new DK81Device();

@@ -1,11 +1,12 @@
 ﻿using System;
+using DKCommunication.Serial;
 
 namespace DKCommunication.Dandick.Base
 {
     /// <summary>
     /// 所有丹迪克设备通信协议的地址基础类
     /// </summary>
-    public class DK_DeviceBase
+    public class DK_DeviceBase:SerialBase
     {
         #region Public Properties
         /// <summary>
