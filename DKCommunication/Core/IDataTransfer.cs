@@ -6,7 +6,7 @@ using System.Text;
 namespace DKCommunication
 {
     /// <summary>
-    /// 用于PLC通讯及ModBus自定义数据类型的读写操作
+    /// 自定义数据类型的读写操作
     /// </summary>
     /// <remarks>
     /// 主要应用于设备实现设备类的自定义的数据类型读写，以此达到简化代码的操作，但是有一个前提，该数据处于连续的数据区块
