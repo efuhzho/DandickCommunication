@@ -512,7 +512,7 @@ namespace DKCommunication.Dandick.DK81Series
     #endregion
 
     #region Range Declartion 档位定义
-    public enum RangeACU : ushort
+    public enum RangeACU : byte //TODO 档位定义是否保留
     {
         ACU_380 = 0,
         ACU_220 = 1,

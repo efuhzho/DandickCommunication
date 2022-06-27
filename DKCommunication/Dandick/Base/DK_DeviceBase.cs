@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace DKCommunication.Dandick.Command
+namespace DKCommunication.Dandick.Base
 {
     /// <summary>
     /// 所有丹迪克设备通信协议的地址基础类
     /// </summary>
-    public class DKCommandBase
+    public class DK_DeviceBase
     {
         #region Public Properties
         /// <summary>
@@ -27,6 +27,19 @@ namespace DKCommunication.Dandick.Command
         /// 设备编号
         /// </summary>
         public string Serial { get; set; }
+
+        public bool IsACU_Activated { get; set; } = true;
+        public bool IsACI_Activated { get; set; } = true;
+
+        public bool IsDCU_Activated { get; set; } = true;
+        public bool IsDCI_Activated { get; set; } = true;
+
+        public bool IsACM_Activated { get; set; } = false;
+        public bool IsDCM_Activated { get; set; } = true;
+
+        public bool IsPQ_Activated { get; set; } = true;
+        public bool IsIO_Activated { get; set; } = false;
+
         #endregion
 
         /// <summary>
@@ -64,7 +77,6 @@ namespace DKCommunication.Dandick.Command
                 return new OperateResult<byte>(1001, "请输入正确的ID!");
             }
         }
-
 
         /// <summary>
         /// 返回表示当前对象的字符串

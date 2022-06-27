@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DKCommunication.Core;
-using DKCommunication.Serial;
-using DKCommunication.Dandick.Command;
-
-namespace DKCommunication.Dandick.DK81Series
+﻿namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81Device/* :*/ /*SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {

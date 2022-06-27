@@ -9,7 +9,7 @@ using DKCommunication.Dandick.DK81Series;
 
 namespace DKCommunication.Core
 {
-    public interface IReadWriteDK
+    public interface IReadWriteDK 
     {
         /// <summary>
         /// 【联机】

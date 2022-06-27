@@ -1,4 +1,4 @@
-﻿using DKCommunication.Dandick.Command;
+﻿using DKCommunication.Dandick.Base;
 using System;
 
 namespace DKCommunication.Dandick.DK81Series
@@ -6,7 +6,7 @@ namespace DKCommunication.Dandick.DK81Series
     /// <summary>
     /// 丹迪克81协议的命令格式，可以携带站号（ID）、命令码（CommandCode）、数据（DATA）
     /// </summary>
-    public class DK81CommandBuilder : DKCommandBase
+    public class DK81CommandBuilder : DK_DeviceBase
     {
         #region 私有字段
         /// <summary>
@@ -20,8 +20,14 @@ namespace DKCommunication.Dandick.DK81Series
         private readonly byte TxID;
         #endregion
 
-        #region 公开属性
-
+        #region Public Properties
+        public byte ACU_Range { get; set; } = 2;
+        public byte ACI_Range { get; set; } = 1;
+        public byte DCU_Range { get; set; } 
+        public byte DCI_Range { get; set; } 
+        public byte ACM_Range { get; set; } 
+        public byte DCM_Range { get; set; } 
+        public byte IP_Range { get; set; }
         #endregion
 
         #region Constructor
