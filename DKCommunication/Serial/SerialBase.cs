@@ -12,7 +12,6 @@ namespace DKCommunication.Serial
     public class SerialBase
     {
         #region Constructor
-
         /// <summary>
         /// 实例化一个无参的构造方法
         /// </summary>
@@ -21,7 +20,6 @@ namespace DKCommunication.Serial
             SP_ReadData = new SerialPort();
             hybirdLock = new SimpleHybirdLock();
         }
-
         #endregion
 
         #region Public Method

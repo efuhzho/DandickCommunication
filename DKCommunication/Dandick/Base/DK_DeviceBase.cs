@@ -40,7 +40,6 @@ namespace DKCommunication.Dandick.Base
 
         public bool IsPQ_Activated { get; set; } = true;
         public bool IsIO_Activated { get; set; } = false;
-
         #endregion
 
         /// <summary>

@@ -7,6 +7,8 @@ using DKCommunication.Core;
 using DKCommunication.Dandick.DK81Series;
 using DKCommunication.Serial;
 using DKCommunication.Dandick.Base;
+using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace DKCommunication.Dandick
 {
@@ -20,7 +22,8 @@ namespace DKCommunication.Dandick
         /// 动态设备类型
         /// </summary>
         private readonly dynamic _device;
-        
+        private Type Typedk;
+       
         #endregion
 
         //#region 公开属性 ?用于尝试第二种方式：属性赋值再实例化对象
@@ -44,6 +47,7 @@ namespace DKCommunication.Dandick
             switch ((int)deviceModel)
             {
                 case 55:
+                   Typedk = typeof(DK81Device);
                     _device = new DK81Device();                    
                     break;
                 case 81:
