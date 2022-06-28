@@ -15,7 +15,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public DK81Device( ) : base()
         {
-         
+            SerialPortInni("com5");
         }
 
         /// <summary>
