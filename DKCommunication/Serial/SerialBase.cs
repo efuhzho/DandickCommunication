@@ -146,7 +146,7 @@ namespace DKCommunication.Serial
         /// <summary>
         /// 清除串口缓冲区的数据，并返回该数据，如果缓冲区没有数据，返回的字节数组长度为0
         /// </summary>
-        /// <returns>是否操作成功的方法</returns>
+        /// <returns>是否操作成功的结果</returns>
         public OperateResult<byte[]> ClearSerialCache( )
         {
             return SPReceived(SP_ReadData, false);

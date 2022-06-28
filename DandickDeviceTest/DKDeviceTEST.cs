@@ -6,7 +6,7 @@ namespace DandickDeviceTest
 {
     public class DKDeviceTEST
     {
-        readonly DandickSource dandick = new(DK_DeviceModel.DK_34B1);
+        readonly DandickSource<DK> dandick = new(DK_DeviceModel.DK_34B1);
 
         [Fact]
         public void HandshakeTEST( )

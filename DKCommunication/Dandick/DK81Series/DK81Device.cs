@@ -3,7 +3,7 @@ using System;
 
 namespace DKCommunication.Dandick.DK81Series
 {
-    public class DK81Device : DK81CommandBuilder, IReadWriteDK                      /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
+    public class DK81Device : DK81CommandBuilder, IReadWriteDK                     /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
         #region 私有字段
         
@@ -15,7 +15,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public DK81Device( ) : base()
         {
-               
+         
         }
 
         /// <summary>
@@ -26,6 +26,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             //_commandBuilder = new DK81CommandBuilder(id);
         }
+      
         #endregion
 
         /// <summary>
@@ -71,8 +72,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             throw new System.NotImplementedException();
         }
-
-
+       
         #region Public Methods 公共方法
 
 

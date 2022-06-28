@@ -15,27 +15,16 @@ namespace DKCommunication.Dandick
     /// <summary>
     /// 实例化一个设备对象。支持的型号：【DK-34B1】【DK-34B2】【DK-34F1】【DK-56B1】
     /// </summary>
-    public class DandickSource
+    public class DandickSource:DK_DeviceBase ,IReadWriteDK 
     {
         #region 私有字段
         /// <summary>
         /// 动态设备类型
         /// </summary>
         private readonly dynamic _device;
-        private Type Typedk;
        
+        //private DK_Model DK;
         #endregion
-
-        //#region 公开属性 ?用于尝试第二种方式：属性赋值再实例化对象
-        ///// <summary>
-        ///// 设备ID
-        ///// </summary>
-        //public ushort ID { get; set; }
-        ///// <summary>
-        ///// 设备型号
-        ///// </summary>
-        //public DK_DeviceModel DeviceModel { get; set; }
-        //#endregion    
 
         #region Constructor      
         /// <summary>
@@ -46,9 +35,8 @@ namespace DKCommunication.Dandick
         {            
             switch ((int)deviceModel)
             {
-                case 55:
-                   Typedk = typeof(DK81Device);
-                    _device = new DK81Device();                    
+                case 55:                   
+                  
                     break;
                 case 81:
                     _device = new DK81Device();
@@ -122,6 +110,16 @@ namespace DKCommunication.Dandick
         public OperateResult<byte[]> SetSystemMode(SystemMode mode)
         {
             return _device.SetSystemMode(mode);
+        }
+
+        public OperateResult<byte[]> Stop( )
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperateResult<byte[]> Start( )
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
