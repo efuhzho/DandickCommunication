@@ -13,7 +13,7 @@ namespace DKCommunication.Dandick.Base
     {
         #region Public Properties
         /// <summary>
-        /// 设备ID
+        /// 设备地址ID
         /// </summary>
         public ushort ID { get; set; }
 
@@ -30,22 +30,8 @@ namespace DKCommunication.Dandick.Base
         /// <summary>
         /// 设备编号
         /// </summary>
-        public string SerialNumber { get; set; }
-
-        #region Functions 功能标志        
-        public bool IsACU_Activated { get; set; } = true;
-        public bool IsACI_Activated { get; set; } = true;
-
-        public bool IsDCU_Activated { get; set; } = true;
-        public bool IsDCI_Activated { get; set; } = true;
-
-        public bool IsACM_Activated { get; set; } = false;
-        public bool IsDCM_Activated { get; set; } = true;
-
-        public bool IsPQ_Activated { get; set; } = true;
-        public bool IsIO_Activated { get; set; } = false;
-
-        #endregion
+        public string SN { get; set; }
+    
         #endregion
 
         #region 解析ID
@@ -84,13 +70,7 @@ namespace DKCommunication.Dandick.Base
                 return new OperateResult<byte>(1001, "请输入正确的ID!");
             }
         }
-        #endregion
-
-
-        public OperateResult<byte[]> Handshake()
-        {
-            throw new NotImplementedException();
-        }   
+        #endregion         
 
         /// <summary>
         /// 返回表示当前对象的字符串

@@ -74,7 +74,6 @@
     <Compile Include="Dandick\DK81Series\DK81Device.cs" />
     <Compile Include="Dandick\DK81Series\DK81CommunicationInfo.cs" />
     <Compile Include="Dandick\DKInterface\InterfaceBase.cs" />
-    <Compile Include="Dandick\DK_DeviceInfomation.cs" />
     <Compile Include="Language\DefaultLanguage.cs" />
     <Compile Include="Language\English.cs" />
     <Compile Include="LogNet\Core\ILogNet.cs" />

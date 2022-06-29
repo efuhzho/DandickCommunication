@@ -1,21 +1,20 @@
-﻿using DKCommunication.Core;
+﻿using DKCommunication.BasicFramework;
 using System;
-using System.IO.Ports;
-using DKCommunication.BasicFramework;
 
 namespace DKCommunication.Dandick.DK81Series
 {
-    public class DK81Device : DK81CommandBuilder, IReadWriteDK                     /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
+    public class DK81Device : DK81CommandBuilder /*IReadWriteDK*/                     /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
+
         #region 私有字段
-        //SerialPort _serialPort;
+
         #endregion
 
         #region Constructor   
         /// <summary>
         /// 无参构造方法，默认ID = 0;
         /// </summary>
-        public DK81Device( ) : base()
+        public DK81Device() : base()
         {
 
         }
@@ -41,9 +40,9 @@ namespace DKCommunication.Dandick.DK81Series
             }
 
             // 长度校验
-            if (response.Content.Length < 8)
+            if (response.Content.Length < 7)
             {
-                return new OperateResult<byte[]>(StringResources.Language.ReceiveDataLengthTooShort + "5");
+                return new OperateResult<byte[]>(StringResources.Language.ReceiveDataLengthTooShort + "811300");
             }
 
             // 检查crc
@@ -74,7 +73,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【联机命令】
         /// </summary>
         /// <returns>带有信息的结果</returns>
-        public OperateResult<byte[]> Handshake( )   //TODO 返回值类型需要改成 bool
+        public OperateResult<byte[]> Handshake()   //TODO 返回值类型需要改成 bool
         {
             OperateResult<byte[]> buffer = CreateHandShake();
 
@@ -96,27 +95,6 @@ namespace DKCommunication.Dandick.DK81Series
                 return new OperateResult<byte[]>(811301, ex.Message);
             }
         }
-
-        public OperateResult<byte[]> SetDisplayPage(DisplayPage page)
-        {
-            return CreateDisplayPage(page);//TODO 添加串口操作
-        }
-
-        public OperateResult<byte[]> SetSystemMode(SystemMode mode)
-        {
-            return (CreateSystemMode(mode));//TODO 添加串口操作
-        }
-
-        public OperateResult<byte[]> Start( )
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Stop( )
-        {
-            throw new System.NotImplementedException();
-        }
-
         #region Public Methods 公共方法
 
 
