@@ -1,12 +1,15 @@
 ﻿using System;
 using DKCommunication.Serial;
+using DKCommunication.Core;
+using DKCommunication.Dandick.DK81Series;
+using DKCommunication.Dandick.DKInterface;
 
 namespace DKCommunication.Dandick.Base
 {
     /// <summary>
     /// 所有丹迪克设备通信协议的地址基础类
     /// </summary>
-    public class DK_DeviceBase:SerialBase
+    public class DK_DeviceBase : SerialBase
     {
         #region Public Properties
         /// <summary>
@@ -27,7 +30,7 @@ namespace DKCommunication.Dandick.Base
         /// <summary>
         /// 设备编号
         /// </summary>
-        public string Serial { get; set; }
+        public string SerialNumber { get; set; }
 
         public bool IsACU_Activated { get; set; } = true;
         public bool IsACI_Activated { get; set; } = true;
@@ -40,8 +43,10 @@ namespace DKCommunication.Dandick.Base
 
         public bool IsPQ_Activated { get; set; } = true;
         public bool IsIO_Activated { get; set; } = false;
+
         #endregion
 
+        #region 解析ID
         /// <summary>
         /// 解析ID,转换为两个字节
         /// </summary>
@@ -77,6 +82,13 @@ namespace DKCommunication.Dandick.Base
                 return new OperateResult<byte>(1001, "请输入正确的ID!");
             }
         }
+        #endregion
+
+
+        public OperateResult<byte[]> Handshake()
+        {
+            throw new NotImplementedException();
+        }   
 
         /// <summary>
         /// 返回表示当前对象的字符串
@@ -85,6 +97,7 @@ namespace DKCommunication.Dandick.Base
         public override string ToString()
         {
             return "所有丹迪克设备的地址类";
-        }
+        }    
+        
     }
 }

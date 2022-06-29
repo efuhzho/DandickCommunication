@@ -137,10 +137,10 @@ namespace DKCommunication.Serial
                 return OperateResult.CreateFailedResult<byte[]>(sendResult);
             }
 
-            OperateResult<byte[]> receiveResult = SPReceived(SP_ReadData, true);
+            OperateResult<byte[]> receivedResult = SPReceived(SP_ReadData, true);
             hybirdLock.Leave();
 
-            return receiveResult;
+            return receivedResult;
         }
 
         /// <summary>
@@ -154,18 +154,17 @@ namespace DKCommunication.Serial
 
         #endregion
 
-        #region virtual Method ： CheckReceiveBytes
+        #region virtual Method ： CheckReceivedBytes
 
         /// <summary>
         /// 检查当前接收的字节数据是否正确的
         /// </summary>
         /// <param name="rBytes">输入字节</param>
         /// <returns>检查是否正确</returns>
-        protected virtual bool CheckReceiveBytes(byte[] rBytes)
+        protected virtual bool CheckReceivedBytes(byte[] rBytes)
         {
             return true;
         }
-
         #endregion
 
         #region Initialization And Extra
@@ -258,7 +257,7 @@ namespace DKCommunication.Serial
                     // 继续接收数据
                     int sp_receive = serialPort.Read(buffer, 0, buffer.Length);
                     ms.Write(buffer, 0, sp_receive);
-                    //break;    //?是否需要break跳出循环？待测试--周付宏 2022年6月21日
+                    //break;    // TODO ?是否需要break跳出循环？待测试--周付宏 2022年6月21日
                 }
                 catch (Exception ex)
                 {
@@ -285,7 +284,6 @@ namespace DKCommunication.Serial
         {
             return "SerialBase";
         }
-
         #endregion
 
         #region Public Properties
@@ -329,14 +327,12 @@ namespace DKCommunication.Serial
         #endregion
 
         #region Private Member
-
         private readonly SerialPort SP_ReadData = null;                    // 串口交互的核心
         private readonly SimpleHybirdLock hybirdLock;                      // 数据交互的锁
         private ILogNet logNet;                                   // 日志存储
         private int receiveTimeout = 5000;                        // 接收数据的超时时间
         private int sleepTime = 20;                               // 睡眠的时间
         private bool isClearCacheBeforeRead = false;              // 是否在发送前清除缓冲
-
         #endregion
     }
 }

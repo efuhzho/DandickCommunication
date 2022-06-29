@@ -70,6 +70,7 @@
     <Compile Include="Dandick\DK55Series\DK55CommunicationInfo.cs" />
     <Compile Include="Dandick\DK81Series\DK81Device.cs" />
     <Compile Include="Dandick\DK81Series\DK81CommunicationInfo.cs" />
+    <Compile Include="Dandick\DKInterface\InterfaceBase.cs" />
     <Compile Include="Dandick\DK_DeviceInfomation.cs" />
     <Compile Include="Language\DefaultLanguage.cs" />
     <Compile Include="Language\English.cs" />

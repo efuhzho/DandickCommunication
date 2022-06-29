@@ -20,7 +20,8 @@ namespace DKCommunication.Serial
         /// </summary>
         public SerialDeviceBase( )
         {
-            byteTransform = new TTransform();                            // 实例化数据转换规则
+            byteTransform = new TTransform();
+            // 实例化数据转换规则
         }
 
         #endregion

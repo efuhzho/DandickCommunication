@@ -299,17 +299,15 @@ namespace DKCommunication.ModBus
         #endregion
 
         #region Protect Override
-
         /// <summary>
         /// 检查当前接收的字节数据是否正确的
         /// </summary>
         /// <param name="rBytes">从设备反馈回来的数据</param>
         /// <returns>是否校验成功</returns>
-        protected override bool CheckReceiveBytes( byte[] rBytes )
+        protected override bool CheckReceivedBytes( byte[] rBytes )
         {
             return SoftCRC16.CheckCRC16( rBytes );
         }
-
         #endregion
 
         #region Read Support

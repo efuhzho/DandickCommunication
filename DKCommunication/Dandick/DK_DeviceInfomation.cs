@@ -32,7 +32,7 @@ namespace DKCommunication.Dandick
     /// 交流输出档位枚举
     /// </summary>
     [Flags]
-    public enum RangeAC : ushort
+    public enum RangeAC : byte
     {
         [Description("交流电压380V")]
         ACU_380V = 0b_0000_0000,    //0
