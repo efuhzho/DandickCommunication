@@ -8,7 +8,7 @@ namespace DandickDeviceTest
         /// <summary>
         /// 实例化一个指定ID的对象：ID=5
         /// </summary>
-        readonly DK81Device dandick = new(5);
+        readonly DK81Device dandick = new(5);   //测试ID解析是否正常
         
         /// <summary>
         /// 握手测试
@@ -22,12 +22,14 @@ namespace DandickDeviceTest
             {
                 var result = dandick.Handshake();
                 if (dandick.Handshake().IsSuccess)
-                {                    
-                    Assert.Equal(result.Content[5],DK81CommunicationInfo.Confirmed);
-                }
-                else
                 {
-                    Assert.False(true);
+                    Assert.Equal(0x05, result.Content[2]);
+                    Assert.Equal(8, result.Content.Length);
+                    Assert.Equal(DK81CommunicationInfo.Confirmed,result.Content[5]);
+                }
+                else 
+                {
+                    Assert.True(result.Content==null);                    
                 }
             }
                       

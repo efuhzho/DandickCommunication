@@ -73,7 +73,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【联机命令】
         /// </summary>
         /// <returns>带有信息的结果</returns>
-        public OperateResult<byte[]> Handshake()   //TODO 返回值类型需要改成 bool
+        public OperateResult<byte[]> Handshake()   
         {
             OperateResult<byte[]> buffer = CreateHandShake();
 
