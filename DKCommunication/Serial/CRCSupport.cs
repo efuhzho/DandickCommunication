@@ -131,68 +131,68 @@ namespace DKCommunication.Serial
         /// </summary>
         /// <param name="value">需要校验的数据，不包含CRC字节，包含报文头0x81</param>
         /// <returns>返回带CRC校验码的字节数据，可用于串口发送</returns>
-        public static byte[] CRCcalculator(byte[] value)
-        {
-            byte crc = 0;   //CRC寄存器
+        //public static byte[] CRCcalculator(byte[] value)
+        //{
+        //    byte crc = 0;   //CRC寄存器
 
-            //从第二个字节开始执行异或，结果返回CRC寄存器
-            for (int i = 1; i < value.Length; i++)
-            {
-                crc ^= value[i];
-            }
-            value[value.Length - 1] = crc;
+        //    //从第二个字节开始执行异或，结果返回CRC寄存器
+        //    for (int i = 1; i < value.Length; i++)
+        //    {
+        //        crc ^= value[i];
+        //    }
+        //    value[value.Length - 1] = crc;
 
-            //返回最终带有CRC校验码结尾的信息
-            return value;
-        }
+        //    //返回最终带有CRC校验码结尾的信息
+        //    return value;
+        //}
 
         /// <summary>
         /// 校验接收数据的CRC校验码
         /// </summary>
         /// <param name="value">需要校验的数据，带CRC校验码</param>
         /// <returns>返回校验成功与否</returns>
-        public static bool CheckCRC(byte[] value)
-        {
-            if (value == null) return false;
-            if (value.Length < 2) return false;
+        //public static bool CheckCRC(byte[] value)
+        //{
+        //    if (value == null) return false;
+        //    if (value.Length < 2) return false;
 
-            int length = value.Length;
-            byte[] buf = new byte[length - 1];
-            Array.Copy(value, 0, buf, 0, buf.Length);
+        //    int length = value.Length;
+        //    byte[] buf = new byte[length - 1];
+        //    Array.Copy(value, 0, buf, 0, buf.Length);
 
-            byte[] CRCbuf = CRCcalculator(buf);
-            if (CRCbuf[length - 1] == value[length - 1])
-            {
-                return true;
-            }
-            return false;
-        }
+        //    byte[] CRCbuf = CRCcalculator(buf);
+        //    if (CRCbuf[length - 1] == value[length - 1])
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
     }
-    public class DK55CRC
-    {
-        /// <summary>
-        /// 获取对应的数据的CRC校验码
-        /// </summary>
-        /// <param name="value">需要校验的数据，不包含CRC字节，包含报文头0xA5 0x5A</param>
-        /// <returns>返回带CRC校验码的字节数据，可用于串口发送</returns>
-        public static byte[] CRCcalculator(byte[] value)
-        {
-            byte[] buf = new byte[value.Length + 2];
-            value.CopyTo(buf, 0);
-            int temp = 0;
+    //public class DK55CRC
+    //{
+    //    /// <summary>
+    //    /// 获取对应的数据的CRC校验码
+    //    /// </summary>
+    //    /// <param name="value">需要校验的数据，不包含CRC字节，包含报文头0xA5 0x5A</param>
+    //    /// <returns>返回带CRC校验码的字节数据，可用于串口发送</returns>
+    //    public static byte[] CRCcalculator(byte[] value)
+    //    {
+    //        byte[] buf = new byte[value.Length + 2];
+    //        value.CopyTo(buf, 0);
+    //        int temp = 0;
 
-            //从第二个字节开始执行代数和，结果返回CRC寄存器
-            for (int i = 2; i < value.Length - 1; i++)
-            {
-                temp += value[i];
-            }
+    //        //从第二个字节开始执行代数和，结果返回CRC寄存器
+    //        for (int i = 2; i < value.Length - 1; i++)
+    //        {
+    //            temp += value[i];
+    //        }
 
-            buf[buf.Length - 2] = (byte)(temp / 256);
-            buf[buf.Length - 3] = (byte)(temp % 256);
-            buf[buf.Length - 1] = 0x96;
+    //        buf[buf.Length - 2] = (byte)(temp / 256);
+    //        buf[buf.Length - 3] = (byte)(temp % 256);
+    //        buf[buf.Length - 1] = 0x96;
 
-            //返回最终带有CRC校验码结尾的信息
-            return buf;
-        }
-    }
+    //        //返回最终带有CRC校验码结尾的信息
+    //        return buf;
+    //    }
+    //}
 }

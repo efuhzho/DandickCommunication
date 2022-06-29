@@ -1,21 +1,29 @@
 using DKCommunication.Dandick;
 using DKCommunication.Dandick.DK81Series;
 using Xunit;
+using System.IO.Ports;
 
 namespace DandickDeviceTest
 {
     public class DKDeviceTEST
     {
-        readonly DandickSource<DK> dandick = new(DK_DeviceModel.DK_34B1);
+        readonly DandickSource dandick = new(DK_DeviceModel.DK_34B1);
+        
 
         [Fact]
         public void HandshakeTEST( )
         {
-            var result = dandick.Handshake();
-            if (dandick.Handshake().IsSuccess)
+            dandick.SerialPortInni("com6");
+            dandick.Open();
+            if (dandick.IsOpen())
             {
-                Assert.Equal(DK81CommunicationInfo.HandShakeCommandLength, result.Content.Length);
+                var result = dandick.Handshake();
+                if (dandick.Handshake().IsSuccess)
+                {
+                    Assert.Equal(DK81CommunicationInfo.HandShakeCommandLength, result.Content.Length);
+                }
             }
+                      
         }
 
         [Fact]

@@ -32,6 +32,7 @@ namespace DKCommunication.Dandick.Base
         /// </summary>
         public string SerialNumber { get; set; }
 
+        #region Functions 功能标志        
         public bool IsACU_Activated { get; set; } = true;
         public bool IsACI_Activated { get; set; } = true;
 
@@ -44,6 +45,7 @@ namespace DKCommunication.Dandick.Base
         public bool IsPQ_Activated { get; set; } = true;
         public bool IsIO_Activated { get; set; } = false;
 
+        #endregion
         #endregion
 
         #region 解析ID
@@ -96,8 +98,7 @@ namespace DKCommunication.Dandick.Base
         /// <returns>字符串数据</returns>
         public override string ToString()
         {
-            return "所有丹迪克设备的地址类";
-        }    
-        
+            return "所有丹迪克设备的基类";
+        }
     }
 }

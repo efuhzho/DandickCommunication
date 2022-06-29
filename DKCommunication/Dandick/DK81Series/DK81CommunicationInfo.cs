@@ -369,6 +369,26 @@ namespace DKCommunication.Dandick.DK81Series
             }
             return crc;
         }
+
+        public static bool CheckCRC(byte[] value)
+        {
+            if (value == null) return false;
+            if (value.Length < 2) return false;
+
+            int length = value.Length;
+            byte[] buf = new byte[length - 1];
+            Array.Copy(value, 0, buf, 0, buf.Length);
+
+            byte CRC_Code = CRCcalculator(buf);
+            if (CRC_Code == value[length - 1])
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         #endregion      
 
     }

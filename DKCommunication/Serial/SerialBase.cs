@@ -91,7 +91,7 @@ namespace DKCommunication.Serial
             if (!SP_ReadData.IsOpen)
             {
                 SP_ReadData.Open();
-                InitializationOnOpen();
+                //InitializationOnOpen();
             }
         }
 
