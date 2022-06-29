@@ -1,12 +1,14 @@
 ﻿using DKCommunication.Core;
 using System;
+using System.IO.Ports;
+using DKCommunication.BasicFramework;
 
 namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81Device : DK81CommandBuilder, IReadWriteDK                     /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
         #region 私有字段
-        
+        //SerialPort _serialPort;
         #endregion
 
         #region Constructor   
@@ -15,7 +17,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public DK81Device( ) : base()
         {
-            SerialPortInni("com5");
+
         }
 
         /// <summary>
@@ -24,33 +26,75 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="id"></param>
         public DK81Device(ushort id) : base(id)
         {
-            //_commandBuilder = new DK81CommandBuilder(id);
+
         }
-      
+        #endregion
+
+        #region Core Interative
+        protected virtual OperateResult<byte[]> CheckResponse(byte[] send)
+        {
+            // 核心交互
+            OperateResult<byte[]> response = ReadBase(send);
+            if (!response.IsSuccess)
+            {
+                return response;
+            }
+
+            // 长度校验
+            if (response.Content.Length < 8)
+            {
+                return new OperateResult<byte[]>(StringResources.Language.ReceiveDataLengthTooShort + "5");
+            }
+
+            // 检查crc
+            if (!DK81CommunicationInfo.CheckCRC(response.Content))
+            {
+                return new OperateResult<byte[]>(StringResources.Language.ModbusCRCCheckFailed + SoftBasic.ByteToHexString(response.Content, ' '));
+            }
+
+            // 发生了错误
+            if (response.Content[5] == 0x52)
+            {
+                return new OperateResult<byte[]>(response.Content[6], ((ErrorCode)response.Content[6]).ToString()); //TODO 测试第二种故障码解析:/*DK81CommunicationInfo.GetErrorMessageByErrorCode(response.Content[6])*/
+            }
+
+            if (send[5] != response.Content[5] && send[5] != 0x4B)
+            {
+                return new OperateResult<byte[]>(response.Content[5], $"Receive Command Check Failed: ");
+            }
+
+            //// 移除CRC校验
+            //byte[] buffer = new byte[response.Content.Length - 2];
+            //Array.Copy(response.Content, 0, buffer, 0, buffer.Length);
+            return OperateResult.CreateSuccessResult(response.Content);
+        }
         #endregion
 
         /// <summary>
         /// 【联机命令】
         /// </summary>
         /// <returns>带有信息的结果</returns>
-        public OperateResult<byte[]> Handshake( )
+        public OperateResult<byte[]> Handshake( )   //TODO 返回值类型需要改成 bool
         {
-            var result = CreateHandShake();
+            OperateResult<byte[]> buffer = CreateHandShake();
+
+            OperateResult<byte[]> response = CheckResponse(buffer.Content);
+
             try
             {
-                if (result.IsSuccess)
+                if (response.IsSuccess)
                 {
-                    return OperateResult.CreateSuccessResult(result.Content);
+                    return OperateResult.CreateSuccessResult(response.Content);
                 }
                 else
                 {
-                    return new OperateResult<byte[]>(811300, result.Message);
+                    return new OperateResult<byte[]>(811300, response.Message);
                 }
             }
             catch (Exception ex)
             {
                 return new OperateResult<byte[]>(811301, ex.Message);
-            }           
+            }
         }
 
         public OperateResult<byte[]> SetDisplayPage(DisplayPage page)
@@ -72,7 +116,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             throw new System.NotImplementedException();
         }
-       
+
         #region Public Methods 公共方法
 
 
