@@ -104,23 +104,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// 闭环控制使能命令：HarmonicMode ：谐波模式，0-以真有效值的百分比输入谐波（有效值恒定）；1-以基波值的百分比输入谐波（基波恒定）
         /// </summary>
         public const byte SetClosedLoop = 0x36;
-        public const ushort SetClosedLoopLength = 9;
-
-        /// <summary>
-        /// 设置电能校验参数
-        /// </summary>
-        public const byte WriteElectricity = 0x37;
+        public const ushort SetClosedLoopLength = 9;        
 
         /// <summary>
         /// 设置谐波参数：注意：建议协议长度不超过 256，超过 256 个字节建议分批发送。
         /// </summary>
         public const byte WriteHarmonics = 0x58;
         public const short WriteHarmonicsLength = 0x58;
-
-        /// <summary>
-        /// 读电能误差
-        /// </summary>
-        public const byte ReadElectricity = 0x45;
 
         /// <summary>
         /// 设置有功功率参数
@@ -135,12 +125,24 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 读交流标准表参数/数据：读标准源输出值
         /// </summary>
-        public const byte ReadACData = 0x4D;
+        public const byte ReadACSourceData = 0x4D;
 
         /// <summary>
         /// 读系统状态位：Flag=0表示输出稳定，Flag=1表示输出未稳定。：读标准源输出状态
         /// </summary>
         public const byte ReadACStatus = 0x4E;
+        #endregion
+
+        #region 电能
+        /// <summary>
+        /// 读电能误差
+        /// </summary>
+        public const byte ReadElectricityDeviation = 0x45;
+
+        /// <summary>
+        /// 设置电能校验参数
+        /// </summary>
+        public const byte WriteElectricity = 0x37;
         #endregion
 
         #region 直流表
@@ -160,12 +162,12 @@ namespace DKCommunication.Dandick.DK81Series
         public const byte SetDCMeterMesureType = 0x63;
 
         /// <summary>
-        /// *已过时！设置直流表测量参数/数据，适用于双通道
+        /// 设置直流表测量参数/数据，适用于双通道
         /// </summary>
         public const byte SetDCMeterDataWithTwoCh = 0x64;
 
         /// <summary>
-        /// *已过时！读直流表测量参数/数据，适用于双通道
+        /// 读直流表测量参数/数据，适用于双通道
         /// </summary>
         public const byte ReadDCMeterDataWithTwoCh = 0x65;
         #endregion
@@ -174,74 +176,74 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置直流源档位参数
         /// </summary>
-        public const byte SetDCRange = 0x66;
+        public const byte SetDCSourceRange = 0x66;
 
         /// <summary>
         /// 打开直流源
         /// </summary>
-        public const byte StartDC = 0x67;
+        public const byte StartDCSource = 0x67;
 
         /// <summary>
         /// 关闭直流源
         /// </summary>
-        public const byte StopDC = 0x68;
+        public const byte StopDCSource = 0x68;
 
         /// <summary>
         /// 设置直流源幅值
         /// </summary>
-        public const byte WriteDCAmplitude = 0x69;
+        public const byte WriteDCSourceAmplitude = 0x69;
 
         /// <summary>
         /// 读直流源参数/数据
         /// </summary>
-        public const byte ReadDCData = 0x79;
+        public const byte ReadDCSourceData = 0x79;
         #endregion
 
         #region 校准
         /// <summary>
         /// 清空校准参数，恢复初始状态
         /// </summary>
-        public const byte ClearCalibratedData = 0x20;
+        public const byte Calibrate_ClearData = 0x20;
 
         /// <summary>
         /// 切换交流校准档位
         /// </summary>
-        public const byte SwitchACRangeCalibrating = 0x21;
+        public const byte Calibrate_SwitchACRange = 0x21;
 
         /// <summary>
         /// 确认执行当前校准点的校准数据：在输入标准表数据后执行*！0x22还是0x23存疑，说明书不一致
         /// </summary>
-        public const byte DoCalibrate = 0x22;
+        public const byte Calibrate_DoAC = 0x22;
 
         /// <summary>
         /// 切换校准点命令
         /// </summary>
-        public const byte SwitchACPointCalibrating = 0x23;
+        public const byte Calibrate_SwitchACPoint = 0x23;
 
         /// <summary>
-        /// 确认交流源校准，保存校准参数
+        /// 保存校准参数
         /// </summary>
-        public const byte SaveCalibratedData = 0x24;
+        public const byte Calibrate_Save = 0x24;
 
         /// <summary>
         /// 交流标准表和钳形表校准命令
         /// </summary>
-        public const byte DoACMeterCalibrate = 0x25;
+        public const byte Calibrate_DoACMeter = 0x25;
 
         /// <summary>
         /// 设置直流源校准点
         /// </summary>
-        public const byte SwithACPointCalibrating = 0x26;
+        public const byte Calibrate_SwitchDCPoint = 0x26;
 
         /// <summary>
         /// 直流源校准
         /// </summary>
-        public const byte DoDCCalibrate = 0x27;
+        public const byte Calibrate_DoDC = 0x27;
 
         /// <summary>
         /// 直流表校准
         /// </summary>
-        public const byte DoDCMeterCalibrate = 0x28;
+        public const byte Calibrate_DoDCMeter = 0x28;
         #endregion
 
         #region 设备信息

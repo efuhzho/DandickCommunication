@@ -73,8 +73,12 @@
     <Compile Include="Dandick\DK55Series\DK55CommunicationInfo.cs" />
     <Compile Include="Dandick\DK81Series\DK81Device.cs" />
     <Compile Include="Dandick\DK81Series\DK81CommunicationInfo.cs" />
-    <Compile Include="Dandick\DKInterface\DKInterfaceBase.cs" />
-    <Compile Include="Dandick\DKInterface\DK_ACSource.cs" />
+    <Compile Include="Dandick\DKInterface\IDK_BaseInterface.cs" />
+    <Compile Include="Dandick\DKInterface\IDK_ACSource.cs" />
+    <Compile Include="Dandick\DKInterface\IDK_DCSource.cs" />
+    <Compile Include="Dandick\DKInterface\IDK_ElectricityModel.cs" />
+    <Compile Include="Dandick\DKInterface\IDK_DCMeter.cs" />
+    <Compile Include="Dandick\DKInterface\IDK_IOModel.cs" />
     <Compile Include="Language\DefaultLanguage.cs" />
     <Compile Include="Language\English.cs" />
     <Compile Include="LogNet\Core\ILogNet.cs" />

@@ -6,43 +6,8 @@ using System.Threading.Tasks;
 
 namespace DKCommunication.Dandick.DKInterface
 {
-   public interface DKInterfaceBase
-    {
-        #region Public Properties
-
-      
-
-        /// <summary>
-        /// 指示是否具有直流电压输出功能
-        /// </summary>
-        bool IsDCU_Activated { get; set; }
-
-        /// <summary>
-        /// 指示是否具有直流电压输出功能
-        /// </summary>
-        bool IsDCI_Activated { get; set; }
-
-        /// <summary>
-        /// 指示是否具有交流测量功能
-        /// </summary>
-        bool IsACM_Activated { get; set; }
-
-        /// <summary>
-        /// 指示是否具有直流测量模块
-        /// </summary>
-        bool IsDCM_Activated { get; set; }
-
-        /// <summary>
-        /// 指示是否具有电能测量模块
-        /// </summary>
-        bool IsPQ_Activated { get; set; }
-
-        /// <summary>
-        /// 指示是否具有开关量模块
-        /// </summary>
-        bool IsIO_Activated { get; set; }
-        #endregion
-
+   public interface IDK_BaseInterface
+    {    
         #region Methods
         /// <summary>
         /// 【联机】
@@ -74,7 +39,19 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         /// <param name="mode">模式</param>
         /// <returns>带信息的结果</returns>
-        OperateResult<byte[]> SetSystemMode(int mode); 
+        OperateResult<byte[]> SetSystemMode(int mode);
+
+        /// <summary>
+        /// 保存校准参数
+        /// </summary>
+        /// <returns></returns>
+        OperateResult<byte[]> Calibrate_Save( );
+
+        /// <summary>
+        /// 清除已校准的数据
+        /// </summary>
+        /// <returns></returns>
+        OperateResult<byte[]> Calibrate_ClearData( );
         #endregion
     }
 }
