@@ -25,7 +25,8 @@ namespace DKCommunication.Language
         public virtual string ErrorIb => "故障：Ib；";
         public virtual string ErrorIc => "故障：Ic；";
         public virtual string ErrorI0 => "故障：I0；";
-        public virtual string ErrorDC => "故障：DC；";
+        public virtual string ErrorDC => "故障：DC；"; 
+        public virtual string CRCCheckFailed => "CRC校验检查失败";
 
 
         /***********************************************************************************

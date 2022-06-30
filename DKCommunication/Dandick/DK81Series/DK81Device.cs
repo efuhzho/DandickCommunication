@@ -48,7 +48,7 @@ namespace DKCommunication.Dandick.DK81Series
             // 检查crc
             if (!DK81CommunicationInfo.CheckCRC(response.Content))
             {
-                return new OperateResult<byte[]>(StringResources.Language.ModbusCRCCheckFailed + SoftBasic.ByteToHexString(response.Content, ' '));
+                return new OperateResult<byte[]>(StringResources.Language.CRCCheckFailed + SoftBasic.ByteToHexString(response.Content, ' '));
             }
 
             // 发生了错误
@@ -62,8 +62,8 @@ namespace DKCommunication.Dandick.DK81Series
                 return new OperateResult<byte[]>(response.Content[5], $"Receive Command Check Failed: ");
             }
 
-            //// 移除CRC校验
-            //byte[] buffer = new byte[response.Content.Length - 2];
+            // 移除CRC校验
+            //byte[] buffer = new byte[response.Content.Length - 1];
             //Array.Copy(response.Content, 0, buffer, 0, buffer.Length);
             return OperateResult.CreateSuccessResult(response.Content);
         }
