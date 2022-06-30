@@ -48,5 +48,11 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         /// <returns></returns>
         OperateResult<byte[]> Calibrate_DoDCMeter( );
+
+        /// <summary>
+        /// 读取指标表档位信息
+        /// </summary>
+        /// <returns></returns>
+        OperateResult<byte[]> ReadDCMeterRangeInfo( );
     }
 }

@@ -35,5 +35,12 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         /// <returns></returns>
         OperateResult<byte[]> Calibrate_DoDC( );
+
+        /// <summary>
+        /// 读取直流源档位信息
+        /// </summary>
+        /// <returns></returns>
+        OperateResult<byte[]> ReadDCRangeInfo( );
+
     }
 }

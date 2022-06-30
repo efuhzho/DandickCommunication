@@ -16,7 +16,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion       
 
-        #region 报文头0x81
+        #region FrameID 报文头0x81
         /// <summary>
         /// 报文头必须为0x81
         /// </summary>
@@ -261,12 +261,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取直流表档位/量程信息
         /// </summary>
         public const byte ReadDCMeterRangeInfo = 0x13;
-
-        #region 联机命令读取的型号和版本号
-       
-        #endregion
-
-        #endregion
+        #endregion   
 
         #endregion
 
@@ -372,12 +367,15 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion  
     }
+
+    #region Enum Classes
+
+    #region DK81Device所支持的设备型号
     /// <summary>
     /// DK81Device所支持的设备型号
     /// </summary>
-    #region Enum Classes
     public enum DK_DeviceModel
-    {        
+    {
         [Description("DK-34B1交流采样变送器检定装置")]
         DK_34B1 = 81,
 
@@ -393,7 +391,9 @@ namespace DKCommunication.Dandick.DK81Series
         [Description("DK-PTS1")]
         DK_PTS1 = 55,
     }
+    #endregion
 
+    #region 交流输出档位枚举
     /// <summary>
     /// 交流输出档位枚举
     /// </summary>
@@ -424,6 +424,7 @@ namespace DKCommunication.Dandick.DK81Series
         [Description("交流电流1A")]
         ACI_1A = 0b_0000_0011,      //3
     }
+    #endregion
 
     #region Mode Declaration 系统模式定义
 
@@ -592,7 +593,6 @@ namespace DKCommunication.Dandick.DK81Series
         ErrorDC = 0b_0100_0000     // 0x40 // 64
     }
     #endregion
-
 
     #endregion
 

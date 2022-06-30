@@ -52,6 +52,8 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         /// <returns></returns>
         OperateResult<byte[]> Calibrate_ClearData( );
+
+
         #endregion
     }
 }

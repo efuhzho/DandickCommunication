@@ -99,7 +99,11 @@ namespace DKCommunication.Dandick.DKInterface
         /// <returns></returns>
         OperateResult<byte[]> Calibrate_DoAC( );
 
-       
+        /// <summary>
+        /// 读取交流源档位信息
+        /// </summary>
+        /// <returns></returns>
+        OperateResult<byte[]> ReadRangeInfo( );
 
         /// <summary>
         /// 切换校准点命令

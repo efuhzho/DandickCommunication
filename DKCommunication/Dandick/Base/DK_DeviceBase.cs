@@ -30,8 +30,7 @@ namespace DKCommunication.Dandick.Base
         /// <summary>
         /// 设备编号
         /// </summary>
-        public string SN { get; set; }
-    
+        public string SN { get; set; }    
         #endregion
 
         #region 解析ID
@@ -70,15 +69,18 @@ namespace DKCommunication.Dandick.Base
                 return new OperateResult<byte>(1001, "请输入正确的ID!");
             }
         }
-        #endregion         
+        #endregion
 
+        #region Object Override
         /// <summary>
         /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns>字符串数据</returns>
-        public override string ToString()
+        public override string ToString( )
         {
             return "所有丹迪克设备的基类";
         }
+        #endregion
+
     }
 }

@@ -9,6 +9,7 @@ namespace DKCommunication.Dandick.DK81Series
     public class DK81CommandBuilder : DK_DeviceBase
     {
         #region 私有字段
+        #region ID
         /// <summary>
         /// 接收终端的设备ID
         /// </summary>
@@ -20,14 +21,29 @@ namespace DKCommunication.Dandick.DK81Series
         private readonly byte TxID;
         #endregion
 
+        #region Ranges
+        private byte Ua;
+        private byte Ub;
+        private byte Uc;
+        private byte Ia;
+        private byte Ib;
+        private byte Ic;
+        private byte IPa;
+        private byte IPb;
+        private byte IPc;
+        #endregion
+
+
+        #endregion
+
         #region Public Properties
-        public byte ACU_Range { get; set; } = 2;
-        public byte ACI_Range { get; set; } = 1;
-        public byte DCU_Range { get; set; }
-        public byte DCI_Range { get; set; }
-        public byte ACM_Range { get; set; }
-        public byte DCM_Range { get; set; }
-        public byte IP_Range { get; set; }
+        //public byte ACU_Range { get; set; } = 2;
+        //public byte ACI_Range { get; set; } = 1;
+        //public byte DCU_Range { get; set; }
+        //public byte DCI_Range { get; set; }
+        //public byte ACM_Range { get; set; }
+        //public byte DCM_Range { get; set; }
+        //public byte IP_Range { get; set; }
         #endregion
 
         #region Constructor
@@ -46,7 +62,6 @@ namespace DKCommunication.Dandick.DK81Series
             {
                 throw new Exception(result.Message);
             }
-
         }
 
         /// <summary>
@@ -70,7 +85,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region Private create command helper 私有指令创建辅助方法
         /// <summary>
-        /// 创建指令时的【统一预处理】
+        /// 创建7个字节长度指令时的【统一预处理】
         /// </summary>
         /// <param name="commandCode">命令码</param>
         /// <param name="commandLength">指令长度</param>
@@ -96,7 +111,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 创建指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
+        /// 创建8个字节长度指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
         /// </summary>
         /// <typeparam name="T">泛型类，必须可以被转换为byte</typeparam>
         /// <param name="data">数据</param>
@@ -121,6 +136,25 @@ namespace DKCommunication.Dandick.DK81Series
             catch (Exception ex)
             {
                 return new OperateResult<byte[]>(811202, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="commandCode"></param>
+        /// <param name="commandLength"></param>
+        /// <param name="dataBytes"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, byte[] dataBytes)
+        {
+            try
+            {
+                OperateResult<byte[]> header = CreateCommandHelper(commandCode, commandLength);
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811200, ex.Message);
             }
         }
         #endregion
@@ -198,7 +232,7 @@ namespace DKCommunication.Dandick.DK81Series
             else
             {
                 return new OperateResult<byte[]>(811204, "创建指令失败");
-            }            
+            }
         }
 
         /// <summary>
@@ -215,7 +249,13 @@ namespace DKCommunication.Dandick.DK81Series
             else
             {
                 return new OperateResult<byte[]>(811205, "创建指令失败");
-            }            
+            }
+        }
+
+        public OperateResult<byte[]> CreatSetRange( )
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetRange, DK81CommunicationInfo.SetRangeLength);
+
         }
 
         #endregion
