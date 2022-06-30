@@ -321,7 +321,7 @@ namespace DKCommunication.ModBus
         /// <returns>带结果信息的字节返回数据</returns>
         protected OperateResult<byte[]> ReadModBusBase( byte code, string address, ushort length )
         {
-            OperateResult<byte[]> command = null;
+            OperateResult<byte[]> command;
             switch (code)
             {
                 case ModbusInfo.ReadCoil:

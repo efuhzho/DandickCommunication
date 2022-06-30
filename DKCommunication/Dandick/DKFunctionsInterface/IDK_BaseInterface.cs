@@ -13,19 +13,19 @@ namespace DKCommunication.Dandick.DKInterface
         /// 【联机】
         /// </summary>
         /// <returns>带信息的结果</returns>
-        OperateResult<byte[]> Handshake();
+        OperateResult Handshake();
 
         /// <summary>
         /// 交流源关闭命令
         /// </summary>
         /// <returns>携带信息的结果</returns>
-        OperateResult<byte[]> Stop();
+        OperateResult Stop();
 
         /// <summary>
         /// 交流源打开命令
         /// </summary>
         /// <returns>携带信息的结果</returns>
-        OperateResult<byte[]> Start();
+        OperateResult Start();
 
         /// <summary>
         /// 设置【显示界面】
@@ -52,7 +52,6 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         /// <returns></returns>
         OperateResult<byte[]> Calibrate_ClearData( );
-
 
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿using DKCommunication.Dandick.Base;
 using System;
+using DKCommunication.BasicFramework;
 
 namespace DKCommunication.Dandick.DK81Series
 {
@@ -20,7 +21,6 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         private readonly byte TxID;
         #endregion
-
         #region Ranges
         private byte RangeUa;
         private byte RangeUb;
@@ -31,10 +31,7 @@ namespace DKCommunication.Dandick.DK81Series
         private byte RangeIPa;
         private byte RangeIPb;
         private byte RangeIPc;
-
         #endregion
-
-
         #endregion
 
         #region Public Properties
@@ -46,19 +43,17 @@ namespace DKCommunication.Dandick.DK81Series
         public byte Range_DCM { get; set; }
         public byte Range_IProtect { get; set; }
         #endregion
-
         #region 相别
-        public float UA { get; set; }
-        public float UB { get; set; }
-        public float UC { get; set; }
-        public float IA { get; set; }
-        public float IB { get; set; }
-        public float IC { get; set; }
-        public float IProtectA { get; set; }
-        public float IProtectB { get; set; }
-        public float IProtectC { get; set; }
+        public float UA { get; }
+        public float UB { get; }
+        public float UC { get; }
+        public float IA { get; }
+        public float IB { get; }
+        public float IC { get; }
+        public float IProtectA { get; }
+        public float IProtectB { get; }
+        public float IProtectC { get; }
         #endregion
-
         #endregion
 
         #region Constructor
@@ -98,7 +93,124 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion
 
-        #region Private create command helper 私有指令创建辅助方法
+        #region CommandBuilder
+        #region 系统命令
+        /// <summary>
+        /// 根据丹迪克协议类型创建一个【联机指令】对象
+        /// </summary>
+        /// <returns>带指令信息的结果</returns>
+        private OperateResult<byte[]> CreateHandShake()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.HandShake, DK81CommunicationInfo.HandShakeCommandLength);
+
+            if (bytesHeader.IsSuccess)
+            {
+                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811201, "创建指令失败");
+            }
+        }
+
+        /// <summary>
+        /// 根据丹迪克协议类型创建一个：【系统模式】指令对象
+        /// </summary>
+        /// <param name="mode">系统模式</param>
+        /// <returns>带指令信息的结果</returns>
+        private OperateResult<byte[]> CreateSystemMode(SystemMode mode)
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetSystemMode, DK81CommunicationInfo.SetSystemModeCommandLength, mode);
+            if (bytesHeader.IsSuccess)
+            {
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811202, "创建指令失败");
+            }
+        }
+
+        //TODO  建立故障代码监视器：ErrorCodeMonitor. //Page 5
+
+        /// <summary>
+        /// 根据丹迪克协议类型创建一个：【当前显示页面】指令对象
+        /// </summary>
+        /// <param name="page">当前显示页面</param>
+        /// <returns>带指令信息的结果</returns>
+        private OperateResult<byte[]> CreateDisplayPage(DisplayPage page)    //TODO 将DisplayPage写成属性
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetDisplayPage, DK81CommunicationInfo.SetDisplayPageCommandLength, page);
+            if (bytesHeader.IsSuccess)
+            {
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811203, "创建指令失败");
+            }
+        }
+        #endregion
+        #region 交流表源命令
+        /// <summary>
+        /// 创建一个【源关闭】命令
+        /// </summary>
+        /// <returns>带指令信息的结果</returns>
+        private OperateResult<byte[]> CreateStop()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.Stop, DK81CommunicationInfo.StopLength);
+            if (bytesHeader.IsSuccess)
+            {
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811204, "创建指令失败");
+            }
+        }
+
+        /// <summary>
+        /// 创建一个【源打开】命令
+        /// </summary>
+        /// <returns>带指令信息的结果</returns>
+        private OperateResult<byte[]> CreateStart()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.Start, DK81CommunicationInfo.StartLength);
+            if (bytesHeader.IsSuccess)
+            {
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811205, "创建指令失败");
+            }
+        }
+
+        //public OperateResult<byte[]> CreatSetRange()
+        //{
+        //    OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetRange, DK81CommunicationInfo.SetRangeLength);
+
+        //}
+
+        #endregion
+        #region 设备信息
+        private OperateResult<byte[]> CreateReadRangeInfo()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadRangeInfo, DK81CommunicationInfo.ReadRangeInfoLength);
+
+            if (bytesHeader.IsSuccess)
+            {
+                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811201, "创建指令失败");
+            }
+        }
+        #endregion
+        #region Private CommandBuilder Helper 
         /// <summary>
         /// 创建7个字节长度指令时的【统一预处理】，不带CRC
         /// </summary>
@@ -183,127 +295,73 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
         #endregion
+        #endregion
 
-        #region 指令生成器
-        #region 系统命令
-        /// <summary>
-        /// 根据丹迪克协议类型创建一个【联机指令】对象
-        /// </summary>
-        /// <returns>带指令信息的结果</returns>
-        public OperateResult<byte[]> CreateHandShake()
+        #region Core Interative
+        protected virtual OperateResult<byte[]> CheckResponse(byte[] send)
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.HandShake, DK81CommunicationInfo.HandShakeCommandLength);
+            // 核心交互
+            OperateResult<byte[]> response = ReadBase(send);
+            if (!response.IsSuccess)
+            {
+                return response;
+            }
 
-            if (bytesHeader.IsSuccess)
+            // 长度校验
+            if (response.Content.Length < 7)
             {
-                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
-                return bytesHeader;
+                return new OperateResult<byte[]>(StringResources.Language.ReceiveDataLengthTooShort + "811300");
             }
-            else
-            {
-                return new OperateResult<byte[]>(811201, "创建指令失败");
-            }
-        }
 
-        /// <summary>
-        /// 根据丹迪克协议类型创建一个：【系统模式】指令对象
-        /// </summary>
-        /// <param name="mode">系统模式</param>
-        /// <returns>带指令信息的结果</returns>
-        public OperateResult<byte[]> CreateSystemMode(SystemMode mode)
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetSystemMode, DK81CommunicationInfo.SetSystemModeCommandLength, mode);
-            if (bytesHeader.IsSuccess)
+            // 检查crc
+            if (!DK81CommunicationInfo.CheckCRC(response.Content))
             {
-                return bytesHeader;
+                return new OperateResult<byte[]>(StringResources.Language.CRCCheckFailed + SoftBasic.ByteToHexString(response.Content, ' '));
             }
-            else
-            {
-                return new OperateResult<byte[]>(811202, "创建指令失败");
-            }
-        }
 
-        //TODO  建立故障代码监视器：ErrorCodeMonitor. //Page 5
+            // 发生了错误
+            if (response.Content[5] == 0x52)
+            {
+                return new OperateResult<byte[]>(response.Content[6], ((ErrorCode)response.Content[6]).ToString()); //TODO 测试第二种故障码解析:/*DK81CommunicationInfo.GetErrorMessageByErrorCode(response.Content[6])*/
+            }
 
-        /// <summary>
-        /// 根据丹迪克协议类型创建一个：【当前显示页面】指令对象
-        /// </summary>
-        /// <param name="page">当前显示页面</param>
-        /// <returns>带指令信息的结果</returns>
-        public OperateResult<byte[]> CreateDisplayPage(DisplayPage page)    //TODO 将DisplayPage写成属性
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetDisplayPage, DK81CommunicationInfo.SetDisplayPageCommandLength, page);
-            if (bytesHeader.IsSuccess)
+            if (send[5] != response.Content[5] && send[5] != 0x4B)
             {
-                return bytesHeader;
+                return new OperateResult<byte[]>(response.Content[5], $"Receive Command Check Failed: ");
             }
-            else
-            {
-                return new OperateResult<byte[]>(811203, "创建指令失败");
-            }
+
+            // 移除CRC校验
+            //byte[] buffer = new byte[response.Content.Length - 1];
+            //Array.Copy(response.Content, 0, buffer, 0, buffer.Length);
+            return OperateResult.CreateSuccessResult(response.Content);
         }
         #endregion
 
-        #region 交流表源命令
+        #region Public Commands
         /// <summary>
-        /// 创建一个【源关闭】命令
+        /// 【联机命令】
         /// </summary>
-        /// <returns>带指令信息的结果</returns>
-        public OperateResult<byte[]> CreateStop()
+        /// <returns>带有信息的结果</returns>
+        public OperateResult<byte[]> HandshakeCommand()
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.Stop, DK81CommunicationInfo.StopLength);
-            if (bytesHeader.IsSuccess)
+            try
             {
-                return bytesHeader;
+                OperateResult<byte[]> buffer = CreateHandShake();
+                OperateResult<byte[]> response = CheckResponse(buffer.Content);
+                if (response.IsSuccess)
+                {
+                    return OperateResult.CreateSuccessResult(response.Content);
+                }
+                else
+                {
+                    return new OperateResult<byte[]>(811300, response.Message);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return new OperateResult<byte[]>(811204, "创建指令失败");
+                return new OperateResult<byte[]>(811301, ex.Message);
             }
         }
-
-        /// <summary>
-        /// 创建一个【源打开】命令
-        /// </summary>
-        /// <returns>带指令信息的结果</returns>
-        public OperateResult<byte[]> CreateStart()
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.Start, DK81CommunicationInfo.StartLength);
-            if (bytesHeader.IsSuccess)
-            {
-                return bytesHeader;
-            }
-            else
-            {
-                return new OperateResult<byte[]>(811205, "创建指令失败");
-            }
-        }
-
-        //public OperateResult<byte[]> CreatSetRange( )
-        //{
-        //    OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetRange, DK81CommunicationInfo.SetRangeLength);
-
-        //}
-
-        #endregion
-
-        #region 设备信息
-        public OperateResult<byte[]> CreateReadRangeInfo()
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadRangeInfo, DK81CommunicationInfo.ReadRangeInfoLength);
-
-            if (bytesHeader.IsSuccess)
-            {
-                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
-                return bytesHeader;
-            }
-            else
-            {
-                return new OperateResult<byte[]>(811201, "创建指令失败");
-            }
-        }
-        #endregion
-
         #endregion
     }
 }

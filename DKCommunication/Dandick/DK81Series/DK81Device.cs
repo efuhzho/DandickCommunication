@@ -1,13 +1,12 @@
 ﻿using DKCommunication.BasicFramework;
 using System;
+using DKCommunication.Dandick.DKInterface;
 
 namespace DKCommunication.Dandick.DK81Series
 {
-    public class DK81Device : DK81CommandBuilder /*IReadWriteDK*/                     /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
+    public class DK81Device : DK81CommandBuilder,IDK_ACSource,IDK_BaseInterface,IDK_DCMeter,IDK_DCSource,IDK_ElectricityModel,IDK_IOModel                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
-
         #region 私有字段
-
         #endregion
 
         #region Constructor   
@@ -29,73 +28,76 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion
 
-        #region Core Interative
-        protected virtual OperateResult<byte[]> CheckResponse(byte[] send)
+        #region Base
+        public OperateResult<byte[]> Calibrate_ClearData()
         {
-            // 核心交互
-            OperateResult<byte[]> response = ReadBase(send);
-            if (!response.IsSuccess)
-            {
-                return response;
-            }
-
-            // 长度校验
-            if (response.Content.Length < 7)
-            {
-                return new OperateResult<byte[]>(StringResources.Language.ReceiveDataLengthTooShort + "811300");
-            }
-
-            // 检查crc
-            if (!DK81CommunicationInfo.CheckCRC(response.Content))
-            {
-                return new OperateResult<byte[]>(StringResources.Language.CRCCheckFailed + SoftBasic.ByteToHexString(response.Content, ' '));
-            }
-
-            // 发生了错误
-            if (response.Content[5] == 0x52)
-            {
-                return new OperateResult<byte[]>(response.Content[6], ((ErrorCode)response.Content[6]).ToString()); //TODO 测试第二种故障码解析:/*DK81CommunicationInfo.GetErrorMessageByErrorCode(response.Content[6])*/
-            }
-
-            if (send[5] != response.Content[5] && send[5] != 0x4B)
-            {
-                return new OperateResult<byte[]>(response.Content[5], $"Receive Command Check Failed: ");
-            }
-
-            // 移除CRC校验
-            //byte[] buffer = new byte[response.Content.Length - 1];
-            //Array.Copy(response.Content, 0, buffer, 0, buffer.Length);
-            return OperateResult.CreateSuccessResult(response.Content);
+            throw new NotImplementedException();
         }
-        #endregion
 
-        /// <summary>
-        /// 【联机命令】
-        /// </summary>
-        /// <returns>带有信息的结果</returns>
-        public OperateResult<byte[]> Handshake()
+        public OperateResult<byte[]> Calibrate_Save()
         {
-            try
-            {
-                OperateResult<byte[]> buffer = CreateHandShake();
-                OperateResult<byte[]> response = CheckResponse(buffer.Content);
-                if (response.IsSuccess)
-                {
-                    return OperateResult.CreateSuccessResult(response.Content);
-                }
-                else
-                {
-                    return new OperateResult<byte[]>(811300, response.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>(811301, ex.Message);
-            }
+            throw new NotImplementedException();
         }
-        #region Public Methods 公共方法
+
+        public OperateResult Handshake()
+        {
+            throw new NotImplementedException();
+
+            //try
+            //{
+            //    OperateResult result = HandshakeCommand();
+            //    if (result.IsSuccess)
+            //    {
+
+            //    }
+            //}
+            //catch (Exception)
+            //{
+
+            //    throw;
+            //}
+        }
+
+        public OperateResult<byte[]> SetDisplayPage(int page)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperateResult<byte[]> SetSystemMode(int mode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperateResult<byte[]> Start()
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperateResult<byte[]> Stop()
+        {
+            throw new NotImplementedException();
+        }
+
+        OperateResult IDK_BaseInterface.Start()
+        {
+            throw new NotImplementedException();
+        }
+
+        OperateResult IDK_BaseInterface.Stop()
+        {
+            throw new NotImplementedException();
+        }
 
 
         #endregion
+
+        #region ACSource
+
+
+        #endregion
+
+
+
+
     }
 }
