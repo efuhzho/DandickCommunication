@@ -263,35 +263,7 @@ namespace DKCommunication.Dandick.DK81Series
         public const byte ReadDCMeterRangeInfo = 0x13;
 
         #region 联机命令读取的型号和版本号
-        /// <summary>
-        /// 终端产品型号
-        /// </summary>
-        public string Model { get; set; }
-
-        /// <summary>
-        /// 设备编号
-        /// </summary>
-        public string Serail { get; set; }
-
-        /// <summary>
-        /// 主版本号
-        /// </summary>
-        public ushort VerA { get; set; }
-
-        /// <summary>
-        /// 次版本号
-        /// </summary>
-        public ushort VerB { get; set; }
-
-        /// <summary>
-        /// 基本功能状态
-        /// </summary>
-        public byte FunB { get; set; }
-
-        /// <summary>
-        /// 特殊功能状态
-        /// </summary>
-        public byte FunS { get; set; }
+       
         #endregion
 
         #endregion
@@ -358,32 +330,38 @@ namespace DKCommunication.Dandick.DK81Series
         //TODO 解析FuncS
 
         /// <summary>
-        /// 获取对应的数据的CRC校验码
+        /// 获取对应的数据的CRC校验码（异或和）
         /// </summary>
-        /// <param name="value">需要校验的数据，不包含CRC字节，包含报文头0x81</param>
+        /// <param name="sendBytes">需要校验的数据，不包含CRC字节，包含报文头0x81</param>
         /// <returns>返回CRC校验码</returns>
-        public static byte CRCcalculator(byte[] value)
+        public static byte CRCcalculator(byte[] sendBytes)
         {
-            byte crc = 0;   //CRC寄存器
-            //从第二个字节开始执行异或
-            for (int i = 1; i < value.Length; i++)
+            byte crc = 0;   
+
+            //从第二个字节开始执行异或:忽略报文头
+            for (int i = 1; i < sendBytes.Length; i++)
             {
-                crc ^= value[i];
+                crc ^= sendBytes[i];
             }
             return crc;
         }
 
-        public static bool CheckCRC(byte[] value)
+        /// <summary>
+        /// 核验接收的下位机数据校验码
+        /// </summary>
+        /// <param name="responseBytes">下位机回复的报文</param>
+        /// <returns>核验结果</returns>
+        public static bool CheckCRC(byte[] responseBytes)
         {
-            if (value == null) return false;
-            if (value.Length < 2) return false;
+            if (responseBytes == null) return false;
+            if (responseBytes.Length < 2) return false;
 
-            int length = value.Length;
+            int length = responseBytes.Length;
             byte[] buf = new byte[length - 1];
-            Array.Copy(value, 0, buf, 0, buf.Length);
+            Array.Copy(responseBytes, 0, buf, 0, buf.Length);
 
             byte CRC_Code = CRCcalculator(buf);
-            if (CRC_Code == value[length - 1])
+            if (CRC_Code == responseBytes[length - 1])
             {
                 return true;
             }
@@ -392,8 +370,7 @@ namespace DKCommunication.Dandick.DK81Series
                 return false;
             }
         }
-        #endregion      
-
+        #endregion  
     }
     /// <summary>
     /// DK81Device所支持的设备型号
