@@ -251,16 +251,19 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取交流标准源档位信息
         /// </summary>
         public const byte ReadRangeInfo = 0x11;
+        public const byte ReadRangeInfoLength = 7;
 
         /// <summary>
         /// 读取直流源档位信息
         /// </summary>
         public const byte ReadDCRangeInfo = 0x12;
+        public const byte ReadDCRangeInfoLength = 7;
 
         /// <summary>
         /// 读取直流表档位/量程信息
         /// </summary>
         public const byte ReadDCMeterRangeInfo = 0x13;
+        public const byte ReadDCMeterRangeInfoLength = 7;
         #endregion   
 
         #endregion

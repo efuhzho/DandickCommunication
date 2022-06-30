@@ -22,28 +22,43 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region Ranges
-        private byte Ua;
-        private byte Ub;
-        private byte Uc;
-        private byte Ia;
-        private byte Ib;
-        private byte Ic;
-        private byte IPa;
-        private byte IPb;
-        private byte IPc;
+        private byte RangeUa;
+        private byte RangeUb;
+        private byte RangeUc;
+        private byte RangeIa;
+        private byte RangeIb;
+        private byte RangeIc;
+        private byte RangeIPa;
+        private byte RangeIPb;
+        private byte RangeIPc;
+
         #endregion
 
 
         #endregion
 
         #region Public Properties
-        //public byte ACU_Range { get; set; } = 2;
-        //public byte ACI_Range { get; set; } = 1;
-        //public byte DCU_Range { get; set; }
-        //public byte DCI_Range { get; set; }
-        //public byte ACM_Range { get; set; }
-        //public byte DCM_Range { get; set; }
-        //public byte IP_Range { get; set; }
+        #region 档位
+        public byte Range_ACU { get; set; }
+        public byte Range_ACI { get; set; }
+        public byte Range_DCU { get; set; }
+        public byte Range_DCI { get; set; }
+        public byte Range_DCM { get; set; }
+        public byte Range_IProtect { get; set; }
+        #endregion
+
+        #region 相别
+        public float UA { get; set; }
+        public float UB{ get; set; }
+        public float UC { get; set; }
+        public float IA { get; set; }
+        public float IB { get; set; }
+        public float IC { get; set; }
+        public float IProtectA { get; set; }
+        public float IProtectB { get; set; }
+        public float IProtectC { get; set; }
+        #endregion
+
         #endregion
 
         #region Constructor
@@ -85,7 +100,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region Private create command helper 私有指令创建辅助方法
         /// <summary>
-        /// 创建7个字节长度指令时的【统一预处理】
+        /// 创建7个字节长度指令时的【统一预处理】，不带CRC
         /// </summary>
         /// <param name="commandCode">命令码</param>
         /// <param name="commandLength">指令长度</param>
@@ -101,7 +116,7 @@ namespace DKCommunication.Dandick.DK81Series
                 buffer[3] = BitConverter.GetBytes(commandLength)[0];
                 buffer[4] = BitConverter.GetBytes(commandLength)[1];
                 buffer[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
-                buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);
+               // buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);  //CRC放在后面调用者函数里添加，提高运行效率
                 return OperateResult.CreateSuccessResult(buffer);
             }
             catch (Exception ex)
@@ -126,7 +141,7 @@ namespace DKCommunication.Dandick.DK81Series
                 {
                     result.Content[6] = Convert.ToByte(data);
                     result.Content[7] = DK81CommunicationInfo.CRCcalculator(result.Content);
-                    return OperateResult.CreateSuccessResult(result.Content);
+                    return result;
                 }
                 else
                 {
@@ -146,17 +161,27 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="commandLength"></param>
         /// <param name="dataBytes"></param>
         /// <returns></returns>
-        //private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, byte[] dataBytes)
-        //{
-        //    try
-        //    {
-        //        OperateResult<byte[]> header = CreateCommandHelper(commandCode, commandLength);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new OperateResult<byte[]>(811200, ex.Message);
-        //    }
-        //}
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, byte[] dataBytes)
+        {            
+            try
+            {
+                OperateResult<byte[]> header = CreateCommandHelper(commandCode, commandLength);
+                if (header.IsSuccess)
+                {
+                    Array.Copy(dataBytes, 0, header.Content, 6, dataBytes.Length);
+                    header.Content[commandLength - 1] = DK81CommunicationInfo.CRCcalculator(header.Content);
+                    return header;
+                }
+                else
+                {
+                    return new OperateResult<byte[]>() { ErrorCode = 811203, Message = "创建指令失败" };                   
+                }
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811204, ex.Message);
+            }
+        }
         #endregion
 
         #region 指令生成器
@@ -168,8 +193,10 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> CreateHandShake( )
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.HandShake, DK81CommunicationInfo.HandShakeCommandLength);
+
             if (bytesHeader.IsSuccess)
             {
+                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
                 return bytesHeader;
             }
             else
@@ -258,6 +285,23 @@ namespace DKCommunication.Dandick.DK81Series
 
         //}
 
+        #endregion
+
+        #region 设备信息
+        private OperateResult<byte[]> CreateReadRangeInfo()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadRangeInfo, DK81CommunicationInfo.ReadRangeInfoLength);
+
+            if (bytesHeader.IsSuccess)
+            {
+                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811201, "创建指令失败");
+            }
+        }
         #endregion
 
         #endregion
