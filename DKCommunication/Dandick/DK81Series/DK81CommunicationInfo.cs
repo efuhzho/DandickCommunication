@@ -84,8 +84,8 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置源相位参数
         /// </summary>
-        public const byte WriteSetPhase = 0x33;
-        public const ushort WriteSetPhaseLength = 31;
+        public const byte WritePhase = 0x33;
+        public const ushort WritePhaseLength = 31;
 
         /// <summary>
         /// 设置源频率参数:当 Fa=Fb!=Fc 时，Flag=2；Fa=Fb=Fc 时，Flag=3,只设置Fa则三相同频
@@ -97,14 +97,14 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置源接线模式:
         /// </summary>
-        public const byte WetWireMode = 0x35;   //TODO 枚举   PAGE 8
-        public const ushort WetWireModeLength = 8;
+        public const byte SetWireMode = 0x35;   //TODO 枚举   PAGE 8
+        public const ushort SetWireModeLength = 8;
 
         /// <summary>
         /// 闭环控制使能命令：HarmonicMode ：谐波模式，0-以真有效值的百分比输入谐波（有效值恒定）；1-以基波值的百分比输入谐波（基波恒定）
         /// </summary>
-        public const byte WriteClosedLoop = 0x36;
-        public const ushort WriteClosedLoopLength = 9;
+        public const byte SetClosedLoop = 0x36;
+        public const ushort SetClosedLoopLength = 9;
 
         /// <summary>
         /// 设置电能校验参数

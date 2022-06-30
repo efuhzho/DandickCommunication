@@ -6,19 +6,11 @@ using System.Threading.Tasks;
 
 namespace DKCommunication.Dandick.DKInterface
 {
-   public interface InterfaceBase
+   public interface DKInterfaceBase
     {
         #region Public Properties
 
-        /// <summary>
-        /// 指示是否具有交流电压输出功能
-        /// </summary>
-        bool IsACU_Activated { get; set; }
-
-        /// <summary>
-        /// 指示是否具有交流电流输出功能
-        /// </summary>
-        bool IsACI_Activated { get; set; }
+      
 
         /// <summary>
         /// 指示是否具有直流电压输出功能

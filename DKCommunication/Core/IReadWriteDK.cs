@@ -10,7 +10,7 @@ using DKCommunication.Dandick.DKInterface;
 
 namespace DKCommunication.Core
 {
-    public interface IReadWriteDK : InterfaceBase
+    public interface IReadWriteDK : DKInterfaceBase
     {
         #region Public Properties
      

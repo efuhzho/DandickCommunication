@@ -27,7 +27,7 @@ namespace DKCommunication.Core
         /// <param name="dataFormat">数据规则</param>
         public ByteTransformBase( DataFormat dataFormat )
         {
-            this.DataFormat = dataFormat;
+            DataFormat = dataFormat;
         }
 
         #endregion
