@@ -146,17 +146,17 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="commandLength"></param>
         /// <param name="dataBytes"></param>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, byte[] dataBytes)
-        {
-            try
-            {
-                OperateResult<byte[]> header = CreateCommandHelper(commandCode, commandLength);
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>(811200, ex.Message);
-            }
-        }
+        //private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, byte[] dataBytes)
+        //{
+        //    try
+        //    {
+        //        OperateResult<byte[]> header = CreateCommandHelper(commandCode, commandLength);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new OperateResult<byte[]>(811200, ex.Message);
+        //    }
+        //}
         #endregion
 
         #region 指令生成器
@@ -252,11 +252,11 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
 
-        public OperateResult<byte[]> CreatSetRange( )
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetRange, DK81CommunicationInfo.SetRangeLength);
+        //public OperateResult<byte[]> CreatSetRange( )
+        //{
+        //    OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetRange, DK81CommunicationInfo.SetRangeLength);
 
-        }
+        //}
 
         #endregion
 
