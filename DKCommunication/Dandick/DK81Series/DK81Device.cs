@@ -73,14 +73,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【联机命令】
         /// </summary>
         /// <returns>带有信息的结果</returns>
-        public OperateResult<byte[]> Handshake()   
+        public OperateResult<byte[]> Handshake()
         {
-            OperateResult<byte[]> buffer = CreateHandShake();
-
-            OperateResult<byte[]> response = CheckResponse(buffer.Content);
-
             try
             {
+                OperateResult<byte[]> buffer = CreateHandShake();
+                OperateResult<byte[]> response = CheckResponse(buffer.Content);
                 if (response.IsSuccess)
                 {
                     return OperateResult.CreateSuccessResult(response.Content);
