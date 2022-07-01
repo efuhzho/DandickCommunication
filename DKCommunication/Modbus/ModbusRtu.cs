@@ -9,48 +9,7 @@ using DKCommunication.Core.Address;
 
 namespace DKCommunication.ModBus
 {
-    /// <summary>
-    /// Modbus-Rtu通讯协议的类库，多项式码0xA001
-    /// </summary>
-    /// <remarks>
-    /// 本客户端支持的标准的modbus-rtu协议，自动实现了CRC16的验证，地址格式采用富文本表示形式
-    /// <note type="important">
-    /// 地址共可以携带3个信息，最完整的表示方式"s=2;x=3;100"，对应的modbus报文是 02 03 00 64 00 01 的前四个字节，站号，功能码，起始地址，下面举例
-    /// <list type="definition">
-    /// <item>
-    /// <term>读取线圈</term>
-    /// <description>ReadCoil("100")表示读取线圈100的值，ReadCoil("s=2;100")表示读取站号为2，线圈地址为100的值</description>
-    /// </item>
-    /// <item>
-    /// <term>读取离散输入</term>
-    /// <description>ReadDiscrete("100")表示读取离散输入100的值，ReadDiscrete("s=2;100")表示读取站号为2，离散地址为100的值</description>
-    /// </item>
-    /// <item>
-    /// <term>读取寄存器</term>
-    /// <description>ReadInt16("100")表示读取寄存器100的值，ReadInt16("s=2;100")表示读取站号为2，寄存器100的值</description>
-    /// </item>
-    /// <item>
-    /// <term>读取输入寄存器</term>
-    /// <description>ReadInt16("x=4;100")表示读取输入寄存器100的值，ReadInt16("s=2;x=4;100")表示读取站号为2，输入寄存器100的值</description>
-    /// </item>
-    /// </list>
-    /// 对于写入来说也是一致的
-    /// <list type="definition">
-    /// <item>
-    /// <term>写入线圈</term>
-    /// <description>WriteCoil("100",true)表示读取线圈100的值，WriteCoil("s=2;100",true)表示读取站号为2，线圈地址为100的值</description>
-    /// </item>
-    /// <item>
-    /// <term>写入寄存器</term>
-    /// <description>Write("100",(short)123)表示写寄存器100的值123，Write("s=2;100",(short)123)表示写入站号为2，寄存器100的值123</description>
-    /// </item>
-    /// </list>
-    /// </note>
-    /// </remarks>
-    /// <example>
-    /// 基本的用法请参照下面的代码示例，初始化部分的代码省略
-    /// <code lang="cs" source="HslCommunication_Net45.Test\Documentation\Samples\Modbus\Modbus.cs" region="Example2" title="Modbus示例" />
-    /// </example>
+    
     public class ModbusRtu : SerialDeviceBase<ReverseWordTransform>
     {
         #region Constructor

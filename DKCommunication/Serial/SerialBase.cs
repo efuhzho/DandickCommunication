@@ -125,18 +125,23 @@ namespace DKCommunication.Serial
         {
             hybirdLock.Enter();
 
+            //是否先清空缓存
             if (IsClearCacheBeforeRead)
             {
                 ClearSerialCache();
             }
 
+            //发送报文
             OperateResult sendResult = SPSend(SP_ReadData, send);
+
+            //发送报文失败
             if (!sendResult.IsSuccess)
             {
                 hybirdLock.Leave();
                 return OperateResult.CreateFailedResult<byte[]>(sendResult);
             }
 
+            //发送报文成功则接收数据
             OperateResult<byte[]> receivedResult = SPReceived(SP_ReadData, true);
             hybirdLock.Leave();
 

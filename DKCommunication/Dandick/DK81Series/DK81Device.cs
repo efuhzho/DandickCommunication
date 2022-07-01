@@ -4,7 +4,7 @@ using DKCommunication.Dandick.DKInterface;
 
 namespace DKCommunication.Dandick.DK81Series
 {
-    public class DK81Device : DK81CommandBuilder,IDK_ACSource,IDK_BaseInterface,IDK_DCMeter,IDK_DCSource,IDK_ElectricityModel,IDK_IOModel                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
+    public class DK81Device : DK81Command, IDK_BaseInterface/*,IDK_ACSource,IDK_DCMeter,IDK_DCSource,IDK_ElectricityModel,IDK_IOModel*/                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
         #region 私有字段
         #endregion
@@ -39,23 +39,25 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 解析回复报文并返回解析数据
+        /// </summary>
+        /// <returns>解析的数据</returns>
         public OperateResult Handshake()
         {
-            throw new NotImplementedException();
+            try
+            {
+                OperateResult<byte[]> result = HandshakeCommand();
+                if (result.IsSuccess)
+                {
+                    
+                }
+            }
+            catch (Exception)
+            {
 
-            //try
-            //{
-            //    OperateResult result = HandshakeCommand();
-            //    if (result.IsSuccess)
-            //    {
-
-            //    }
-            //}
-            //catch (Exception)
-            //{
-
-            //    throw;
-            //}
+                throw;
+            }
         }
 
         public OperateResult<byte[]> SetDisplayPage(int page)
@@ -91,9 +93,11 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion
 
-        #region ACSource
+        #region private Methods Helper
+        //private OperateResult<OperateResult> MethodHelper(OperateResult<byte[]> command)
+        //{
 
-
+        //}
         #endregion
 
 

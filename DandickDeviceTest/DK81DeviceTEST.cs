@@ -15,22 +15,23 @@ namespace DandickDeviceTest
         /// </summary>
         [Fact]
         public void HandshakeTEST( )
-        {           
+        {  
+            
             dandick.SerialPortInni("com6");
             dandick.Open();
             if (dandick.IsOpen())
             {
-                var result = dandick.Handshake();
-                if (dandick.Handshake().IsSuccess)
-                {
-                    Assert.Equal(0x05, result.Content[1]);
-                    Assert.Equal(38, result.Content.Length);
-                    Assert.Equal(DK81CommunicationInfo.HandShake,result.Content[5]);
-                }
-                else 
-                {
-                    Assert.True(result.Content==null);                    
-                }
+                //var result = dandick.Handshake();
+                //if (dandick.Handshake().IsSuccess)
+                //{
+                //    Assert.Equal(0x05, result.Content[1]);
+                //    Assert.Equal(38, result.Content.Length);
+                //    Assert.Equal(DK81CommunicationInfo.HandShake,result.Content[5]);
+                //}
+                //else 
+                //{
+                //    Assert.True(result.Content==null);                    
+                //}
             }
                       
         }
