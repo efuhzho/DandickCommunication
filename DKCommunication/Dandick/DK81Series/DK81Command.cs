@@ -113,7 +113,7 @@ namespace DKCommunication.Dandick.DK81Series
             //预创建报文失败
             else
             {
-                return OperateResult.CreateFailedResult<byte[]>(bytesHeader);   // TODO 感悟：只有异常时才需要NEW OPERATERESULT
+                return bytesHeader;   // TODO 感悟：只有异常时才需要NEW OPERATERESULT
             }
         }
 
@@ -315,6 +315,12 @@ namespace DKCommunication.Dandick.DK81Series
                 return response;
             }
 
+            //获取回复成功 且 回复OK
+            if (send[5] == 0x4B)
+            {
+                return response; 
+            }
+
             // 长度校验
             if (response.Content.Length < 7)
             {
@@ -327,12 +333,13 @@ namespace DKCommunication.Dandick.DK81Series
                 return new OperateResult<byte[]>(StringResources.Language.CRCCheckFailed + SoftBasic.ByteToHexString(response.Content, ' '));
             }
 
-            // 发生了错误
+            // 检查是否报故障：是     //TODO 随时主动报故障的问题
             if (response.Content[5] == 0x52)
             {
                 return new OperateResult<byte[]>(response.Content[6], ((ErrorCode)response.Content[6]).ToString()); //TODO 测试第二种故障码解析:/*DK81CommunicationInfo.GetErrorMessageByErrorCode(response.Content[6])*/
             }
 
+            //检查命令码：命令码不一致且不是OK命令
             if (send[5] != response.Content[5] && send[5] != 0x4B)
             {
                 return new OperateResult<byte[]>(response.Content[5], $"Receive Command Check Failed: ");
@@ -349,32 +356,18 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 执行【联机命令】并返回回复报文
         /// </summary>
-        /// <returns>带有信息的结果</returns>
+        /// <returns>下位机回复的有效报文</returns>
         public OperateResult<byte[]> HandshakeCommand( )
         {
-
             OperateResult<byte[]> createResult = CreateHandShake();
-
             //创建指令失败
             if (!createResult.IsSuccess)
             {
-                return new OperateResult<byte[]>(8113, createResult.Message);
+                return createResult;
             }
-
-            //创建指令成功则获取回复数据
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
             OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
-
-            //回复的数据正确
-            if (responseBytes.IsSuccess)
-            {
-                return responseBytes;
-            }
-
-            //回复的数据有误
-            else
-            {
-                return OperateResult.CreateFailedResult<byte[]>(responseBytes);
-            }
+            return responseBytes;           
         }
         #endregion
     }

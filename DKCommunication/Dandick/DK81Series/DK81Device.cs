@@ -43,17 +43,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 解析回复报文并返回解析数据
         /// </summary>
         /// <returns>解析的数据</returns>
-        public OperateResult Handshake( )
+        public OperateResult<byte[]> Handshake( )
         {
-            OperateResult<byte[]> responseBytes = HandshakeCommand();
-            if (responseBytes.IsSuccess)
-            {
-
-            }
-            else
-            {
-
-            }
+           return HandshakeCommand();            
         }
 
         public OperateResult<byte[]> SetDisplayPage(int page)
@@ -74,19 +66,7 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> Stop( )
         {
             throw new NotImplementedException();
-        }
-
-        OperateResult IDK_BaseInterface.Start( )
-        {
-            throw new NotImplementedException();
-        }
-
-        OperateResult IDK_BaseInterface.Stop( )
-        {
-            throw new NotImplementedException();
-        }
-
-
+        }    
         #endregion
 
         #region private Methods Helper
