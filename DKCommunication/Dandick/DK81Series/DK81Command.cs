@@ -113,7 +113,7 @@ namespace DKCommunication.Dandick.DK81Series
             //预创建报文失败
             else
             {
-                return OperateResult.CreateFailedResult<byte[]>(bytesHeader);
+                return OperateResult.CreateFailedResult<byte[]>(bytesHeader);   // TODO 感悟：只有异常时才需要NEW OPERATERESULT
             }
         }
 
@@ -347,7 +347,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region Public Commands
         /// <summary>
-        /// 执行【联机命令】并获取回复报文
+        /// 执行【联机命令】并返回回复报文
         /// </summary>
         /// <returns>带有信息的结果</returns>
         public OperateResult<byte[]> HandshakeCommand( )
@@ -362,18 +362,18 @@ namespace DKCommunication.Dandick.DK81Series
             }
 
             //创建指令成功则获取回复数据
-            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
 
             //回复的数据正确
-            if (response.IsSuccess)
+            if (responseBytes.IsSuccess)
             {
-                return response;
+                return responseBytes;
             }
 
             //回复的数据有误
             else
             {
-                return OperateResult.CreateFailedResult<byte[]>(response);
+                return OperateResult.CreateFailedResult<byte[]>(responseBytes);
             }
         }
         #endregion

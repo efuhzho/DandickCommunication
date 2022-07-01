@@ -13,7 +13,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 无参构造方法，默认ID = 0;
         /// </summary>
-        public DK81Device() : base()
+        public DK81Device( ) : base()
         {
 
         }
@@ -29,12 +29,12 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region Base
-        public OperateResult<byte[]> Calibrate_ClearData()
+        public OperateResult<byte[]> Calibrate_ClearData( )
         {
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> Calibrate_Save()
+        public OperateResult<byte[]> Calibrate_Save( )
         {
             throw new NotImplementedException();
         }
@@ -43,20 +43,16 @@ namespace DKCommunication.Dandick.DK81Series
         /// 解析回复报文并返回解析数据
         /// </summary>
         /// <returns>解析的数据</returns>
-        public OperateResult Handshake()
+        public OperateResult Handshake( )
         {
-            try
-            {
-                OperateResult<byte[]> result = HandshakeCommand();
-                if (result.IsSuccess)
-                {
-                    
-                }
-            }
-            catch (Exception)
+            OperateResult<byte[]> responseBytes = HandshakeCommand();
+            if (responseBytes.IsSuccess)
             {
 
-                throw;
+            }
+            else
+            {
+
             }
         }
 
@@ -70,22 +66,22 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> Start()
+        public OperateResult<byte[]> Start( )
         {
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> Stop()
+        public OperateResult<byte[]> Stop( )
         {
             throw new NotImplementedException();
         }
 
-        OperateResult IDK_BaseInterface.Start()
+        OperateResult IDK_BaseInterface.Start( )
         {
             throw new NotImplementedException();
         }
 
-        OperateResult IDK_BaseInterface.Stop()
+        OperateResult IDK_BaseInterface.Stop( )
         {
             throw new NotImplementedException();
         }

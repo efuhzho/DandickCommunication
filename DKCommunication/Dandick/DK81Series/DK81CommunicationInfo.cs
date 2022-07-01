@@ -29,8 +29,8 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 系统应答命令:OK   ('K')
         /// </summary>
-        public const byte Confirmed = 0x4B;      
-        public const ushort ConfirmedLength = 8;
+        public const byte OK = 0x4B;      
+        public const ushort OKLength = 8;
 
         /// <summary>
         /// 联机命令，读取终端型号和版本号：Link    ('L')
