@@ -199,12 +199,50 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
         #region 设备信息
         /// <summary>
-        /// 预创建读取交流标准源和标准表档位信息报文
+        /// 创建读取交流标准源和标准表档位信息报文
         /// </summary>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateReadACRangeInfo( )
+        private OperateResult<byte[]> CreateReadACSourceRangeInfo( )
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadRangeInfo, DK81CommunicationInfo.ReadRangeInfoLength);
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceRangeInfo, DK81CommunicationInfo.ReadACSourceRangeInfoLength);
+
+            if (bytesHeader.IsSuccess)
+            {
+                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811201, "创建指令失败");
+            }
+        }
+
+        /// <summary>
+        /// 创建读取直流源档位信息的报文
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadDCSourceRangeInfo()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceRangeInfo, DK81CommunicationInfo.ReadDCSourceRangeInfoLength);
+
+            if (bytesHeader.IsSuccess)
+            {
+                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
+                return bytesHeader;
+            }
+            else
+            {
+                return new OperateResult<byte[]>(811201, "创建指令失败");
+            }
+        }
+
+        /// <summary>
+        /// 创建读取直流表档位信息的报文
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadDCMeterourceRangeInfo()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRangeInfo, DK81CommunicationInfo.ReadDCMeterRangeInfoLength);
 
             if (bytesHeader.IsSuccess)
             {
