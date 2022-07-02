@@ -198,7 +198,11 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion
         #region 设备信息
-        private OperateResult<byte[]> CreateReadRangeInfo( )
+        /// <summary>
+        /// 预创建读取交流标准源和标准表档位信息报文
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadACRangeInfo( )
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadRangeInfo, DK81CommunicationInfo.ReadRangeInfoLength);
 
@@ -306,7 +310,7 @@ namespace DKCommunication.Dandick.DK81Series
         #region Core Interative
         protected virtual OperateResult<byte[]> CheckResponse(byte[] send)
         {
-            // 核心交互
+            // 发送报文并获取回复报文
             OperateResult<byte[]> response = ReadBase(send);
 
             //获取回复不成功
@@ -316,7 +320,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
 
             //获取回复成功 且 回复OK
-            if (send[5] == 0x4B)
+            if (response.Content[5] == 0x4B)
             {
                 return response; 
             }
@@ -340,7 +344,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
 
             //检查命令码：命令码不一致且不是OK命令
-            if (send[5] != response.Content[5] && send[5] != 0x4B)
+            if (send[5] != response.Content[5])
             {
                 return new OperateResult<byte[]>(response.Content[5], $"Receive Command Check Failed: ");
             }
