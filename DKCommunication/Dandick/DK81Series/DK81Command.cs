@@ -1,13 +1,14 @@
 ﻿using DKCommunication.Dandick.Base;
 using System;
 using DKCommunication.BasicFramework;
+using DKCommunication.Core;
 
 namespace DKCommunication.Dandick.DK81Series
 {
     /// <summary>
     /// 丹迪克81协议的命令格式，可以携带站号（ID）、命令码（CommandCode）、数据（DATA）
     /// </summary>
-    public class DK81Command : DK_DeviceBase
+    public class DK81Command: DK_DeviceBase<RegularByteTransform>
     {
         #region 私有字段
         #region ID

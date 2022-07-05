@@ -182,7 +182,6 @@ namespace DKCommunication.Core
 
         #endregion
 
-
         #region Get Bytes From Value
         
 

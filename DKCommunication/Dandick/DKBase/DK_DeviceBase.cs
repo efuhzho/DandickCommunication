@@ -9,8 +9,12 @@ namespace DKCommunication.Dandick.Base
     /// <summary>
     /// 所有丹迪克设备通信协议的地址基础类
     /// </summary>
-    public class DK_DeviceBase : SerialBase
+    public class DK_DeviceBase <TTransform>: SerialBase where TTransform:IByteTransform,new()
     {
+        public DK_DeviceBase()
+        {
+            byteTransform = new TTransform();    // 实例化数据转换规则
+        }
         #region Public Properties
         /// <summary>
         /// 设备地址ID
@@ -30,7 +34,17 @@ namespace DKCommunication.Dandick.Base
         /// <summary>
         /// 设备编号
         /// </summary>
-        public string SN { get; set; }    
+        public string SN { get; set; }
+
+        /// <summary>
+        /// 当前客户端的数据变换机制，当你需要从字节数据转换类型数据的时候需要。
+        /// </summary>
+        public TTransform ByteTransform
+        {
+            get { return byteTransform; }
+            set { byteTransform = value; }
+        }
+        private TTransform byteTransform;                // 数据变换的接口
         #endregion
 
         #region 解析ID

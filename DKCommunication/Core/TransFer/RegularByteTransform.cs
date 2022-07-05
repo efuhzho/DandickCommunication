@@ -26,7 +26,7 @@ namespace DKCommunication.Core
         /// <summary>
         /// 实例化一个默认的对象
         /// </summary>
-        public RegularByteTransform( )
+        public RegularByteTransform( ):base()
         {
 
         }
@@ -41,8 +41,5 @@ namespace DKCommunication.Core
         }
 
         #endregion
-
-
-
     }
 }
