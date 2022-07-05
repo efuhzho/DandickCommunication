@@ -48,6 +48,21 @@ namespace DKCommunication.Dandick.DK81Series
            return HandshakeCommand();            
         }
 
+        public OperateResult<byte[]> ReadACSourceRangeInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperateResult<byte[]> ReadDCMeterRangeInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperateResult<byte[]> ReadDCSourceRangeInfo()
+        {
+            throw new NotImplementedException();
+        }
+
         public OperateResult<byte[]> SetDisplayPage(int page)
         {
             throw new NotImplementedException();
