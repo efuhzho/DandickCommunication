@@ -368,6 +368,8 @@ namespace DKCommunication.Dandick.DK81Series
                 return false;
             }
         }
+
+        
         #endregion  
     }
 

@@ -7,6 +7,25 @@ namespace DKCommunication.Dandick.DK81Series
     public class DK81Device : DK81Command, IDK_BaseInterface/*,IDK_ACSource,IDK_DCMeter,IDK_DCSource,IDK_ElectricityModel,IDK_IOModel*/                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
         #region 私有字段
+        /// <summary>
+        /// 主版本号
+        /// </summary>
+        private byte _VerA;
+
+        /// <summary>
+        /// 次版本号
+        /// </summary>
+        private byte _VerB;
+
+        /// <summary>
+        /// 基本功能状态
+        /// </summary>
+        private byte _FuncB;
+
+        /// <summary>
+        /// 特殊功能状态
+        /// </summary>
+        private byte _FuncS;
         #endregion
 
         #region Constructor   
@@ -45,7 +64,22 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>解析的数据</returns>
         public OperateResult<byte[]> Handshake( )
         {
-           return HandshakeCommand();            
+            return HandshakeCommand();
+        }
+
+        public OperateResult<byte[]> ReadACSourceRangeInfo( )
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperateResult<byte[]> ReadDCMeterRangeInfo( )
+        {
+            throw new NotImplementedException();
+        }
+
+        public OperateResult<byte[]> ReadDCSourceRangeInfo( )
+        {
+            throw new NotImplementedException();
         }
 
         public OperateResult<byte[]> SetDisplayPage(int page)
@@ -66,14 +100,18 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> Stop( )
         {
             throw new NotImplementedException();
-        }    
+        }
         #endregion
 
         #region private Methods Helper
-        //private OperateResult<OperateResult> MethodHelper(OperateResult<byte[]> command)
-        //{
+        private void AnalysisHandshake( )
+        {
+            var response = HandshakeCommand();
+            if (response.IsSuccess)
+            {
 
-        //}
+            }
+        }
         #endregion
 
 
