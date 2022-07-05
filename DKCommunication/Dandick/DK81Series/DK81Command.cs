@@ -14,12 +14,15 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 接收终端的设备ID
         /// </summary>
-        private readonly byte RxID;
+        private readonly byte _RxID;
 
         /// <summary>
         /// 发送终端的设备ID
         /// </summary>
-        private readonly byte TxID;
+        private readonly byte _TxID;
+
+      
+
         #endregion
         #region Ranges
         private byte RangeUa;
@@ -65,8 +68,8 @@ namespace DKCommunication.Dandick.DK81Series
             var result = AnalysisID(0);
             if (result.IsSuccess)
             {
-                RxID = result.Content[1];
-                TxID = result.Content[0];
+                _RxID = result.Content[1];
+                _TxID = result.Content[0];
             }
             else
             {
@@ -83,8 +86,8 @@ namespace DKCommunication.Dandick.DK81Series
             var result = AnalysisID(id);
             if (result.IsSuccess)
             {
-                RxID = result.Content[1];
-                TxID = result.Content[0];
+                _RxID = result.Content[1];
+                _TxID = result.Content[0];
             }
             else
             {
@@ -269,8 +272,8 @@ namespace DKCommunication.Dandick.DK81Series
             {
                 byte[] buffer = new byte[commandLength];
                 buffer[0] = DK81CommunicationInfo.FrameID;
-                buffer[1] = RxID;
-                buffer[2] = TxID;
+                buffer[1] = _RxID;
+                buffer[2] = _TxID;
                 buffer[3] = BitConverter.GetBytes(commandLength)[0];
                 buffer[4] = BitConverter.GetBytes(commandLength)[1];
                 buffer[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
