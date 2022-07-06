@@ -37,7 +37,7 @@ namespace DKCommunication.Core
         /// <param name="dataFormat">解析规则</param>
         public RegularByteTransform(DataFormat dataFormat) : base( dataFormat )
         {
-
+           
         }
 
         #endregion

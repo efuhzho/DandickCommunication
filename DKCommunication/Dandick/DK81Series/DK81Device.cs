@@ -23,7 +23,10 @@ namespace DKCommunication.Dandick.DK81Series
         private List<float> _iRanges;
         private List<float> _iProtectRanges;
 
-
+        private byte _DCURangesCount;
+        private byte _DCIRangesCount;
+        private List<float> _DCURanges;
+        private List<float> _DCIRanges;
 
         #endregion
 
@@ -53,15 +56,20 @@ namespace DKCommunication.Dandick.DK81Series
         public bool IsPQ_Activated { get; set; }
         public bool IsIO_Activated { get; set; }
 
-        public byte URangesCount => _uRangesCount;
-        public byte IRangesCount => _iRangesCount;       
+        public byte ACU_RangesCount => _uRangesCount;
+        public byte ACI_RangesCount => _iRangesCount;
         public byte IProtectRangesCount => _iProtectRangesCount;
-        public List<float> URanges => _uRanges;
-        public List<float> IRanges => _iRanges;
+        public List<float> ACU_Ranges => _uRanges;
+        public List<float> ACI_Ranges => _iRanges;
         public List<float> IProtectRanges => _iProtectRanges;
         public byte IRanges_Asingle => _iRanges_Asingle;
         public byte IProtectRanges_Asingle => _iProtectRanges_Asingle;
         public byte URanges_Asingle => _uRanges_Asingle;
+
+        public byte DCU_RangesCount => _DCURangesCount;
+        public byte DCI_RangesCount => _DCIRangesCount;
+        public List<float> DCU_Ranges => _DCURanges;
+        public List<float> DCI_Ranges => _DCIRanges;
 
         #endregion
 
@@ -121,6 +129,7 @@ namespace DKCommunication.Dandick.DK81Series
             if (HandshakeCommand().IsSuccess)
             {
                 AnalysisHandshake(HandshakeCommand().Content);
+                ReadACSourceRanges();
             }
             return HandshakeCommand();
         }
@@ -150,7 +159,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> ReadDCRangeInfo()
+        public OperateResult<byte[]> ReadDCSourceRanges()
         {
             throw new NotImplementedException();
         }
@@ -172,7 +181,11 @@ namespace DKCommunication.Dandick.DK81Series
 
         public OperateResult<byte[]> ReadACSourceRanges()
         {
-            throw new NotImplementedException();
+            if (ReadACSourceRangesCommand().IsSuccess)
+            {
+                AnalysisReadACSourceRanges(ReadACSourceRangesCommand().Content);
+            }
+            return ReadACSourceRangesCommand();
         }
 
         public OperateResult<byte[]> SetACSourceRange()
@@ -293,7 +306,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region private Methods Helper
         /// <summary>
-        /// 自动获取设备信息：并非所有设备都会回复有效信息
+        /// 解析设备信息：并非所有设备都会回复有效信息
         /// </summary>
         private void AnalysisHandshake(byte[] response)
         {
@@ -330,7 +343,11 @@ namespace DKCommunication.Dandick.DK81Series
             //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    
         }
 
-        private void AnalysisReadACSourceRange(byte[] response)
+        /// <summary>
+        /// 解析交流源档位
+        /// </summary>
+        /// <param name="response">下位机回复的档位信息报文</param>
+        private void AnalysisReadACSourceRanges(byte[] response)
         {
             try
             {
@@ -351,6 +368,11 @@ namespace DKCommunication.Dandick.DK81Series
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        private void AnalysisReadDCSourceRanges(byte[] response)
+        {
+
         }
 
         #endregion

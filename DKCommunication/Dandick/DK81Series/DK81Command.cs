@@ -416,9 +416,47 @@ namespace DKCommunication.Dandick.DK81Series
             return responseBytes;           
         }
 
+        /// <summary>
+        /// 读取交流源档位
+        /// </summary>
+        /// <returns>下位机回复的有效报文</returns>
         public OperateResult<byte[]> ReadACSourceRangesCommand()
         {
             OperateResult<byte[]> createResult = CreateReadACSourceRanges();
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 读取直流源档位
+        /// </summary>
+        /// <returns>下位机回复的有效报文</returns>
+        public OperateResult<byte[]> ReadDCSourceRangesCommand()
+        {
+            OperateResult<byte[]> createResult = CreateReadDCSourceRanges();
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 读取直流表档位
+        /// </summary>
+        /// <returns>下位机回复的有效报文</returns>
+        public OperateResult<byte[]> ReadDCMeterRangesCommand()
+        {
+            OperateResult<byte[]> createResult = CreateReadDCMeterourceRanges();
             //创建指令失败
             if (!createResult.IsSuccess)
             {

@@ -21,12 +21,12 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 电压档位个数
         /// </summary>
-        byte URangesCount { get; }
+        byte ACU_RangesCount { get; }
 
         /// <summary>
         /// 电流档位个数
         /// </summary>
-        byte IRangesCount { get; }
+        byte ACI_RangesCount { get; }
 
         /// <summary>
         /// 保护电流档位个数
@@ -51,12 +51,12 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 电压档位集合
         /// </summary>
-        List<float> URanges { get; }
+        List<float> ACU_Ranges { get; }
 
         /// <summary>
         /// 电流档位集合
         /// </summary>
-        List<float> IRanges { get; }
+        List<float> ACI_Ranges { get; }
 
         /// <summary>
         /// 保护电流档位集合

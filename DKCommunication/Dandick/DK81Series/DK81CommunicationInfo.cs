@@ -360,6 +360,7 @@ namespace DKCommunication.Dandick.DK81Series
             byte[] buf = new byte[length - 1];
             Array.Copy(responseBytes, 0, buf, 0, buf.Length);
 
+            //断言
             byte CRC_Code = CRCcalculator(buf);
             if (CRC_Code == responseBytes[length - 1])
             {
