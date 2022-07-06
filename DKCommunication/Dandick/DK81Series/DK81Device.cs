@@ -34,13 +34,13 @@ namespace DKCommunication.Dandick.DK81Series
 
         }
 
-        public bool IsACU_Activated { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsACI_Activated { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsDCM_Activated { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsDCU_Activated { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsDCI_Activated { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsPQ_Activated { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsIO_Activated { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool IsACU_Activated { get; set; }
+        public bool IsACI_Activated { get; set; }
+        public bool IsDCM_Activated { get; set; }
+        public bool IsDCU_Activated { get; set; }
+        public bool IsDCI_Activated { get; set; }
+        public bool IsPQ_Activated { get; set; }
+        public bool IsIO_Activated { get; set; }
         #endregion
 
         #region Base
@@ -90,14 +90,15 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 解析回复报文并返回解析数据
+        /// 解析【联机指令】的回复报文，并单向初始化设备信息，不对初始化信息做任何判断
+        /// 【并非所有设备都会返回准确的设备信息】
         /// </summary>
-        /// <returns>解析的数据</returns>
+        /// <returns>包含信息的操作结果</returns>
         public OperateResult<byte[]> Handshake()
         {
             if (HandshakeCommand().IsSuccess)
             {
-                AnalysisHandshake();
+                AnalysisHandshake(HandshakeCommand().Content);
             }
             return HandshakeCommand();
         }
@@ -105,12 +106,7 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> ReadACSourceData()
         {
             throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> ReadACSourceRangeInfo()
-        {
-            throw new NotImplementedException();
-        }
+        }        
 
         public OperateResult<byte[]> ReadACSourceStatus()
         {
@@ -152,7 +148,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> ReadRangeInfo()
+        public OperateResult<byte[]> ReadACSourceRanges()
         {
             throw new NotImplementedException();
         }
@@ -275,38 +271,51 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region private Methods Helper
         /// <summary>
-        /// 
+        /// 自动获取设备信息：并非所有设备都会回复有效信息
         /// </summary>
-        private void AnalysisHandshake(OperateResult<byte[]> response)
-        {           
-            if (response.IsSuccess)
-            {
-                byte[] data = response.Content;
-                List<byte> dataList = data.ToList();
-                int modelLength = dataList.IndexOf(0x00, 6) - 5;    //model字节长度，包含0x00结束符
-                int serialLength = dataList.IndexOf(0x00, 8 + modelLength);     //设备编号字节长度，包含0x00结束符
+        private void AnalysisHandshake(byte[] response)
+        {
+            byte[] data = response;
+            List<byte> dataList = data.ToList();
 
-                byte[] model = new byte[modelLength - 1];
-                Array.Copy(data, 6, model, 0, modelLength - 1);
+            //解析设备型号
+            int endIndex = dataList.IndexOf(0x00, 6);
+            int modelLength = endIndex - 5;    //model字节长度，包含0x00结束符           
+            Model = ByteTransform.TransString(data, 6, modelLength, Encoding.ASCII);
 
-                byte verA = data[modelLength + 6];
-                byte verB = data[modelLength + 7];
+            //解析下位机版本号
+            byte verA = data[modelLength + 6];
+            byte verB = data[modelLength + 7];
+            Version = $"V{verA}.{verB}";
 
-                byte[] serial = new byte[serialLength - 1];
-                Array.Copy(data, 8 + modelLength, serial, 0, serialLength - 1);
+            //解析设备编号
+            int serialEndIndex = dataList.IndexOf(0x00, 8 + modelLength);
+            int serialLength = serialEndIndex - 7 - modelLength;     //设备编号字节长度，包含0x00结束符            
+            SN = ByteTransform.TransString(data, 8 + modelLength, serialLength, Encoding.ASCII);
 
-                byte funcB = data[data.Length - 3];
-                byte funcS = data[data.Length - 2];
-                var funb = DK81CommunicationInfo.GetFunctionsInfo(funcB);
-               //TODO var funs = DK81CommunicationInfo.GetFunctionsInfo(funcS);
+            //解析基本功能激活状态
+            byte funcB = data[data.Length - 3];
+           // byte funcS = data[data.Length - 2];
+            var funb = DK81CommunicationInfo.GetFunctionB(funcB);
+            IsACI_Activated = funb[0];   //交流电流源
+            IsACU_Activated = funb[0];   //交流电压源
+            IsDCU_Activated = funb[2];   //直流电压源功能
+            IsDCI_Activated = funb[2];   //直流电流源功能
+            IsDCM_Activated = funb[3];   //直流表功能
+            IsPQ_Activated = funb[4];    //电能校验功能
 
-                Model = ByteTransform.TransString(data, 6, 8, Encoding.ASCII);
-                SN = Encoding.ASCII.GetString(serial);
-                Version = $"V+{verA}+.+{verB}";
-                IsDCU_Activated = IsDCI_Activated = funb[0] == 1 ? true : false;    //直流源
-                IsDCM_Activated = funb[1] == 1 ? true : false;  //直流表
-                IsPQ_Activated = funb[2] == 1 ? true : false;   //电能校验
-            }         
+            //特殊功能状态解析，暂不处理
+            //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    
+        }
+
+        private void AnalysisReadACSourceRange()
+        {
+
+        }
+
+        public OperateResult<byte[]> ReadACSourceRangeInfo()
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

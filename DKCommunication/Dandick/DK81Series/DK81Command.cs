@@ -117,7 +117,7 @@ namespace DKCommunication.Dandick.DK81Series
             //预创建报文失败
             else
             {
-                return bytesHeader;   // TODO 感悟：只有异常时才需要NEW OPERATERESULT
+                return bytesHeader;   
             }
         }
 
@@ -217,7 +217,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
             else
             {
-                return new OperateResult<byte[]>(811201, "创建指令失败");
+                return bytesHeader;
             }
         }
 
@@ -236,7 +236,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
             else
             {
-                return new OperateResult<byte[]>(811201, "创建指令失败");
+                return bytesHeader;
             }
         }
 
@@ -255,7 +255,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
             else
             {
-                return new OperateResult<byte[]>(811201, "创建指令失败");
+                return bytesHeader;
             }
         }
         #endregion
@@ -349,7 +349,7 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
         #endregion
 
-        #region Core Interative
+        #region Core Interative 核心交互
         protected virtual OperateResult<byte[]> CheckResponse(byte[] send)
         {
             // 发送报文并获取回复报文
@@ -414,6 +414,19 @@ namespace DKCommunication.Dandick.DK81Series
             //创建指令成功则获取回复数据：（已保证数据的有效性）
             OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
             return responseBytes;           
+        }
+
+        public OperateResult<byte[]> ReadACSourceCommand()
+        {
+            OperateResult<byte[]> createResult = CreateReadACSourceRangeInfo();
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
         }
         #endregion
     }

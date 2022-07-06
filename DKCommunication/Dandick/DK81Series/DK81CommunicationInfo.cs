@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using DKCommunication.BasicFramework;
 
 namespace DKCommunication.Dandick.DK81Series
 {
@@ -313,20 +314,21 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// FunB解析：从字节解析设备具备了哪些功能
         /// </summary>
-        /// <param name="FuncB">读取的功能信息</param>
+        /// <param name="inByte">读取的功能信息</param>
         /// <returns>含有3个功能指示的数组：1为具备功能，0为不具备；Index(0)=直流源，Index(1)=直流表，Index(2)=电能校验</returns>
-        public static byte[] GetFunctionsInfo(byte FuncB)
+        public static bool[] GetFunctionB(byte inByte)
         {
-            byte[] functions = new byte[3];   //0x01:ACS;0x02:ACM;0x04:DCS;0x08:DCM;0x10:PQ
-
-            functions[0] = (byte)(((FuncB & 0x04) == 0x04) ? 1 : 0); //直流源
-            functions[1] = (byte)(((FuncB & 0x08) == 0x08) ? 1 : 0); //直流表
-            functions[2] = (byte)(((FuncB & 0x10) == 0x10) ? 1 : 0); //电能校验
-
-            return functions;
+            bool[] functions = SoftBasic.ByteToBoolArray(inByte); //0x01:ACS;0x02:ACM;0x04:DCS;0x08:DCM;0x10:PQ            
+            bool[] funcB = new bool[5];
+            funcB[0] = functions[0]; //交流源
+            funcB[1] = functions[1]; //交流表
+            funcB[2] = functions[2]; //直流源
+            funcB[3] = functions[3]; //直流表
+            funcB[4] = functions[4]; //电能校验
+            return funcB;
         }
         //TODO 解析FuncS
-
+        
         /// <summary>
         /// 获取对应的数据的CRC校验码（异或和）
         /// </summary>

@@ -18,103 +18,106 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         bool IsACI_Activated { get; set; }
 
+        byte UR_Number { get; set; }
+
+
         /// <summary>
         /// 源关闭命令
         /// </summary>
-        OperateResult<byte[]> StopACSource( );
+        OperateResult<byte[]> StopACSource();
 
         /// <summary>
         /// 源打开命令
         /// </summary>
-        OperateResult<byte[]> StartACSource( );
+        OperateResult<byte[]> StartACSource();
 
         /// <summary>
         /// 设置档位命令
         /// </summary>
-        OperateResult<byte[]> SetACSourceRange( );
+        OperateResult<byte[]> SetACSourceRange();
 
         /// <summary>
         /// 设置输出幅度参数
         /// </summary>
-        OperateResult<byte[]> WriteACSourceAmplitude( );
+        OperateResult<byte[]> WriteACSourceAmplitude();
 
         /// <summary>
         /// 设置相位参数
         /// </summary>
-        OperateResult<byte[]> WritePhase( );
+        OperateResult<byte[]> WritePhase();
 
         /// <summary>
         /// 设置频率参数
         /// </summary>
-        OperateResult<byte[]> WriteFrequency( );
+        OperateResult<byte[]> WriteFrequency();
 
         /// <summary>
         /// 设置接线模式
         /// </summary>
-        OperateResult<byte[]> SetWireMode( );
+        OperateResult<byte[]> SetWireMode();
 
         /// <summary>
         /// 闭环控制使能命令
         /// </summary>
-        OperateResult<byte[]> SetClosedLoop( );
+        OperateResult<byte[]> SetClosedLoop();
 
         /// <summary>
         /// 设置谐波参数
         /// </summary>
-        OperateResult<byte[]> WriteHarmonics( );
+        OperateResult<byte[]> WriteHarmonics();
 
         /// <summary>
         /// 读取交流源当前输出数据
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> ReadACSourceData( );
+        OperateResult<byte[]> ReadACSourceData();
 
         /// <summary>
         /// 交流源输出状态标志位：Flag=0表示输出稳定，Flag=1表示输出未稳定
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> ReadACSourceStatus( );
+        OperateResult<byte[]> ReadACSourceStatus();
 
         /// <summary>
         /// 设置有功功率参数
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> WriteWattPower( );
+        OperateResult<byte[]> WriteWattPower();
 
         /// <summary>
         /// 设置无功功率参数
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> WriteWattlessPower( );
+        OperateResult<byte[]> WriteWattlessPower();
 
         /// <summary>
         /// 切换交流校准档位
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> Calibrate_SwitchACRange( );
+        OperateResult<byte[]> Calibrate_SwitchACRange();
 
         /// <summary>
         /// 确认执行当前校准点的校准数据：在输入标准表数据后执行
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> Calibrate_DoAC( );
+        OperateResult<byte[]> Calibrate_DoAC();
 
         /// <summary>
         /// 读取交流源档位信息
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> ReadRangeInfo( );
+        OperateResult<byte[]> ReadACSourceRanges();
 
         /// <summary>
         /// 切换校准点命令
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> Calibrate_SwitchACPoint( );
+        OperateResult<byte[]> Calibrate_SwitchACPoint();
 
         /// <summary>
         /// 交流标准表和钳形表校准命令
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> Calibrate_DoACMeter( );     
+        OperateResult<byte[]> Calibrate_DoACMeter();
     }
 }

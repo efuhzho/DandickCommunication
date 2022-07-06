@@ -773,6 +773,29 @@ namespace DKCommunication.BasicFramework
         }
 
         /// <summary>
+        /// 将1个字节转换为bool数组
+        /// </summary>
+        /// <param name="InByte">原先的字节</param>
+        /// <param name="length">bool数组长度</param>
+        /// <returns>转换后的bool数组</returns>
+        public static bool[] ByteToBoolArray(byte InByte)
+        {
+            bool[] buffer = new bool[8];
+            if (InByte==0)
+            {
+                return buffer;
+            }
+            buffer[0] = (InByte & 0x01) == 0x01;
+            buffer[1] = (InByte & 0x02) == 0x02;
+            buffer[2] = (InByte & 0x04) == 0x04;
+            buffer[3] = (InByte & 0x08) == 0x08;
+            buffer[4] = (InByte & 0x10) == 0x10;
+            buffer[5] = (InByte & 0x20) == 0x20;
+            buffer[6] = (InByte & 0x40) == 0x40;
+            buffer[7] = (InByte & 0x80) == 0x80;
+            return buffer;
+        }
+        /// <summary>
         /// 从Byte数组中提取所有的位数组 ->
         /// Extracts a bit array from a byte array, length represents the number of digits
         /// </summary>
