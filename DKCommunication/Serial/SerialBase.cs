@@ -15,7 +15,7 @@ namespace DKCommunication.Serial
         /// <summary>
         /// 实例化一个无参的构造方法
         /// </summary>
-        public SerialBase( )
+        public SerialBase()
         {
             SP_ReadData = new SerialPort();
             hybirdLock = new SimpleHybirdLock();
@@ -86,7 +86,7 @@ namespace DKCommunication.Serial
         /// <summary>
         /// 打开一个新的串行端口连接
         /// </summary>
-        public void Open( )
+        public void Open()
         {
             if (!SP_ReadData.IsOpen)
             {
@@ -99,7 +99,7 @@ namespace DKCommunication.Serial
         /// 获取一个值，指示串口是否处于打开状态
         /// </summary>
         /// <returns>是或否</returns>
-        public bool IsOpen( )
+        public bool IsOpen()
         {
             return SP_ReadData.IsOpen;
         }
@@ -107,7 +107,7 @@ namespace DKCommunication.Serial
         /// <summary>
         /// 关闭端口连接
         /// </summary>
-        public void Close( )
+        public void Close()
         {
             if (SP_ReadData.IsOpen)
             {
@@ -152,7 +152,7 @@ namespace DKCommunication.Serial
         /// 清除串口缓冲区的数据，并返回该数据，如果缓冲区没有数据，返回的字节数组长度为0
         /// </summary>
         /// <returns>是否操作成功的结果</returns>
-        public OperateResult<byte[]> ClearSerialCache( )
+        public OperateResult<byte[]> ClearSerialCache()
         {
             return SPReceived(SP_ReadData, false);
         }
@@ -178,7 +178,7 @@ namespace DKCommunication.Serial
         /// 在打开端口时的初始化方法，按照协议的需求进行必要的重写
         /// </summary>
         /// <returns>是否初始化成功</returns>
-        protected virtual OperateResult InitializationOnOpen( )
+        protected virtual OperateResult InitializationOnOpen()
         {
             return OperateResult.CreateSuccessResult();
         }
@@ -187,11 +187,11 @@ namespace DKCommunication.Serial
         /// 在将要和服务器进行断开的情况下额外的操作，需要根据对应协议进行重写
         /// </summary>
         /// <returns>当断开连接时额外的操作结果</returns>
-        protected virtual OperateResult ExtraOnClose( )
+        protected virtual OperateResult ExtraOnClose()
         {
             return OperateResult.CreateSuccessResult();
         }
-        
+
         #endregion
 
         #region Private Method
@@ -238,7 +238,7 @@ namespace DKCommunication.Serial
                 Thread.Sleep(sleepTime);
                 try
                 {
-                    if (serialPort.BytesToRead < 1) 
+                    if (serialPort.BytesToRead < 1)
                     {
                         if ((DateTime.Now - start).TotalMilliseconds > ReceiveTimeout)
                         {
@@ -262,7 +262,7 @@ namespace DKCommunication.Serial
                     // 继续接收数据
                     int sp_receive = serialPort.Read(buffer, 0, buffer.Length);
                     ms.Write(buffer, 0, sp_receive);
-                    //break;    // TODO ?是否需要break跳出循环？待测试--周付宏 2022年6月21日
+                    // TODO ?是否需要break跳出循环？待测试-- 2022年6月21日
                 }
                 catch (Exception ex)
                 {
@@ -270,7 +270,6 @@ namespace DKCommunication.Serial
                     return new OperateResult<byte[]>(ex.Message);
                 }
             }
-
             //resetEvent.Set();
             byte[] result = ms.ToArray();
             ms.Dispose();
@@ -285,7 +284,7 @@ namespace DKCommunication.Serial
         /// 返回表示当前对象的字符串
         /// </summary>
         /// <returns>字符串</returns>
-        public override string ToString( )
+        public override string ToString()
         {
             return "SerialBase";
         }
@@ -335,7 +334,7 @@ namespace DKCommunication.Serial
         private readonly SerialPort SP_ReadData = null;                    // 串口交互的核心
         private readonly SimpleHybirdLock hybirdLock;                      // 数据交互的锁
         private ILogNet logNet;                                   // 日志存储
-        private int receiveTimeout = 5000;                        // 接收数据的超时时间
+        private int receiveTimeout = 1000;                        // 接收数据的超时时间
         private int sleepTime = 20;                               // 睡眠的时间
         private bool isClearCacheBeforeRead = false;              // 是否在发送前清除缓冲
         #endregion

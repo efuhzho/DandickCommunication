@@ -13,6 +13,13 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         bool IsDCM_Activated { get; set; }
 
+        // TODO byte M_Type { get; set; }   //单通道OR双通道
+        // TODO bool P_EN { get; set; }     //纹波
+        byte DCM_URangesCount { get; }
+        byte DCM_IRangesCount { get; }
+        List<float> DCM_URanges { get; }
+        List<float> DCM_IRanges { get; }
+
         /// <summary>
         /// 设置直流表量程
         /// </summary>
@@ -53,6 +60,6 @@ namespace DKCommunication.Dandick.DKInterface
         /// 读取指标表档位信息
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> ReadDCMeterRangeInfo( );
+        OperateResult<byte[]> ReadDCMeterRanges( );
     }
 }

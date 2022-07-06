@@ -359,13 +359,7 @@ namespace DKCommunication.Dandick.DK81Series
             if (!response.IsSuccess)
             {
                 return response;
-            }
-
-            //获取回复成功 且 回复OK
-            if (response.Content[5] == 0x4B)
-            {
-                return response; 
-            }
+            }           
 
             // 长度校验
             if (response.Content.Length < 7)
@@ -377,6 +371,12 @@ namespace DKCommunication.Dandick.DK81Series
             if (!DK81CommunicationInfo.CheckCRC(response.Content))
             {
                 return new OperateResult<byte[]>(StringResources.Language.CRCCheckFailed + SoftBasic.ByteToHexString(response.Content, ' '));
+            }
+
+            //回复OK
+            if (response.Content[5] == 0x4B)
+            {
+                return response;
             }
 
             // 检查是否报故障：是     //TODO 随时主动报故障的问题
@@ -391,9 +391,6 @@ namespace DKCommunication.Dandick.DK81Series
                 return new OperateResult<byte[]>(response.Content[5], $"Receive Command Check Failed: ");
             }
 
-            // 移除CRC校验
-            //byte[] buffer = new byte[response.Content.Length - 1];
-            //Array.Copy(response.Content, 0, buffer, 0, buffer.Length);
             return response;
         }
         #endregion

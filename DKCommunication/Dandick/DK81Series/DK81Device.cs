@@ -13,6 +13,7 @@ namespace DKCommunication.Dandick.DK81Series
     public class DK81Device : DK81Command, IDK_BaseInterface, IDK_ACSource, IDK_DCMeter, IDK_DCSource, IDK_ElectricityModel, IDK_IOModel                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
         #region 私有字段
+        #region ACSource
         private byte _uRangesCount;
         private byte _iRangesCount;
         private byte _iProtectRangesCount;
@@ -22,12 +23,19 @@ namespace DKCommunication.Dandick.DK81Series
         private List<float> _uRanges;
         private List<float> _iRanges;
         private List<float> _iProtectRanges;
-
+        #endregion
+        #region DCSource
         private byte _DCURangesCount;
         private byte _DCIRangesCount;
         private List<float> _DCURanges;
         private List<float> _DCIRanges;
-
+        #endregion
+        #region DCMeter
+        private byte _DCMeterURangesCount;
+        private byte _DCMeterIRangesCount;
+        private List<float> _DCMeterURanges;
+        private List<float> _DCMeterIRanges;
+        #endregion
         #endregion
 
         #region Constructor   
@@ -47,7 +55,10 @@ namespace DKCommunication.Dandick.DK81Series
         {
 
         }
+        #endregion
 
+        #region Public Properties
+        #region Public
         public bool IsACU_Activated { get; set; }
         public bool IsACI_Activated { get; set; }
         public bool IsDCM_Activated { get; set; }
@@ -55,7 +66,8 @@ namespace DKCommunication.Dandick.DK81Series
         public bool IsDCI_Activated { get; set; }
         public bool IsPQ_Activated { get; set; }
         public bool IsIO_Activated { get; set; }
-
+        #endregion
+        #region ACSource
         public byte ACU_RangesCount => _uRangesCount;
         public byte ACI_RangesCount => _iRangesCount;
         public byte IProtectRangesCount => _iProtectRangesCount;
@@ -65,13 +77,24 @@ namespace DKCommunication.Dandick.DK81Series
         public byte IRanges_Asingle => _iRanges_Asingle;
         public byte IProtectRanges_Asingle => _iProtectRanges_Asingle;
         public byte URanges_Asingle => _uRanges_Asingle;
-
+        #endregion
+        #region DCSource
         public byte DCU_RangesCount => _DCURangesCount;
         public byte DCI_RangesCount => _DCIRangesCount;
         public List<float> DCU_Ranges => _DCURanges;
         public List<float> DCI_Ranges => _DCIRanges;
-
         #endregion
+        #region DCMeter
+        public byte DCM_URangesCount => _DCMeterURangesCount;
+
+        public byte DCM_IRangesCount => _DCMeterIRangesCount;
+
+        public List<float> DCM_URanges => _DCMeterURanges;
+
+        public List<float> DCM_IRanges => _DCMeterIRanges;
+        #endregion
+        #endregion
+
 
         #region Base
         public OperateResult<byte[]> Calibrate_ClearData()
@@ -126,12 +149,16 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>包含信息的操作结果</returns>
         public OperateResult<byte[]> Handshake()
         {
-            if (HandshakeCommand().IsSuccess)
+            OperateResult<byte[]> response = HandshakeCommand();
+
+            if (response.IsSuccess)
             {
-                AnalysisHandshake(HandshakeCommand().Content);
+                AnalysisHandshake(response.Content);
                 ReadACSourceRanges();
+                ReadDCSourceRanges();
+                ReadDCMeterRanges();
             }
-            return HandshakeCommand();
+            return response;
         }
 
         public OperateResult<byte[]> ReadACSourceData()
@@ -154,22 +181,31 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> ReadDCMeterRangeInfo()
+        public OperateResult<byte[]> ReadDCMeterRanges()
         {
-            throw new NotImplementedException();
+            OperateResult<byte[]> response = ReadDCMeterRangesCommand();
+            if (response.IsSuccess)
+            {
+                AnalysisReadDCMeterRanges(response.Content);
+            }
+            return response;
         }
 
+        /// <summary>
+        /// 读取直流源档位
+        /// </summary>
+        /// <returns>下位机回复的原始报文</returns>
         public OperateResult<byte[]> ReadDCSourceRanges()
         {
-            throw new NotImplementedException();
+            OperateResult<byte[]> response = ReadDCSourceRangesCommand();
+            if (response.IsSuccess)
+            {
+                AnalysisReadDCSourceRanges(response.Content);
+            }
+            return response;
         }
 
         public OperateResult<byte[]> ReadDCSourceData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> ReadDCSourceRangeInfo()
         {
             throw new NotImplementedException();
         }
@@ -181,11 +217,12 @@ namespace DKCommunication.Dandick.DK81Series
 
         public OperateResult<byte[]> ReadACSourceRanges()
         {
-            if (ReadACSourceRangesCommand().IsSuccess)
+            OperateResult<byte[]> response = ReadACSourceRangesCommand();
+            if (response.IsSuccess)
             {
-                AnalysisReadACSourceRanges(ReadACSourceRangesCommand().Content);
+                AnalysisReadACSourceRanges(response.Content);
             }
-            return ReadACSourceRangesCommand();
+            return response;
         }
 
         public OperateResult<byte[]> SetACSourceRange()
@@ -348,31 +385,48 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="response">下位机回复的档位信息报文</param>
         private void AnalysisReadACSourceRanges(byte[] response)
-        {
-            try
-            {
-                _uRangesCount = response[6];
-                _uRanges_Asingle = response[7];
-                _iRangesCount = response[8];
-                _iRanges_Asingle = response[9];
-                _iProtectRangesCount = response[10];
-                _iProtectRanges_Asingle = response[11];
-                float[] uRanges = ByteTransform.TransSingle(response, 12, _uRangesCount);
-                float[] iRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount, _iRangesCount);
-                float[] iProtectRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount + 4 * _iRangesCount, _iProtectRangesCount);
-                _uRanges = uRanges.ToList();
-                _iRanges = iRanges.ToList();
-                _iProtectRanges = iProtectRanges.ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+        {            
+            _uRangesCount = response[6];
+            _uRanges_Asingle = response[7];
+            _iRangesCount = response[8];
+            _iRanges_Asingle = response[9];
+            _iProtectRangesCount = response[10];
+            _iProtectRanges_Asingle = response[11];
+            float[] uRanges = ByteTransform.TransSingle(response, 12, _uRangesCount);
+            float[] iRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount, _iRangesCount);
+            float[] iProtectRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount + 4 * _iRangesCount, _iProtectRangesCount);
+            _uRanges = uRanges.ToList();
+            _iRanges = iRanges.ToList();
+            _iProtectRanges = iProtectRanges.ToList();           
         }
 
+        /// <summary>
+        /// 解析直流源档位
+        /// </summary>
+        /// <param name="response"></param>
         private void AnalysisReadDCSourceRanges(byte[] response)
         {
+            _DCURangesCount = response[6];
+            _DCIRangesCount = response[7];
+            float[] dcuRanges = ByteTransform.TransSingle(response, 8, _DCURangesCount);
+            float[] dciRanges = ByteTransform.TransSingle(response, 8 + _DCURangesCount * 4, _DCIRangesCount);
+            _DCURanges = dcuRanges.ToList();
+            _DCIRanges = dciRanges.ToList();
+        }
 
+        /// <summary>
+        /// 解析直流表档位
+        /// </summary>
+        /// <param name="response">经过验证的有效回复数据</param>
+        private void AnalysisReadDCMeterRanges(byte[] response)
+        {
+            //TODO 测试异常是否能在底层被完全捕获，确保response数据有效性
+            _DCMeterURangesCount = response[8];
+            _DCMeterIRangesCount = response[9];
+            float[] dcmURanges = ByteTransform.TransSingle(response, 10, _DCMeterURangesCount);
+            float[] dcmIanges = ByteTransform.TransSingle(response, 10 + 4 * _DCMeterURangesCount, _DCMeterIRangesCount);
+            _DCMeterURanges = dcmURanges.ToList();
+            _DCMeterIRanges = dcmIanges.ToList();
         }
 
         #endregion

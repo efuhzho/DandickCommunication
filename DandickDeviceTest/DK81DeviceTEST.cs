@@ -18,6 +18,7 @@ namespace DandickDeviceTest
         {
             dandick.SerialPortInni("com3");
             dandick.Open();
+            dandick.ReceiveTimeout = 5000;
 
             var result = dandick.Handshake();
             Assert.True(result.IsSuccess);
