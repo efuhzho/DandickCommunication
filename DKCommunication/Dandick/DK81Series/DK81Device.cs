@@ -41,6 +41,13 @@ namespace DKCommunication.Dandick.DK81Series
         public bool IsDCI_Activated { get; set; }
         public bool IsPQ_Activated { get; set; }
         public bool IsIO_Activated { get; set; }
+        public byte URangesCount { get; set; }
+        public byte IRangesCount { get; set; }
+        public byte IProtectRangesCount { get; set; }
+        public byte URange_Asingle { get; set; }
+        public List<float> URanges { get; set; }
+        public List<float> IRanges { get; set; }
+        public List<float> IProtectRanges { get; set; }
         #endregion
 
         #region Base
@@ -106,7 +113,7 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> ReadACSourceData()
         {
             throw new NotImplementedException();
-        }        
+        }
 
         public OperateResult<byte[]> ReadACSourceStatus()
         {
@@ -295,7 +302,7 @@ namespace DKCommunication.Dandick.DK81Series
 
             //解析基本功能激活状态
             byte funcB = data[data.Length - 3];
-           // byte funcS = data[data.Length - 2];
+            // byte funcS = data[data.Length - 2];
             var funb = DK81CommunicationInfo.GetFunctionB(funcB);
             IsACI_Activated = funb[0];   //交流电流源
             IsACU_Activated = funb[0];   //交流电压源

@@ -18,7 +18,14 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         bool IsACI_Activated { get; set; }
 
-        byte UR_Number { get; set; }
+        byte URangesCount { get; set; }
+        byte IRangesCount { get; set; }
+        byte IProtectRangesCount { get; set; }
+        byte URange_Asingle { get; set; }
+
+        List<float> URanges { get; set; }
+        List<float> IRanges { get; set; }
+        List<float> IProtectRanges { get; set; }
 
 
         /// <summary>
