@@ -18,10 +18,10 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         bool IsDCI_Activated { get; set; }
 
-        byte DCU_RangesCount { get; set; }
-        byte DCI_RangesCount { get; set; }
-        List<float> DCU_Ranges { get; set; }
-        List<float> DCI_Ranges { get; set; }
+        byte DCU_RangesCount { get;  }
+        byte DCI_RangesCount { get;  }
+        List<float> DCU_Ranges { get; }
+        List<float> DCI_Ranges { get; }
 
         OperateResult<byte[]> SetDCSourceRange();
         OperateResult<byte[]> StartDCSource();
