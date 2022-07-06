@@ -276,7 +276,7 @@ namespace DKCommunication.Core
         /// </summary>
         /// <param name="buffer">缓存数据</param>
         /// <param name="index">索引位置</param>
-        /// <param name="length">读取的数组长度</param>
+        /// <param name="length">读取的数组长度[如：档位个数]</param>
         /// <returns>float数组对象</returns>
         public virtual float[] TransSingle( byte[] buffer, int index, int length )
         {

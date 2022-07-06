@@ -6,12 +6,23 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using DKCommunication.Core;
 
 namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81Device : DK81Command, IDK_BaseInterface, IDK_ACSource, IDK_DCMeter, IDK_DCSource, IDK_ElectricityModel, IDK_IOModel                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
         #region 私有字段
+        private byte _uRangesCount;
+        private byte _iRangesCount;
+        private byte _iProtectRangesCount;
+        private byte _uRanges_Asingle;
+        private byte _iRanges_Asingle;
+        private byte _iProtectRanges_Asingle;
+        private List<float> _uRanges;
+        private List<float> _iRanges;
+        private List<float> _iProtectRanges;
+
 
 
         #endregion
@@ -41,13 +52,17 @@ namespace DKCommunication.Dandick.DK81Series
         public bool IsDCI_Activated { get; set; }
         public bool IsPQ_Activated { get; set; }
         public bool IsIO_Activated { get; set; }
-        public byte URangesCount { get; set; }
-        public byte IRangesCount { get; set; }
-        public byte IProtectRangesCount { get; set; }
-        public byte URange_Asingle { get; set; }
-        public List<float> URanges { get; set; }
-        public List<float> IRanges { get; set; }
-        public List<float> IProtectRanges { get; set; }
+
+        public byte URangesCount => _uRangesCount;
+        public byte IRangesCount => _iRangesCount;       
+        public byte IProtectRangesCount => _iProtectRangesCount;
+        public List<float> URanges => _uRanges;
+        public List<float> IRanges => _iRanges;
+        public List<float> IProtectRanges => _iProtectRanges;
+        public byte IRanges_Asingle => _iRanges_Asingle;
+        public byte IProtectRanges_Asingle => _iProtectRanges_Asingle;
+        public byte URanges_Asingle => _uRanges_Asingle;
+
         #endregion
 
         #region Base
@@ -282,26 +297,26 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         private void AnalysisHandshake(byte[] response)
         {
-            byte[] data = response;
-            List<byte> dataList = data.ToList();
+            //byte[] data = response;
+            List<byte> responseList = response.ToList();    //可忽略null异常
 
             //解析设备型号
-            int endIndex = dataList.IndexOf(0x00, 6);
+            int endIndex = responseList.IndexOf(0x00, 6);
             int modelLength = endIndex - 5;    //model字节长度，包含0x00结束符           
-            Model = ByteTransform.TransString(data, 6, modelLength, Encoding.ASCII);
+            Model = ByteTransform.TransString(response, 6, modelLength, Encoding.ASCII);
 
             //解析下位机版本号
-            byte verA = data[modelLength + 6];
-            byte verB = data[modelLength + 7];
+            byte verA = response[modelLength + 6];
+            byte verB = response[modelLength + 7];
             Version = $"V{verA}.{verB}";
 
             //解析设备编号
-            int serialEndIndex = dataList.IndexOf(0x00, 8 + modelLength);
+            int serialEndIndex = responseList.IndexOf(0x00, 8 + modelLength);
             int serialLength = serialEndIndex - 7 - modelLength;     //设备编号字节长度，包含0x00结束符            
-            SN = ByteTransform.TransString(data, 8 + modelLength, serialLength, Encoding.ASCII);
+            SN = ByteTransform.TransString(response, 8 + modelLength, serialLength, Encoding.ASCII);
 
             //解析基本功能激活状态
-            byte funcB = data[data.Length - 3];
+            byte funcB = response[response.Length - 3];
             // byte funcS = data[data.Length - 2];
             var funb = DK81CommunicationInfo.GetFunctionB(funcB);
             IsACI_Activated = funb[0];   //交流电流源
@@ -315,15 +330,29 @@ namespace DKCommunication.Dandick.DK81Series
             //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    
         }
 
-        private void AnalysisReadACSourceRange()
+        private void AnalysisReadACSourceRange(byte[] response)
         {
-
+            try
+            {
+                _uRangesCount = response[6];
+                _uRanges_Asingle = response[7];
+                _iRangesCount = response[8];
+                _iRanges_Asingle = response[9];
+                _iProtectRangesCount = response[10];
+                _iProtectRanges_Asingle = response[11];
+                float[] uRanges = ByteTransform.TransSingle(response, 12, _uRangesCount);
+                float[] iRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount, _iRangesCount);
+                float[] iProtectRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount + 4 * _iRangesCount, _iProtectRangesCount);
+                _uRanges = uRanges.ToList();
+                _iRanges = iRanges.ToList();
+                _iProtectRanges = iProtectRanges.ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public OperateResult<byte[]> ReadACSourceRangeInfo()
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
 

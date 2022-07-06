@@ -18,14 +18,50 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         bool IsACI_Activated { get; set; }
 
-        byte URangesCount { get; set; }
-        byte IRangesCount { get; set; }
-        byte IProtectRangesCount { get; set; }
-        byte URange_Asingle { get; set; }
+        /// <summary>
+        /// 电压档位个数
+        /// </summary>
+        byte URangesCount { get; }
 
-        List<float> URanges { get; set; }
-        List<float> IRanges { get; set; }
-        List<float> IProtectRanges { get; set; }
+        /// <summary>
+        /// 电流档位个数
+        /// </summary>
+        byte IRangesCount { get; }
+
+        /// <summary>
+        /// 保护电流档位个数
+        /// </summary>
+        byte IProtectRangesCount { get; }
+
+        /// <summary>
+        /// 只支持A相电压输出的起始档位号
+        /// </summary>
+        byte URanges_Asingle { get; }
+
+        /// <summary>
+        /// 只支持A相电流输出的起始档位号
+        /// </summary>
+        byte IRanges_Asingle { get; }
+
+        /// <summary>
+        /// 只支持A相保护电流输出的起始档位号
+        /// </summary>
+        byte IProtectRanges_Asingle { get; }
+
+        /// <summary>
+        /// 电压档位集合
+        /// </summary>
+        List<float> URanges { get; }
+
+        /// <summary>
+        /// 电流档位集合
+        /// </summary>
+        List<float> IRanges { get; }
+
+        /// <summary>
+        /// 保护电流档位集合
+        /// </summary>
+        List<float> IProtectRanges { get; }
 
 
         /// <summary>

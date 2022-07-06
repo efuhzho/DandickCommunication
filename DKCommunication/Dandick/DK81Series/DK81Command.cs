@@ -206,9 +206,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建读取交流标准源和标准表档位信息报文
         /// </summary>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateReadACSourceRangeInfo( )
+        private OperateResult<byte[]> CreateReadACSourceRanges( )
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceRangeInfo, DK81CommunicationInfo.ReadACSourceRangeInfoLength);
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceRanges, DK81CommunicationInfo.ReadACSourceRangesLength);
 
             if (bytesHeader.IsSuccess)
             {
@@ -225,9 +225,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建读取直流源档位信息的报文
         /// </summary>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateReadDCSourceRangeInfo()
+        private OperateResult<byte[]> CreateReadDCSourceRanges()
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceRangeInfo, DK81CommunicationInfo.ReadDCSourceRangeInfoLength);
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceRanges, DK81CommunicationInfo.ReadDCSourceRangesLength);
 
             if (bytesHeader.IsSuccess)
             {
@@ -244,9 +244,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建读取直流表档位信息的报文
         /// </summary>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateReadDCMeterourceRangeInfo()
+        private OperateResult<byte[]> CreateReadDCMeterourceRanges()
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRangeInfo, DK81CommunicationInfo.ReadDCMeterRangeInfoLength);
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRanges, DK81CommunicationInfo.ReadDCMeterRangesLength);
 
             if (bytesHeader.IsSuccess)
             {
@@ -416,9 +416,9 @@ namespace DKCommunication.Dandick.DK81Series
             return responseBytes;           
         }
 
-        public OperateResult<byte[]> ReadACSourceCommand()
+        public OperateResult<byte[]> ReadACSourceRangesCommand()
         {
-            OperateResult<byte[]> createResult = CreateReadACSourceRangeInfo();
+            OperateResult<byte[]> createResult = CreateReadACSourceRanges();
             //创建指令失败
             if (!createResult.IsSuccess)
             {

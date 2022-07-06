@@ -13,25 +13,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// 【联机】
         /// </summary>
         /// <returns>带信息的结果</returns>
-        OperateResult<byte[]> Handshake();
-
-        /// <summary>
-        /// 读取交流源和交流表档位
-        /// </summary>
-        /// <returns>含是否成功标志的回复结果信息</returns>
-        OperateResult<byte[]> ReadACSourceRangeInfo();
-
-        /// <summary>
-        /// 读取直流源档位信息
-        /// </summary>
-        /// <returns>含是否成功标志的回复结果信息</returns>
-        OperateResult<byte[]> ReadDCSourceRangeInfo();
-
-        /// <summary>
-        /// 读取直流表档位信息
-        /// </summary>
-        /// <returns>含是否成功标志的回复结果信息</returns>
-        OperateResult<byte[]> ReadDCMeterRangeInfo();
+        OperateResult<byte[]> Handshake();        
 
         /// <summary>
         /// 交流源关闭命令
