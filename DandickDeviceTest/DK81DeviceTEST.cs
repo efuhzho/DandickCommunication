@@ -109,7 +109,9 @@ namespace DandickDeviceTest
             dandick.Close();
 
         }
-
+        /// <summary>
+        /// 设置交流源幅值测试
+        /// </summary>
         [Fact]
         public void WriteACSourceAmplitudeTEST()
         {
