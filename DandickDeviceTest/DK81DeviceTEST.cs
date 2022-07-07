@@ -13,9 +13,9 @@ namespace DandickDeviceTest
             //dandick.Open();
             dandick.ReceiveTimeout = 5000;
             dandick.SleepTime = 20;
-            dandick.ByteTransform.DataFormat = DataFormat.ABCD;
+            dandick.ByteTransform.DataFormat = DataFormat.DCBA;
         }
-      
+
 
         /// <summary>
         /// 握手测试,验证设备信息初始化结果
@@ -27,7 +27,7 @@ namespace DandickDeviceTest
             var result = dandick.Handshake();
             Assert.True(result.IsSuccess);
             Assert.True(dandick.ID == 0);
-            Assert.Equal( "101F-000B1-0045\0",dandick.SN);
+            Assert.Equal("101F-000B1-0045\0", dandick.SN);
             Assert.Equal("V2.7", dandick.Version);
             Assert.True(dandick.Model == "DK-34F1\0");
             Assert.True(dandick.IsACI_Activated == true);
@@ -74,7 +74,7 @@ namespace DandickDeviceTest
         {
             dandick.Open();
             var result = dandick.SetSystemMode(SystemMode.ModeDCMeterCalibrate);
-            Assert.True(result.IsSuccess==true);
+            Assert.True(result.IsSuccess == true);
             Assert.True(result.Content[5] == 0x4b);
             Assert.True(result.Content[6] == 0x4b);
             dandick.Close();
@@ -93,15 +93,30 @@ namespace DandickDeviceTest
             dandick.Close();
         }
 
+        /// <summary>
+        /// 设置交流源档位测试
+        /// </summary>
+        [Fact]
         public void SetACSourceRangeTEST()
         {
+
             dandick.Open();
-            var result = dandick.SetACSourceRange(dandick.ACU_RangesList.IndexOf(380F),dandick.ACI_RangesList.IndexOf(20F));
-
+            dandick.ReadACSourceRanges();
+            var result = dandick.SetACSourceRange(dandick.ACU_RangesList.IndexOf(380F), dandick.ACI_RangesList.IndexOf(20F));
+            var result2 = dandick.SetACSourceRange(0, 0);
             Assert.True(result.IsSuccess);
-
+            Assert.True(result2.IsSuccess);
             dandick.Close();
 
+        }
+
+        [Fact]
+        public void WriteACSourceAmplitudeTEST()
+        {
+            dandick.Open();
+            var result = dandick.WriteACSourceAmplitude(57.7f, 100f, 220f, 1f, 2f, 3f);
+            Assert.True(result.IsSuccess);
+            dandick.Close();
         }
     }
 }

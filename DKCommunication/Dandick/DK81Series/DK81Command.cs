@@ -122,18 +122,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.HandShake, DK81CommunicationInfo.HandShakeCommandLength);
 
-            //预创建报文成功
-            if (bytesHeader.IsSuccess)
-            {
-                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
-                return bytesHeader;
-            }
-
-            //预创建报文失败
-            else
-            {
-                return bytesHeader;
-            }
+            return bytesHeader;
         }
 
         /// <summary>
@@ -219,15 +208,26 @@ namespace DKCommunication.Dandick.DK81Series
                     ranges[i + 6] = (byte)ipranges;
                 }
 
-                OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetRanges, DK81CommunicationInfo.SetRangesLength, ranges);
+                OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetACSourceRanges, DK81CommunicationInfo.SetRangesLength, ranges);
                 return bytes;
             }
             catch (Exception ex)
             {
 
-                return new OperateResult<byte[]>(8112, "请输入正确的档位索引值，0为最大档位"+ex.Message);
+                return new OperateResult<byte[]>(8112, "请输入正确的档位索引值，0为最大档位" + ex.Message);
             }
 
+        }
+
+        /// <summary>
+        /// 创建【设置交流源幅度】的完整报文
+        /// </summary>
+        /// <param name="data">将要设置的浮点型幅值</param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateWriteACSourceAmplitude(float[] data)
+        {
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteACSourceAmplitude, DK81CommunicationInfo.WriteACSourceAmplitudeLength, data);
+            return bytes;
         }
 
         #endregion 交流表源命令【报文创建】
@@ -243,15 +243,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceRanges, DK81CommunicationInfo.ReadACSourceRangesLength);
 
-            if (bytesHeader.IsSuccess)
-            {
-                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
-                return bytesHeader;
-            }
-            else
-            {
-                return bytesHeader;
-            }
+            return bytesHeader;
         }
 
         /// <summary>
@@ -262,15 +254,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceRanges, DK81CommunicationInfo.ReadDCSourceRangesLength);
 
-            if (bytesHeader.IsSuccess)
-            {
-                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
-                return bytesHeader;
-            }
-            else
-            {
-                return bytesHeader;
-            }
+            return bytesHeader;
         }
 
         /// <summary>
@@ -281,15 +265,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRanges, DK81CommunicationInfo.ReadDCMeterRangesLength);
 
-            if (bytesHeader.IsSuccess)
-            {
-                bytesHeader.Content[6] = DK81CommunicationInfo.CRCcalculator(bytesHeader.Content);
-                return bytesHeader;
-            }
-            else
-            {
-                return bytesHeader;
-            }
+            return bytesHeader;
         }
         #endregion 设备信息【报文创建】
 
@@ -297,11 +273,11 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region Private CommandBuilder Helper 【报文创建】
         /// <summary>
-        /// 创建7个字节长度指令时的【统一预处理】，不带CRC
+        /// 创建完整指令长度的【指令头】，长度大于7的报文不带CRC校验码，不可直接发送给串口，长度等于7则带校验码
         /// </summary>
         /// <param name="commandCode">命令码</param>
         /// <param name="commandLength">指令长度</param>
-        /// <returns>带指令信息的结果</returns>
+        /// <returns>带指令信息的结果：完整指令长度</returns>
         private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength)
         {
             //尝试预创建报文
@@ -314,7 +290,10 @@ namespace DKCommunication.Dandick.DK81Series
                 buffer[3] = BitConverter.GetBytes(commandLength)[0];
                 buffer[4] = BitConverter.GetBytes(commandLength)[1];
                 buffer[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
-                                           // buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);  //CRC放在后面调用者函数里添加，提高运行效率
+                if (commandLength == 7)
+                {
+                    buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);    //如果是不带数据的命令则加上校验码
+                }
                 return OperateResult.CreateSuccessResult(buffer);
             }
 
@@ -355,26 +334,26 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 
+        /// 创建完整的指令，带CRC校验码，可直接发送给串口
         /// </summary>
-        /// <param name="commandCode"></param>
-        /// <param name="commandLength"></param>
-        /// <param name="dataBytes"></param>
-        /// <returns></returns>
+        /// <param name="commandCode">命令码</param>
+        /// <param name="commandLength">完整指令长度</param>
+        /// <param name="dataBytes">传入的数据</param>
+        /// <returns>完整的指令，带CRC校验码，可直接发送给串口</returns>
         private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, byte[] dataBytes)
         {
             try
             {
-                OperateResult<byte[]> header = CreateCommandHelper(commandCode, commandLength);
-                if (header.IsSuccess)
+                OperateResult<byte[]> dataBytesLess = CreateCommandHelper(commandCode, commandLength);
+                if (dataBytesLess.IsSuccess)
                 {
-                    Array.Copy(dataBytes, 0, header.Content, 6, dataBytes.Length);
-                    header.Content[commandLength - 1] = DK81CommunicationInfo.CRCcalculator(header.Content);
-                    return header;
+                    Array.Copy(dataBytes, 0, dataBytesLess.Content, 6, dataBytes.Length);
+                    dataBytesLess.Content[commandLength - 1] = DK81CommunicationInfo.CRCcalculator(dataBytesLess.Content);
+                    return dataBytesLess;
                 }
                 else
                 {
-                    return header;
+                    return dataBytesLess;
                 }
             }
             catch (Exception ex)
@@ -382,6 +361,31 @@ namespace DKCommunication.Dandick.DK81Series
                 return new OperateResult<byte[]>(811204, ex.Message + ":CreateCommandHelper");
             }
         }
+
+        /// <summary>
+        /// 创建完整的指令，带CRC校验码，可直接发送给串口
+        /// </summary>
+        /// <param name="commandCode">命令码</param>
+        /// <param name="commandLength">报文长度</param>
+        /// <param name="data">传入的浮点型数据</param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, float[] data)
+        {
+            try
+            {
+                //将浮点型数据转换成字节数组
+                byte[] dataBytes = ByteTransform.TransByte(data);
+
+                //创建完整的指令报文
+                OperateResult<byte[]> commandBytes = CreateCommandHelper(commandCode, commandLength, dataBytes);
+                return commandBytes;
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811205, ex.Message + ":CreateCommandHelper");
+            }
+        }
+
         #endregion
 
         #endregion private CommandBuilder【报文创建】
@@ -594,18 +598,39 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>下位机回复的有效报文</returns>
         protected OperateResult<byte[]> SetACSourceRangeCommand(int urange, int irange, int ipranges)
         {
-
+            //创建完整指令报文
             OperateResult<byte[]> createResult = CreatSetACSourceRange(urange, irange, ipranges);
+
             //创建指令失败
             if (!createResult.IsSuccess)
             {
                 return createResult;
             }
+
             //创建指令成功则获取回复数据：（已保证数据的有效性）
             OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
             return responseBytes;
+        }
 
+        /// <summary>
+        /// 执行【设置交流源幅值】操作命令，并获取下位机返回的报文：OK
+        /// </summary>
+        /// <param name="data">操作结果信息</param>
+        /// <returns></returns>
+        protected OperateResult<byte[]> WriteACSourceAmplitudeCommand(float[] data)
+        {
+            //创建完整指令报文
+            OperateResult<byte[]> createResult = CreateWriteACSourceAmplitude(data);
 
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
         }
 
         #endregion 交流源（表）【操作命令】

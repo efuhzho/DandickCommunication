@@ -93,7 +93,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         //public enum ACU_Ranges
         //{
-            
+
         //}
         #endregion
         #region DCSource
@@ -235,7 +235,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="ACU_RangesIndex">交流电压档位的索引值，最大档位索引为0</param>
         /// <param name="ACI_RangesIndex">交流电流档位的索引值，最大档位索引为0</param>
-        /// <param name="IProtect_RangesIndex">保护电流档位的索引值，最大档位索引为0</param>
+        /// <param name="IProtect_RangesIndex">【仅DK-51F】保护电流档位的索引值，最大档位索引为0</param>
         /// <returns></returns>
         public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex, int IProtect_RangesIndex)  //TODO 档位有效值在属性中限定
         {
@@ -254,6 +254,78 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, 0);
             return response;
         }
+
+        /// <summary>
+        /// 【设置交流源幅度】命令，返回OK
+        /// </summary>
+        /// <param name="data">将要设定的幅值（组合）</param>
+        /// <returns>操作结果</returns>
+        public OperateResult<byte[]> WriteACSourceAmplitude(float[] data)
+        {
+            OperateResult<byte[]> response = WriteACSourceAmplitudeCommand(data);
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置交流源幅度】命令，返回OK
+        /// </summary>
+        /// <param name="UA">A相电压幅值</param>
+        /// <param name="UB">B相电压幅值</param>
+        /// <param name="UC">C相电压幅值</param>
+        /// <param name="IA">A相电流幅值</param>
+        /// <param name="IB">B相电流幅值</param>
+        /// <param name="IC">C相电流幅值</param>
+        /// <param name="IPA">相保护电流幅值</param>
+        /// <param name="IPB">相保护电流幅值</param>
+        /// <param name="IPC">相保护电流幅值</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> WriteACSourceAmplitude(float UA, float UB, float UC, float IA, float IB, float IC, float IPA, float IPB, float IPC)
+        {
+            float[] data = new float[9] { UA, UB, UC, IA, IB, IC, IPA, IPB, IPC };
+            return WriteACSourceAmplitude(data);
+        }
+
+        /// <summary>
+        /// 【设置交流源幅度】命令，返回OK
+        /// </summary>
+        /// <param name="UA">A相电压幅值</param>
+        /// <param name="UB">B相电压幅值</param>
+        /// <param name="UC">C相电压幅值</param>
+        /// <param name="IA">A相电流幅值</param>
+        /// <param name="IB">B相电流幅值</param>
+        /// <param name="IC">C相电流幅值</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> WriteACSourceAmplitude(float UA, float UB, float UC, float IA, float IB, float IC)
+        {
+            float[] data = new float[9] { UA, UB, UC, IA, IB, IC, 0, 0, 0 };
+            return WriteACSourceAmplitude(data);
+        }
+
+        /// <summary>
+        /// 【设置交流源幅度】命令，返回OK
+        /// </summary>
+        /// <param name="U">三相电压幅值</param>
+        /// <param name="I">三相电流幅值</param>
+        /// <param name="IP">三相保护电流幅值</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> WriteACSourceAmplitude(float U, float I, float IP)
+        {
+            float[] data = new float[9] { U, U, U, I, I, I, IP, IP, IP };
+            return WriteACSourceAmplitude(data);
+        }
+
+        /// <summary>
+        /// 【设置交流源幅度】命令，返回OK
+        /// </summary>
+        /// <param name="U">三相电压幅值</param>
+        /// <param name="I">三相电流幅值</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> WriteACSourceAmplitude(float U, float I)
+        {
+            float[] data = new float[9] { U, U, U, I, I, I,0, 0,0 };
+            return WriteACSourceAmplitude(data);
+        }
+
         #endregion 交流源（表）操作命令
 
         /*******************/
@@ -344,7 +416,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-       
+
         public OperateResult<byte[]> SetClosedLoop()
         {
             throw new NotImplementedException();
@@ -404,10 +476,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> WriteACSourceAmplitude()
-        {
-            throw new NotImplementedException();
-        }
+
 
         public OperateResult<byte[]> WriteDCSourceAmplitude()
         {
@@ -445,7 +514,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
         /******************************************************************************************************/
 
-        #region private Methods Helper
+        #region private Methods Helper 解析
         /******************************************************************************************************************************/
         #region 解析【系统信号】
         /// <summary>
@@ -554,6 +623,10 @@ namespace DKCommunication.Dandick.DK81Series
                 _DCMeterIRanges = dcmIanges.ToList();
             }
         }
+
+     
+
+
         #endregion
 
         #endregion

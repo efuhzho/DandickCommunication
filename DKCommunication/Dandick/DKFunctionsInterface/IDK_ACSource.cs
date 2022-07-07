@@ -83,11 +83,15 @@ namespace DKCommunication.Dandick.DKInterface
         /// 设置档位命令
         /// </summary>
         OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex, int IProtect_RangesIndex);
-
+        OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex);
         /// <summary>
         /// 设置输出幅度参数
         /// </summary>
-        OperateResult<byte[]> WriteACSourceAmplitude();
+        OperateResult<byte[]> WriteACSourceAmplitude(float[] data);
+        OperateResult<byte[]> WriteACSourceAmplitude(float UA, float UB, float UC, float IA, float IB, float IC, float IPA, float IPB, float IPC);
+        OperateResult<byte[]> WriteACSourceAmplitude(float UA, float UB, float UC, float IA, float IB, float IC);
+        OperateResult<byte[]> WriteACSourceAmplitude(float U, float I,float IP);
+        OperateResult<byte[]> WriteACSourceAmplitude(float U, float I);
 
         /// <summary>
         /// 设置相位参数
