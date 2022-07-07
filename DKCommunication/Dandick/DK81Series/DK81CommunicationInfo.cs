@@ -83,7 +83,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置源幅度参数
         /// </summary>
-        public const byte WriteACSourceAmplitude = 0x32;
+        public const byte WriteACSourceAmplitude = 0x32;    //2022年7月7日
         public const ushort WriteACSourceAmplitudeLength = 43; //!51F具备IPa,IPb,IPc
 
         /// <summary>
