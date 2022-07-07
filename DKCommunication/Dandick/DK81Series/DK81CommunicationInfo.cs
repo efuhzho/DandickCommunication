@@ -17,12 +17,16 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion       
 
+        /*******************/
+
         #region FrameID 报文头0x81
         /// <summary>
         /// 报文头必须为0x81
         /// </summary>
         public const byte FrameID = 0x81;
         #endregion
+
+        /*******************/
 
         #region CommandCode Declaration 命令码定义
 
@@ -61,20 +65,20 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 交流源关闭命令
         /// </summary>
-        public const byte Stop = 0x4F;
-        public const ushort StopLength = 7;
+        public const byte StopACSource = 0x4F;
+        public const ushort StopACSourceLength = 7;
 
         /// <summary>
         /// 交流源打开命令
         /// </summary>
-        public const byte Start = 0x54;
-        public const ushort StartLength = 7;
+        public const byte StartACSource = 0x54;
+        public const ushort StartACSourceLength = 7;
 
         /// <summary>
-        /// 设置源档位参数
+        /// 设置交流源档位参数
         /// </summary>
-        public const byte SetRange = 0x31;
-        public const ushort SetRangeLength = 16;  //!51F具备IPa,IPb,IPc
+        public const byte SetRanges = 0x31;
+        public const ushort SetRangesLength = 16;  //!51F具备IPa,IPb,IPc
 
         /// <summary>
         /// 设置源幅度参数
@@ -269,6 +273,8 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion
 
+        /*******************/
+
         #region Static Helper Method
 
         /// <summary>
@@ -375,6 +381,8 @@ namespace DKCommunication.Dandick.DK81Series
         
         #endregion  
     }
+
+    /*****************************************************************************************************/
 
     #region Enum Classes
 

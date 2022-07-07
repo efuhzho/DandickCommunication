@@ -1,5 +1,6 @@
 using DKCommunication.Dandick.DK81Series;
 using Xunit;
+using DKCommunication.Core;
 
 namespace DandickDeviceTest
 {
@@ -12,6 +13,7 @@ namespace DandickDeviceTest
             //dandick.Open();
             dandick.ReceiveTimeout = 5000;
             dandick.SleepTime = 20;
+            dandick.ByteTransform.DataFormat = DataFormat.ABCD;
         }
       
 
@@ -38,6 +40,29 @@ namespace DandickDeviceTest
             //TODO ReadACSourceRanges();
             //TODO ReadDCSourceRanges();
             //TODO ReadDCMeterRanges();
+            dandick.Close();
+        }
+
+        /// <summary>
+        /// 读取交流源档位测试
+        /// </summary>
+        [Fact]
+        public void ReadACSourceRangesTEST()
+        {
+            dandick.Open();
+
+            var result = dandick.ReadACSourceRanges();
+            Assert.True(result.IsSuccess);
+            Assert.True(dandick.ACI_Ranges[0] == 20F);
+            Assert.True(dandick.ACI_Ranges[1] == 5F);
+            Assert.True(dandick.ACI_Ranges[2] == 2F);
+            Assert.True(dandick.ACI_Ranges[3] == 1F);
+
+            Assert.True(dandick.ACU_Ranges[0] == 380F);
+            Assert.True(dandick.ACU_Ranges[1] == 220F);
+            Assert.True(dandick.ACU_Ranges[2] == 100F);
+            Assert.True(dandick.ACU_Ranges[3] == 57.7F);
+
             dandick.Close();
         }
 

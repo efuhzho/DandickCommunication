@@ -8,6 +8,7 @@ namespace DKCommunication.Dandick.DKInterface
 {
     interface IDK_ACSource
     {
+        #region Properties
         /// <summary>
         /// 指示是否具有交流电压输出功能
         /// </summary>
@@ -51,18 +52,22 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 电压档位集合
         /// </summary>
-        List<float> ACU_Ranges { get; }
+        List<float> ACU_Ranges { get; set; }
 
         /// <summary>
         /// 电流档位集合
         /// </summary>
-        List<float> ACI_Ranges { get; }
+        List<float> ACI_Ranges { get; set; }
 
         /// <summary>
         /// 保护电流档位集合
         /// </summary>
-        List<float> IProtectRanges { get; }
+        List<float> IProtect_Ranges { get; set; }
+        #endregion
 
+        /******************************************************************************************************************************/
+
+        #region Methods
 
         /// <summary>
         /// 源关闭命令
@@ -162,5 +167,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         /// <returns></returns>
         OperateResult<byte[]> Calibrate_DoACMeter();
+        #endregion
+
     }
 }

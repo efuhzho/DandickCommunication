@@ -20,9 +20,9 @@ namespace DKCommunication.Dandick.DK81Series
         private byte _uRanges_Asingle;
         private byte _iRanges_Asingle;
         private byte _iProtectRanges_Asingle;
-        private List<float> _uRanges;
-        private List<float> _iRanges;
-        private List<float> _iProtectRanges;
+        private List<float> _uRanges /*= new List<float> { 380f, 220f, 100f, 57.7f }*/;
+        private List<float> _iRanges /*= new List<float> { 20f, 5f, 2f, 1f }*/;
+        private List<float> _iProtectRanges/* = new List<float> { 0, 0, 0, 0 }*/;       //TODO 默认值设定？
         #endregion
         #region DCSource
         private byte _DCURangesCount;
@@ -63,21 +63,34 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region Public Properties
         #region Public
-        public bool IsACU_Activated { get; set; }
-        public bool IsACI_Activated { get; set; }
-        public bool IsDCM_Activated { get; set; }
-        public bool IsDCU_Activated { get; set; }
-        public bool IsDCI_Activated { get; set; }
-        public bool IsPQ_Activated { get; set; }
-        public bool IsIO_Activated { get; set; }
+        public bool IsACU_Activated { get; set; } = true;
+        public bool IsACI_Activated { get; set; } = true;
+        public bool IsDCM_Activated { get; set; } = true;
+        public bool IsDCU_Activated { get; set; } = true;
+        public bool IsDCI_Activated { get; set; } = true;
+        public bool IsPQ_Activated { get; set; } = true;
+        public bool IsIO_Activated { get; set; } = true;
         #endregion
+
         #region ACSource
         public byte ACU_RangesCount => _uRangesCount;
         public byte ACI_RangesCount => _iRangesCount;
         public byte IProtectRangesCount => _iProtectRangesCount;
-        public List<float> ACU_Ranges => _uRanges;
-        public List<float> ACI_Ranges => _iRanges;
-        public List<float> IProtectRanges => _iProtectRanges;
+        public List<float> ACU_Ranges
+        {
+            get { return _uRanges; }
+            set { _uRanges = value; }
+        }
+        public List<float> ACI_Ranges
+        {
+            get { return _iRanges; }
+            set { _iRanges = value; }
+        }
+        public List<float> IProtect_Ranges
+        {
+            get { return _iProtectRanges; }
+            set { _iProtectRanges = value; }
+        }
         public byte IRanges_Asingle => _iRanges_Asingle;
         public byte IProtectRanges_Asingle => _iProtectRanges_Asingle;
         public byte URanges_Asingle => _uRanges_Asingle;
@@ -145,7 +158,7 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> response = SetDisplayPageCommand(page);
             return response;
         }
-        #endregion
+        #endregion 系统信号
 
         /*******************/
 
@@ -191,17 +204,60 @@ namespace DKCommunication.Dandick.DK81Series
             }
             return response;
         }
-        #endregion
+        #endregion 设备信息
 
         /*******************/
 
-        #region MyRegion
+        #region 交流源（表）操作命令
+        /// <summary>
+        /// 交流源关闭命令,返回OK
+        /// </summary>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> StopACSource()
+        {
+            OperateResult<byte[]> response = StopACSourceCommand();
+            return response;
+        }
 
-        #endregion
+        /// <summary>
+        /// 【交流源打开】命令,返回OK
+        /// </summary>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> StartACSource()
+        {
+            OperateResult<byte[]> response = StartACSourceCommand();
+            return response;
+        }
+
+        /// <summary>
+        /// 【档位设置】命令，返回OK
+        /// </summary>
+        /// <param name="ACU_RangesIndex">交流电压档位的索引值</param>
+        /// <param name="ACI_RangesIndex">交流电流档位的索引值</param>
+        /// <param name="IProtect_RangesIndex">保护电流档位的索引值</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> SetRanges(byte ACU_RangesIndex, byte ACI_RangesIndex, byte IProtect_RangesIndex)  //TODO 档位有效值在属性中限定
+        {
+            OperateResult<byte[]> response = SetRangesCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangesIndex);
+            return response;
+        }
+
+        /// <summary>
+        /// 【档位设置】命令，返回OK
+        /// </summary>
+        /// <param name="ACU_RangesIndex">交流电压档位的索引值</param>
+        /// <param name="ACI_RangesIndex">交流电流档位的索引值</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> SetRanges(byte ACU_RangesIndex, byte ACI_RangesIndex)  //TODO 档位有效值在属性中限定
+        {
+            OperateResult<byte[]> response = SetRangesCommand(ACU_RangesIndex, ACI_RangesIndex, 0);
+            return response;
+        }
+        #endregion 交流源（表）操作命令
 
         /*******************/
 
-        #endregion
+        #endregion Public Methods
 
         /******************************************************************************************************/
 
@@ -251,7 +307,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-    
+
 
         public OperateResult<byte[]> ReadACSourceData()
         {
@@ -273,7 +329,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-       
+
 
         public OperateResult<byte[]> ReadDCSourceData()
         {
@@ -285,7 +341,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-       
+
 
         public OperateResult<byte[]> SetACSourceRange()
         {
@@ -317,10 +373,10 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-    
 
-    
-       
+
+
+
 
         public OperateResult<byte[]> SetWireMode()
         {
@@ -332,10 +388,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> StartACSource()
-        {
-            throw new NotImplementedException();
-        }
+
 
         public OperateResult<byte[]> StartDCSource()
         {
@@ -347,10 +400,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> StopACSource()
-        {
-            throw new NotImplementedException();
-        }
+
 
         public OperateResult<byte[]> StopDCSource()
         {
@@ -448,21 +498,29 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="response">下位机回复的档位信息报文</param>
         private void AnalysisReadACSourceRanges(byte[] response)
         {
-            if (response.Length>12)
+            _uRangesCount = response[6];
+            _uRanges_Asingle = response[7];
+            _iRangesCount = response[8];
+            _iRanges_Asingle = response[9];
+            _iProtectRangesCount = response[10];
+            _iProtectRanges_Asingle = response[11];
+            if (_uRangesCount > 0)
             {
-                _uRangesCount = response[6];
-                _uRanges_Asingle = response[7];
-                _iRangesCount = response[8];
-                _iRanges_Asingle = response[9];
-                _iProtectRangesCount = response[10];
-                _iProtectRanges_Asingle = response[11];
                 float[] uRanges = ByteTransform.TransSingle(response, 12, _uRangesCount);
-                float[] iRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount, _iRangesCount);
-                float[] iProtectRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount + 4 * _iRangesCount, _iProtectRangesCount);
                 _uRanges = uRanges.ToList();
+            }
+
+            if (_iRangesCount > 0)
+            {
+                float[] iRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount, _iRangesCount);
                 _iRanges = iRanges.ToList();
+            }
+
+            if (_iProtectRangesCount > 0)
+            {
+                float[] iProtectRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount + 4 * _iRangesCount, _iProtectRangesCount);
                 _iProtectRanges = iProtectRanges.ToList();
-            }      
+            }
         }
 
         /// <summary>
@@ -471,7 +529,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="response"></param>
         private void AnalysisReadDCSourceRanges(byte[] response)
         {
-            if (response.Length>8)
+            if (response.Length > 8)
             {
                 _DCURangesCount = response[6];
                 _DCIRangesCount = response[7];
@@ -479,7 +537,7 @@ namespace DKCommunication.Dandick.DK81Series
                 float[] dciRanges = ByteTransform.TransSingle(response, 8 + _DCURangesCount * 4, _DCIRangesCount);
                 _DCURanges = dcuRanges.ToList();
                 _DCIRanges = dciRanges.ToList();
-            }          
+            }
         }
 
         /// <summary>
@@ -488,7 +546,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="response">经过验证的有效回复数据</param>
         private void AnalysisReadDCMeterRanges(byte[] response)
         {
-            if (response.Length>10)
+            if (response.Length > 10)
             {
                 //TODO 测试异常是否能在底层被完全捕获，确保response数据有效性
                 _DCMeterURangesCount = response[8];
@@ -497,7 +555,7 @@ namespace DKCommunication.Dandick.DK81Series
                 float[] dcmIanges = ByteTransform.TransSingle(response, 10 + 4 * _DCMeterURangesCount, _DCMeterIRangesCount);
                 _DCMeterURanges = dcmURanges.ToList();
                 _DCMeterIRanges = dcmIanges.ToList();
-            }       
+            }
         }
         #endregion
 

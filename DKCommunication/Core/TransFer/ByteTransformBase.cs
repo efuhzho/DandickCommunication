@@ -18,7 +18,7 @@ namespace DKCommunication.Core
         /// </summary>
         public ByteTransformBase( )
         {
-            DataFormat = DataFormat.DCBA;
+            DataFormat = DataFormat.ABCD;
         }
 
         /// <summary>

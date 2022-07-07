@@ -8,7 +8,7 @@ namespace DKCommunication.Dandick.DK81Series
     /// <summary>
     /// 丹迪克81协议的命令格式，可以携带站号（ID）、命令码（CommandCode）、数据（DATA）
     /// </summary>
-    public class DK81Command: DK_DeviceBase<RegularByteTransform>
+    public class DK81Command : DK_DeviceBase<RegularByteTransform>
     {
         #region 私有字段
         #region ID
@@ -22,9 +22,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         private readonly byte _TxID;
 
-      
+
 
         #endregion
+
+        /*******************/
+
         #region Ranges
         private byte RangeUa;
         private byte RangeUb;
@@ -36,17 +39,24 @@ namespace DKCommunication.Dandick.DK81Series
         private byte RangeIPb;
         private byte RangeIPc;
         #endregion
-        #endregion
+
+        #endregion 私有字段
+
+        /*****************************************************************************************************/
 
         #region Public Properties
+
         #region 档位
-        public byte Range_ACU { get; set; }
-        public byte Range_ACI { get; set; }
-        public byte Range_DCU { get; set; }
-        public byte Range_DCI { get; set; }
-        public byte Range_DCM { get; set; }
-        public byte Range_IProtect { get; set; }
+        //public byte Range_ACU { get; set; }
+        //public byte Range_ACI { get; set; }
+        //public byte Range_DCU { get; set; }
+        //public byte Range_DCI { get; set; }
+        //public byte Range_DCM { get; set; }
+        //public byte Range_IProtect { get; set; }
         #endregion
+
+        /*******************/
+
         #region 相别
         public float UA { get; }
         public float UB { get; }
@@ -58,13 +68,16 @@ namespace DKCommunication.Dandick.DK81Series
         public float IProtectB { get; }
         public float IProtectC { get; }
         #endregion
-        #endregion
+
+        #endregion Public Properties
+
+        /*****************************************************************************************************/
 
         #region Constructor
         /// <summary>
         /// 实例化一个默认的对象，使用默认的地址（0x0000）
         /// </summary>
-        public DK81Command( )
+        public DK81Command()
         {
             var result = AnalysisID(0);
             if (result.IsSuccess)
@@ -97,13 +110,15 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion
 
-        #region CommandBuilder
-        #region 系统命令
+        /*****************************************************************************************************/
+
+        #region private CommandBuilder【报文创建】
+        #region 系统命令【报文创建】
         /// <summary>
         /// 创建一个【联机指令】原始报文
         /// </summary>
         /// <returns>带指令信息的结果</returns>
-        private OperateResult<byte[]> CreateHandShake( )
+        private OperateResult<byte[]> CreateHandShake()
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.HandShake, DK81CommunicationInfo.HandShakeCommandLength);
 
@@ -117,7 +132,7 @@ namespace DKCommunication.Dandick.DK81Series
             //预创建报文失败
             else
             {
-                return bytesHeader;   
+                return bytesHeader;
             }
         }
 
@@ -158,55 +173,57 @@ namespace DKCommunication.Dandick.DK81Series
                 return new OperateResult<byte[]>(811203, "创建指令失败");
             }
         }
-        #endregion
-        #region 交流表源命令
+        #endregion 系统命令【报文创建】
+
+        /*******************/
+
+        #region 交流表源命令【报文创建】
         /// <summary>
-        /// 创建一个【源关闭】命令
+        /// 创建一个【交流源关闭】命令
         /// </summary>
         /// <returns>带指令信息的结果</returns>
-        private OperateResult<byte[]> CreateStop( )
+        private OperateResult<byte[]> CreateStopACSource()
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.Stop, DK81CommunicationInfo.StopLength);
-            if (bytesHeader.IsSuccess)
-            {
-                return bytesHeader;
-            }
-            else
-            {
-                return new OperateResult<byte[]>(811204, "创建指令失败");
-            }
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.StopACSource, DK81CommunicationInfo.StopACSourceLength);
+
+            return bytes;
         }
 
         /// <summary>
         /// 创建一个【源打开】命令
         /// </summary>
         /// <returns>带指令信息的结果</returns>
-        private OperateResult<byte[]> CreateStart( )
+        private OperateResult<byte[]> CreateStartACSource()
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.Start, DK81CommunicationInfo.StartLength);
-            if (bytesHeader.IsSuccess)
-            {
-                return bytesHeader;
-            }
-            else
-            {
-                return new OperateResult<byte[]>(811205, "创建指令失败");
-            }
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.StartACSource, DK81CommunicationInfo.StartACSourceLength);
+
+            return bytes;
         }
 
-        //public OperateResult<byte[]> CreatSetRange()
-        //{
-        //    OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetRange, DK81CommunicationInfo.SetRangeLength);
+        private OperateResult<byte[]> CreatSetRanges(byte urange, byte irange,byte ipranges)
+        {
+            byte[] ranges = new byte[9];
+            for (int i = 0; i < 3; i++)
+            {
+                ranges[i] = urange;
+                ranges[i + 3] = irange;
+                ranges[i + 6] = ipranges;
+            }
 
-        //}
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetRanges, DK81CommunicationInfo.SetRangesLength, ranges);
+            return bytes;
+        }
 
-        #endregion
-        #region 设备信息
+        #endregion 交流表源命令【报文创建】
+
+        /*******************/
+
+        #region 设备信息【报文创建】
         /// <summary>
         /// 创建读取交流标准源和标准表档位信息报文
         /// </summary>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateReadACSourceRanges( )
+        private OperateResult<byte[]> CreateReadACSourceRanges()
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceRanges, DK81CommunicationInfo.ReadACSourceRangesLength);
 
@@ -258,8 +275,11 @@ namespace DKCommunication.Dandick.DK81Series
                 return bytesHeader;
             }
         }
-        #endregion
-        #region Private CommandBuilder Helper 
+        #endregion 设备信息【报文创建】
+
+        /*******************/
+
+        #region Private CommandBuilder Helper 【报文创建】
         /// <summary>
         /// 创建7个字节长度指令时的【统一预处理】，不带CRC
         /// </summary>
@@ -290,7 +310,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 创建8个字节长度指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
+        /// 创建指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
         /// </summary>
         /// <typeparam name="T">泛型类，必须可以被转换为byte</typeparam>
         /// <param name="data">数据</param>
@@ -309,7 +329,7 @@ namespace DKCommunication.Dandick.DK81Series
                 }
                 else
                 {
-                    return new OperateResult<byte[]>() { ErrorCode = 811201, Message = "创建指令失败" };
+                    return result;
                 }
             }
             catch (Exception ex)
@@ -338,7 +358,7 @@ namespace DKCommunication.Dandick.DK81Series
                 }
                 else
                 {
-                    return new OperateResult<byte[]>() { ErrorCode = 811203, Message = "创建指令失败" };
+                    return header;
                 }
             }
             catch (Exception ex)
@@ -347,7 +367,10 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
         #endregion
-        #endregion
+
+        #endregion private CommandBuilder【报文创建】
+
+        /*****************************************************************************************************/
 
         #region Core Interative 核心交互
         protected virtual OperateResult<byte[]> CheckResponse(byte[] send)
@@ -359,7 +382,7 @@ namespace DKCommunication.Dandick.DK81Series
             if (!response.IsSuccess)
             {
                 return response;
-            }           
+            }
 
             // 长度校验
             if (response.Content.Length < 7)
@@ -395,15 +418,17 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion
 
-        #region Public Commands
+        /*****************************************************************************************************/
 
-        #region 系统命令
+        #region protected Commands【操作命令】
+
+        #region 系统命令【操作命令】
 
         /// <summary>
         /// 执行【联机命令】并返回回复报文
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        public OperateResult<byte[]> HandshakeCommand( )
+        protected OperateResult<byte[]> HandshakeCommand()
         {
             OperateResult<byte[]> createResult = CreateHandShake();
             //创建指令失败
@@ -413,7 +438,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
             //创建指令成功则获取回复数据：（已保证数据的有效性）
             OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
-            return responseBytes;           
+            return responseBytes;
         }
 
         /// <summary>
@@ -421,7 +446,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="mode">要设置的系统模式</param>
         /// <returns>下位机回复的有效报文</returns>
-        public OperateResult<byte[]> SetSystemModeCommand(SystemMode mode)
+        protected OperateResult<byte[]> SetSystemModeCommand(SystemMode mode)
         {
             OperateResult<byte[]> createResult = CreateSetSystemMode(mode);
             //创建指令失败
@@ -439,7 +464,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="mode">要显示的系统页面</param>
         /// <returns>下位机回复的有效报文</returns>
-        public OperateResult<byte[]> SetDisplayPageCommand(DisplayPage page)
+        protected OperateResult<byte[]> SetDisplayPageCommand(DisplayPage page)
         {
             OperateResult<byte[]> createResult = CreateSetDisplayPage(page);
             //创建指令失败
@@ -452,13 +477,16 @@ namespace DKCommunication.Dandick.DK81Series
             return responseBytes;
         }
 
-        #endregion
-        #region 设备信息
+        #endregion 系统命令【操作命令】
+
+        /*******************/
+
+        #region 设备信息【操作命令】
         /// <summary>
         /// 读取交流源档位
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        public OperateResult<byte[]> ReadACSourceRangesCommand()
+        protected OperateResult<byte[]> ReadACSourceRangesCommand()
         {
             OperateResult<byte[]> createResult = CreateReadACSourceRanges();
             //创建指令失败
@@ -475,7 +503,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取直流源档位
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        public OperateResult<byte[]> ReadDCSourceRangesCommand()
+        protected OperateResult<byte[]> ReadDCSourceRangesCommand()
         {
             OperateResult<byte[]> createResult = CreateReadDCSourceRanges();
             //创建指令失败
@@ -492,7 +520,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取直流表档位
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        public OperateResult<byte[]> ReadDCMeterRangesCommand()
+        protected OperateResult<byte[]> ReadDCMeterRangesCommand()
         {
             OperateResult<byte[]> createResult = CreateReadDCMeterourceRanges();
             //创建指令失败
@@ -504,7 +532,65 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
             return responseBytes;
         }
-        #endregion
-        #endregion
+        #endregion 设备信息【操作命令】
+
+        /*******************/
+
+        #region 交流源（表）【操作命令】
+        /// <summary>
+        /// 交流源关闭命令,返回OK
+        /// </summary>
+        /// <returns>下位机回复的有效报文</returns>
+        protected OperateResult<byte[]> StopACSourceCommand()
+        {
+            OperateResult<byte[]> createResult = CreateStopACSource();
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 交流源关闭命令,返回OK
+        /// </summary>
+        /// <returns>下位机回复的有效报文</returns>
+        protected OperateResult<byte[]> StartACSourceCommand()
+        {
+            OperateResult<byte[]> createResult = CreateStartACSource();
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 设置交流源档位
+        /// </summary>
+        /// <param name="ranges"></param>
+        /// <returns>下位机回复的有效报文</returns>
+        protected OperateResult<byte[]> SetRangesCommand(byte urange,byte irange,byte ipranges)
+        {
+            OperateResult<byte[]> createResult = CreatSetRanges(urange, irange,ipranges);
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+    
+        #endregion 交流源（表）【操作命令】
+
+        #endregion protected Commands【操作命令】
     }
 }
