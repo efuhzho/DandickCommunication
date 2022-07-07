@@ -126,7 +126,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="mode">系统模式</param>
         /// <returns>带指令信息的结果</returns>
-        private OperateResult<byte[]> CreateSystemMode(SystemMode mode)
+        private OperateResult<byte[]> CreateSetSystemMode(SystemMode mode)
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetSystemMode, DK81CommunicationInfo.SetSystemModeCommandLength, mode);
             if (bytesHeader.IsSuccess)
@@ -146,7 +146,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="page">当前显示页面</param>
         /// <returns>带指令信息的结果</returns>
-        private OperateResult<byte[]> CreateDisplayPage(DisplayPage page)    //TODO 将DisplayPage写成属性
+        private OperateResult<byte[]> CreateSetDisplayPage(DisplayPage page)    //TODO 将DisplayPage写成属性
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetDisplayPage, DK81CommunicationInfo.SetDisplayPageCommandLength, page);
             if (bytesHeader.IsSuccess)
@@ -374,13 +374,13 @@ namespace DKCommunication.Dandick.DK81Series
             }
 
             //回复OK
-            if (response.Content[5] == 0x4B)
+            if (response.Content[5] == DK81CommunicationInfo.OK)
             {
                 return response;
             }
 
             // 检查是否报故障：是     //TODO 随时主动报故障的问题
-            if (response.Content[5] == 0x52)
+            if (response.Content[5] == DK81CommunicationInfo.ErrorCode)
             {
                 return new OperateResult<byte[]>(response.Content[6], ((ErrorCode)response.Content[6]).ToString()); //TODO 测试第二种故障码解析:/*DK81CommunicationInfo.GetErrorMessageByErrorCode(response.Content[6])*/
             }
@@ -396,6 +396,9 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region Public Commands
+
+        #region 系统命令
+
         /// <summary>
         /// 执行【联机命令】并返回回复报文
         /// </summary>
@@ -413,6 +416,44 @@ namespace DKCommunication.Dandick.DK81Series
             return responseBytes;           
         }
 
+        /// <summary>
+        /// 执行【系统模式设置】并返回回复报文
+        /// </summary>
+        /// <param name="mode">要设置的系统模式</param>
+        /// <returns>下位机回复的有效报文</returns>
+        public OperateResult<byte[]> SetSystemModeCommand(SystemMode mode)
+        {
+            OperateResult<byte[]> createResult = CreateSetSystemMode(mode);
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【显示页面设置】并返回回复报文
+        /// </summary>
+        /// <param name="mode">要显示的系统页面</param>
+        /// <returns>下位机回复的有效报文</returns>
+        public OperateResult<byte[]> SetDisplayPageCommand(DisplayPage page)
+        {
+            OperateResult<byte[]> createResult = CreateSetDisplayPage(page);
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        #endregion
+        #region 设备信息
         /// <summary>
         /// 读取交流源档位
         /// </summary>
@@ -463,6 +504,7 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
             return responseBytes;
         }
+        #endregion
         #endregion
     }
 }

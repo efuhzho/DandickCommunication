@@ -213,7 +213,7 @@ namespace DKCommunication.Serial
                 }
                 catch (Exception ex)
                 {
-                    return new OperateResult(ex.Message);
+                    return new OperateResult(ex.Message+"SerialBasse#216");
                 }
             }
             else

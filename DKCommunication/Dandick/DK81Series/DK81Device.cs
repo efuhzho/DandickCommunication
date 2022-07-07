@@ -38,6 +38,8 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
         #endregion
 
+        /*****************************************************************************************************/
+
         #region Constructor   
         /// <summary>
         /// 无参构造方法，默认ID = 0;
@@ -56,6 +58,8 @@ namespace DKCommunication.Dandick.DK81Series
 
         }
         #endregion
+
+        /*****************************************************************************************************/
 
         #region Public Properties
         #region Public
@@ -95,8 +99,113 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
         #endregion
 
+        /*****************************************************************************************************/
 
-        #region Base
+        #region Public Methods
+        /*******************/
+
+        #region 系统信号
+        /// <summary>
+        /// 解析【联机指令】的回复报文，并单向初始化设备信息，不对初始化信息做任何判断
+        /// 【并非所有设备都会返回准确的设备信息】
+        /// </summary>
+        /// <returns>包含信息的操作结果</returns>
+        public OperateResult<byte[]> Handshake()
+        {
+            OperateResult<byte[]> response = HandshakeCommand();
+
+            if (response.IsSuccess)
+            {
+                AnalysisHandshake(response.Content);
+                ReadACSourceRanges();
+                ReadDCSourceRanges();
+                ReadDCMeterRanges();
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 【系统模式设置】返回OK
+        /// </summary>
+        /// <param name="mode">系统模式</param>
+        /// <returns>返回OK,下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> SetSystemMode(SystemMode mode)
+        {
+            OperateResult<byte[]> response = SetSystemModeCommand(mode);
+            return response;
+        }
+
+        /// <summary>
+        /// 【显示页面设置】返回OK
+        /// </summary>
+        /// <param name="page">要设置的显示页面</param>
+        /// <returns>返回OK,下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> SetDisplayPage(DisplayPage page)
+        {
+            OperateResult<byte[]> response = SetDisplayPageCommand(page);
+            return response;
+        }
+        #endregion
+
+        /*******************/
+
+        #region 设备信息
+        /// <summary>
+        /// 读取【交流源档位】，初始化设备只读属性
+        /// </summary>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> ReadACSourceRanges()
+        {
+            OperateResult<byte[]> response = ReadACSourceRangesCommand();
+            if (response.IsSuccess)
+            {
+                AnalysisReadACSourceRanges(response.Content);
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 读取【直流表档位】，初始化设备只读属性
+        /// </summary>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> ReadDCMeterRanges()
+        {
+            OperateResult<byte[]> response = ReadDCMeterRangesCommand();
+            if (response.IsSuccess)
+            {
+                AnalysisReadDCMeterRanges(response.Content);
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 读取【直流源档位】，初始化设备只读属性
+        /// </summary>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> ReadDCSourceRanges()
+        {
+            OperateResult<byte[]> response = ReadDCSourceRangesCommand();
+            if (response.IsSuccess)
+            {
+                AnalysisReadDCSourceRanges(response.Content);
+            }
+            return response;
+        }
+        #endregion
+
+        /*******************/
+
+        #region MyRegion
+
+        #endregion
+
+        /*******************/
+
+        #endregion
+
+        /******************************************************************************************************/
+
+
         public OperateResult<byte[]> Calibrate_ClearData()
         {
             throw new NotImplementedException();
@@ -142,24 +251,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// 解析【联机指令】的回复报文，并单向初始化设备信息，不对初始化信息做任何判断
-        /// 【并非所有设备都会返回准确的设备信息】
-        /// </summary>
-        /// <returns>包含信息的操作结果</returns>
-        public OperateResult<byte[]> Handshake()
-        {
-            OperateResult<byte[]> response = HandshakeCommand();
-
-            if (response.IsSuccess)
-            {
-                AnalysisHandshake(response.Content);
-                ReadACSourceRanges();
-                ReadDCSourceRanges();
-                ReadDCMeterRanges();
-            }
-            return response;
-        }
+    
 
         public OperateResult<byte[]> ReadACSourceData()
         {
@@ -181,29 +273,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> ReadDCMeterRanges()
-        {
-            OperateResult<byte[]> response = ReadDCMeterRangesCommand();
-            if (response.IsSuccess)
-            {
-                AnalysisReadDCMeterRanges(response.Content);
-            }
-            return response;
-        }
-
-        /// <summary>
-        /// 读取直流源档位
-        /// </summary>
-        /// <returns>下位机回复的原始报文</returns>
-        public OperateResult<byte[]> ReadDCSourceRanges()
-        {
-            OperateResult<byte[]> response = ReadDCSourceRangesCommand();
-            if (response.IsSuccess)
-            {
-                AnalysisReadDCSourceRanges(response.Content);
-            }
-            return response;
-        }
+       
 
         public OperateResult<byte[]> ReadDCSourceData()
         {
@@ -215,15 +285,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> ReadACSourceRanges()
-        {
-            OperateResult<byte[]> response = ReadACSourceRangesCommand();
-            if (response.IsSuccess)
-            {
-                AnalysisReadACSourceRanges(response.Content);
-            }
-            return response;
-        }
+       
 
         public OperateResult<byte[]> SetACSourceRange()
         {
@@ -255,15 +317,10 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> SetDisplayPage(int page)
-        {
-            throw new NotImplementedException();
-        }
+    
 
-        public OperateResult<byte[]> SetSystemMode(int mode)
-        {
-            throw new NotImplementedException();
-        }
+    
+       
 
         public OperateResult<byte[]> SetWireMode()
         {
@@ -339,9 +396,11 @@ namespace DKCommunication.Dandick.DK81Series
         {
             throw new NotImplementedException();
         }
-        #endregion
+        /******************************************************************************************************/
 
         #region private Methods Helper
+        /******************************************************************************************************************************/
+        #region 解析【系统信号】
         /// <summary>
         /// 解析设备信息：并非所有设备都会回复有效信息
         /// </summary>
@@ -379,25 +438,31 @@ namespace DKCommunication.Dandick.DK81Series
             //特殊功能状态解析，暂不处理
             //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    
         }
+        #endregion 
+        /******************************************************************************************************************************/
+        #region 解析【设备信息】
 
         /// <summary>
         /// 解析交流源档位
         /// </summary>
         /// <param name="response">下位机回复的档位信息报文</param>
         private void AnalysisReadACSourceRanges(byte[] response)
-        {            
-            _uRangesCount = response[6];
-            _uRanges_Asingle = response[7];
-            _iRangesCount = response[8];
-            _iRanges_Asingle = response[9];
-            _iProtectRangesCount = response[10];
-            _iProtectRanges_Asingle = response[11];
-            float[] uRanges = ByteTransform.TransSingle(response, 12, _uRangesCount);
-            float[] iRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount, _iRangesCount);
-            float[] iProtectRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount + 4 * _iRangesCount, _iProtectRangesCount);
-            _uRanges = uRanges.ToList();
-            _iRanges = iRanges.ToList();
-            _iProtectRanges = iProtectRanges.ToList();           
+        {
+            if (response.Length>12)
+            {
+                _uRangesCount = response[6];
+                _uRanges_Asingle = response[7];
+                _iRangesCount = response[8];
+                _iRanges_Asingle = response[9];
+                _iProtectRangesCount = response[10];
+                _iProtectRanges_Asingle = response[11];
+                float[] uRanges = ByteTransform.TransSingle(response, 12, _uRangesCount);
+                float[] iRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount, _iRangesCount);
+                float[] iProtectRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount + 4 * _iRangesCount, _iProtectRangesCount);
+                _uRanges = uRanges.ToList();
+                _iRanges = iRanges.ToList();
+                _iProtectRanges = iProtectRanges.ToList();
+            }      
         }
 
         /// <summary>
@@ -406,12 +471,15 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="response"></param>
         private void AnalysisReadDCSourceRanges(byte[] response)
         {
-            _DCURangesCount = response[6];
-            _DCIRangesCount = response[7];
-            float[] dcuRanges = ByteTransform.TransSingle(response, 8, _DCURangesCount);
-            float[] dciRanges = ByteTransform.TransSingle(response, 8 + _DCURangesCount * 4, _DCIRangesCount);
-            _DCURanges = dcuRanges.ToList();
-            _DCIRanges = dciRanges.ToList();
+            if (response.Length>8)
+            {
+                _DCURangesCount = response[6];
+                _DCIRangesCount = response[7];
+                float[] dcuRanges = ByteTransform.TransSingle(response, 8, _DCURangesCount);
+                float[] dciRanges = ByteTransform.TransSingle(response, 8 + _DCURangesCount * 4, _DCIRangesCount);
+                _DCURanges = dcuRanges.ToList();
+                _DCIRanges = dciRanges.ToList();
+            }          
         }
 
         /// <summary>
@@ -420,16 +488,23 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="response">经过验证的有效回复数据</param>
         private void AnalysisReadDCMeterRanges(byte[] response)
         {
-            //TODO 测试异常是否能在底层被完全捕获，确保response数据有效性
-            _DCMeterURangesCount = response[8];
-            _DCMeterIRangesCount = response[9];
-            float[] dcmURanges = ByteTransform.TransSingle(response, 10, _DCMeterURangesCount);
-            float[] dcmIanges = ByteTransform.TransSingle(response, 10 + 4 * _DCMeterURangesCount, _DCMeterIRangesCount);
-            _DCMeterURanges = dcmURanges.ToList();
-            _DCMeterIRanges = dcmIanges.ToList();
+            if (response.Length>10)
+            {
+                //TODO 测试异常是否能在底层被完全捕获，确保response数据有效性
+                _DCMeterURangesCount = response[8];
+                _DCMeterIRangesCount = response[9];
+                float[] dcmURanges = ByteTransform.TransSingle(response, 10, _DCMeterURangesCount);
+                float[] dcmIanges = ByteTransform.TransSingle(response, 10 + 4 * _DCMeterURangesCount, _DCMeterIRangesCount);
+                _DCMeterURanges = dcmURanges.ToList();
+                _DCMeterIRanges = dcmIanges.ToList();
+            }       
         }
+        #endregion
 
         #endregion
+
+        /******************************************************************************************************/
+
 
 
 

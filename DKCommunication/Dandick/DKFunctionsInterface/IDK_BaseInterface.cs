@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DKCommunication.Dandick.DK81Series;
 
 namespace DKCommunication.Dandick.DKInterface
 {
@@ -32,14 +33,14 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         /// <param name="page">显示页面</param>
         /// <returns>带信息的结果</returns>
-        OperateResult<byte[]> SetDisplayPage(int page);
+        OperateResult<byte[]> SetDisplayPage(DisplayPage page);
 
         /// <summary>
         /// 设置【系统模式】
         /// </summary>
         /// <param name="mode">模式</param>
         /// <returns>带信息的结果</returns>
-        OperateResult<byte[]> SetSystemMode(int mode);
+        OperateResult<byte[]> SetSystemMode(SystemMode mode);
 
         /// <summary>
         /// 保存校准参数
