@@ -52,17 +52,17 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 电压档位集合
         /// </summary>
-        List<float> ACU_Ranges { get; set; }
+        List<float> ACU_RangesList { get; set; }
 
         /// <summary>
         /// 电流档位集合
         /// </summary>
-        List<float> ACI_Ranges { get; set; }
+        List<float> ACI_RangesList { get; set; }
 
         /// <summary>
         /// 保护电流档位集合
         /// </summary>
-        List<float> IProtect_Ranges { get; set; }
+        List<float> IProtect_RangesList { get; set; }
         #endregion
 
         /******************************************************************************************************************************/
@@ -82,7 +82,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 设置档位命令
         /// </summary>
-        OperateResult<byte[]> SetACSourceRange();
+        OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex, int IProtect_RangesIndex);
 
         /// <summary>
         /// 设置输出幅度参数

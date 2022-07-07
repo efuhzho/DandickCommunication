@@ -29,16 +29,16 @@ namespace DKCommunication.Dandick.DK81Series
         /*******************/
 
         #region Ranges
-        private byte RangeUa;
-        private byte RangeUb;
-        private byte RangeUc;
-        private byte RangeIa;
-        private byte RangeIb;
-        private byte RangeIc;
-        private byte RangeIPa;
-        private byte RangeIPb;
-        private byte RangeIPc;
-        #endregion
+        //private byte RangeUa;
+        //private byte RangeUb;
+        //private byte RangeUc;
+        //private byte RangeIa;
+        //private byte RangeIb;
+        //private byte RangeIc;
+        //private byte RangeIPa;
+        //private byte RangeIPb;
+        //private byte RangeIPc;
+        #endregion Ranges
 
         #endregion 私有字段
 
@@ -200,18 +200,34 @@ namespace DKCommunication.Dandick.DK81Series
             return bytes;
         }
 
-        private OperateResult<byte[]> CreatSetRanges(byte urange, byte irange,byte ipranges)
+        /// <summary>
+        /// 创建【交流源档位设置】报文，返回带信息的报文
+        /// </summary>
+        /// <param name="urange">交流电压档位</param>
+        /// <param name="irange">交流电流档位</param>
+        /// <param name="ipranges">保护电流档位</param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreatSetACSourceRange(int urange, int irange, int ipranges)
         {
-            byte[] ranges = new byte[9];
-            for (int i = 0; i < 3; i++)
+            try
             {
-                ranges[i] = urange;
-                ranges[i + 3] = irange;
-                ranges[i + 6] = ipranges;
+                byte[] ranges = new byte[9];
+                for (int i = 0; i < 3; i++)
+                {
+                    ranges[i] = (byte)urange;
+                    ranges[i + 3] = (byte)irange;
+                    ranges[i + 6] = (byte)ipranges;
+                }
+
+                OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetRanges, DK81CommunicationInfo.SetRangesLength, ranges);
+                return bytes;
+            }
+            catch (Exception ex)
+            {
+
+                return new OperateResult<byte[]>(8112, "请输入正确的档位索引值，0为最大档位"+ex.Message);
             }
 
-            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetRanges, DK81CommunicationInfo.SetRangesLength, ranges);
-            return bytes;
         }
 
         #endregion 交流表源命令【报文创建】
@@ -576,9 +592,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="ranges"></param>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> SetRangesCommand(byte urange,byte irange,byte ipranges)
+        protected OperateResult<byte[]> SetACSourceRangeCommand(int urange, int irange, int ipranges)
         {
-            OperateResult<byte[]> createResult = CreatSetRanges(urange, irange,ipranges);
+
+            OperateResult<byte[]> createResult = CreatSetACSourceRange(urange, irange, ipranges);
             //创建指令失败
             if (!createResult.IsSuccess)
             {
@@ -587,8 +604,10 @@ namespace DKCommunication.Dandick.DK81Series
             //创建指令成功则获取回复数据：（已保证数据的有效性）
             OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
             return responseBytes;
+
+
         }
-    
+
         #endregion 交流源（表）【操作命令】
 
         #endregion protected Commands【操作命令】

@@ -1,12 +1,8 @@
-﻿using DKCommunication.BasicFramework;
+﻿using DKCommunication.Dandick.DKInterface;
 using System;
-using DKCommunication.Core;
-using DKCommunication.Dandick.DKInterface;
-using System.Text;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using DKCommunication.Core;
+using System.Text;
 
 namespace DKCommunication.Dandick.DK81Series
 {
@@ -62,7 +58,7 @@ namespace DKCommunication.Dandick.DK81Series
         /*****************************************************************************************************/
 
         #region Public Properties
-        #region Public
+        #region Functions
         public bool IsACU_Activated { get; set; } = true;
         public bool IsACI_Activated { get; set; } = true;
         public bool IsDCM_Activated { get; set; } = true;
@@ -76,17 +72,17 @@ namespace DKCommunication.Dandick.DK81Series
         public byte ACU_RangesCount => _uRangesCount;
         public byte ACI_RangesCount => _iRangesCount;
         public byte IProtectRangesCount => _iProtectRangesCount;
-        public List<float> ACU_Ranges
+        public List<float> ACU_RangesList
         {
             get { return _uRanges; }
             set { _uRanges = value; }
         }
-        public List<float> ACI_Ranges
+        public List<float> ACI_RangesList
         {
             get { return _iRanges; }
             set { _iRanges = value; }
         }
-        public List<float> IProtect_Ranges
+        public List<float> IProtect_RangesList
         {
             get { return _iProtectRanges; }
             set { _iProtectRanges = value; }
@@ -94,6 +90,11 @@ namespace DKCommunication.Dandick.DK81Series
         public byte IRanges_Asingle => _iRanges_Asingle;
         public byte IProtectRanges_Asingle => _iProtectRanges_Asingle;
         public byte URanges_Asingle => _uRanges_Asingle;
+
+        //public enum ACU_Ranges
+        //{
+            
+        //}
         #endregion
         #region DCSource
         public byte DCU_RangesCount => _DCURangesCount;
@@ -232,25 +233,25 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 【档位设置】命令，返回OK
         /// </summary>
-        /// <param name="ACU_RangesIndex">交流电压档位的索引值</param>
-        /// <param name="ACI_RangesIndex">交流电流档位的索引值</param>
-        /// <param name="IProtect_RangesIndex">保护电流档位的索引值</param>
+        /// <param name="ACU_RangesIndex">交流电压档位的索引值，最大档位索引为0</param>
+        /// <param name="ACI_RangesIndex">交流电流档位的索引值，最大档位索引为0</param>
+        /// <param name="IProtect_RangesIndex">保护电流档位的索引值，最大档位索引为0</param>
         /// <returns></returns>
-        public OperateResult<byte[]> SetRanges(byte ACU_RangesIndex, byte ACI_RangesIndex, byte IProtect_RangesIndex)  //TODO 档位有效值在属性中限定
+        public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex, int IProtect_RangesIndex)  //TODO 档位有效值在属性中限定
         {
-            OperateResult<byte[]> response = SetRangesCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangesIndex);
+            OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangesIndex);
             return response;
         }
 
         /// <summary>
         /// 【档位设置】命令，返回OK
         /// </summary>
-        /// <param name="ACU_RangesIndex">交流电压档位的索引值</param>
-        /// <param name="ACI_RangesIndex">交流电流档位的索引值</param>
+        /// <param name="ACU_RangesIndex">交流电压档位的索引值，最大档位索引为0</param>
+        /// <param name="ACI_RangesIndex">交流电流档位的索引值，最大档位索引为0</param>
         /// <returns></returns>
-        public OperateResult<byte[]> SetRanges(byte ACU_RangesIndex, byte ACI_RangesIndex)  //TODO 档位有效值在属性中限定
+        public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex)  //TODO 档位有效值在属性中限定
         {
-            OperateResult<byte[]> response = SetRangesCommand(ACU_RangesIndex, ACI_RangesIndex, 0);
+            OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, 0);
             return response;
         }
         #endregion 交流源（表）操作命令
@@ -343,11 +344,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-        public OperateResult<byte[]> SetACSourceRange()
-        {
-            throw new NotImplementedException();
-        }
-
+       
         public OperateResult<byte[]> SetClosedLoop()
         {
             throw new NotImplementedException();

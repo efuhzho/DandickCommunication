@@ -53,15 +53,15 @@ namespace DandickDeviceTest
 
             var result = dandick.ReadACSourceRanges();
             Assert.True(result.IsSuccess);
-            Assert.True(dandick.ACI_Ranges[0] == 20F);
-            Assert.True(dandick.ACI_Ranges[1] == 5F);
-            Assert.True(dandick.ACI_Ranges[2] == 2F);
-            Assert.True(dandick.ACI_Ranges[3] == 1F);
+            Assert.True(dandick.ACI_RangesList[0] == 20F);
+            Assert.True(dandick.ACI_RangesList[1] == 5F);
+            Assert.True(dandick.ACI_RangesList[2] == 2F);
+            Assert.True(dandick.ACI_RangesList[3] == 1F);
 
-            Assert.True(dandick.ACU_Ranges[0] == 380F);
-            Assert.True(dandick.ACU_Ranges[1] == 220F);
-            Assert.True(dandick.ACU_Ranges[2] == 100F);
-            Assert.True(dandick.ACU_Ranges[3] == 57.7F);
+            Assert.True(dandick.ACU_RangesList[0] == 380F);
+            Assert.True(dandick.ACU_RangesList[1] == 220F);
+            Assert.True(dandick.ACU_RangesList[2] == 100F);
+            Assert.True(dandick.ACU_RangesList[3] == 57.7F);
 
             dandick.Close();
         }
@@ -91,6 +91,17 @@ namespace DandickDeviceTest
             Assert.True(result.Content[5] == 0x4b);
             Assert.True(result.Content[6] == 0x4b);
             dandick.Close();
+        }
+
+        public void SetACSourceRangeTEST()
+        {
+            dandick.Open();
+            var result = dandick.SetACSourceRange(dandick.ACU_RangesList.IndexOf(380F),dandick.ACI_RangesList.IndexOf(20F));
+
+            Assert.True(result.IsSuccess);
+
+            dandick.Close();
+
         }
     }
 }

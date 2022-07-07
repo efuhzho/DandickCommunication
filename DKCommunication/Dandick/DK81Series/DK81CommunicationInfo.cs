@@ -65,19 +65,19 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 交流源关闭命令
         /// </summary>
-        public const byte StopACSource = 0x4F;
+        public const byte StopACSource = 0x4F;  //2022年7月7日
         public const ushort StopACSourceLength = 7;
 
         /// <summary>
         /// 交流源打开命令
         /// </summary>
-        public const byte StartACSource = 0x54;
+        public const byte StartACSource = 0x54; //2022年7月7日
         public const ushort StartACSourceLength = 7;
 
         /// <summary>
-        /// 设置交流源档位参数
+        /// 设置交流源档位参数 
         /// </summary>
-        public const byte SetRanges = 0x31;
+        public const byte SetRanges = 0x31; //2022年7月7日
         public const ushort SetRangesLength = 16;  //!51F具备IPa,IPb,IPc
 
         /// <summary>
