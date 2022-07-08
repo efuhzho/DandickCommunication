@@ -102,7 +102,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置源接线模式:
         /// </summary>
-        public const byte SetWireMode = 0x35;   //TODO 枚举   PAGE 8
+        public const byte SetWireMode = 0x35;   //2022年7月8日 19点31分
         public const ushort SetWireModeLength = 8;
 
         /// <summary>
@@ -608,12 +608,39 @@ namespace DKCommunication.Dandick.DK81Series
     }
     #endregion
 
+    #region CloseLoop 闭环控制定义、谐波模式
+    public enum CloseLoopMode : byte
+    {
+        /// <summary>
+        /// 闭环
+        /// </summary>
+        CloseLoop = 0,
+
+        /// <summary>
+        /// 开环
+        /// </summary>
+        OpenLoop = 1
+    }
+    public enum HarmonicMode : byte
+    {
+        /// <summary>
+        /// 以真有效值的百分比输入谐波
+        /// </summary>
+        ValidValuesConstant = 0,
+
+        /// <summary>
+        /// 以基波值的百分比输入谐波
+        /// </summary>
+        FundamentalConstant = 1
+    }
+    #endregion
+
     #region Error_Code Declaration 故障码解析
     /// <summary>
     /// 故障码定义：枚举。此为获取故障信息的第二种方式
     /// </summary>
     [Flags]
-    public enum ErrorCode
+    public enum ErrorCode:byte
     {
         ErrorUa = 0b_0000_0001,    // 0x01 // 1
         ErrorUb = 0b_0000_0010,    // 0x02 // 2

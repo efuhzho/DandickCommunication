@@ -10,12 +10,11 @@ namespace DandickDeviceTest
         public DK81DeviceTEST()
         {
             dandick.SerialPortInni("com3");          
-            dandick.ReceiveTimeout = 5000;
+            dandick.ReceiveTimeout = 1000;
             dandick.SleepTime = 20;
             dandick.ByteTransform.DataFormat = DataFormat.DCBA;
             dandick.SetWireMode(WireMode.WireMode_3P4L);
-            
-            
+            //dandick.WireMode =(WireMode)1;           
         }
 
 
@@ -96,6 +95,31 @@ namespace DandickDeviceTest
         }
 
         /// <summary>
+        /// 交流源关闭命令测试
+        /// </summary>
+        [Fact]
+        public void StopACSourceTEST()
+        {
+            dandick.Open();
+            var result = dandick.StopACSource();
+            Assert.True(result.IsSuccess);
+            dandick.Close();
+        }
+
+        /// <summary>
+        /// 交流源打开命令测试
+        /// </summary>
+        [Fact]
+        public void StartACSourceTEST()
+        {
+            dandick.Open();
+            var result = dandick.StartACSource();            
+            Assert.True(result.IsSuccess);           
+            dandick.Close();
+        }
+
+
+        /// <summary>
         /// 设置交流源档位测试
         /// </summary>
         [Fact]
@@ -103,14 +127,15 @@ namespace DandickDeviceTest
         {
 
             dandick.Open();
-            dandick.ReadACSourceRanges();
-            var result = dandick.SetACSourceRange(dandick.ACU_RangesList.IndexOf(380F), dandick.ACI_RangesList.IndexOf(20F));
+            //dandick.ReadACSourceRanges();
+            //var result = dandick.SetACSourceRange(dandick.ACU_RangesList.IndexOf(380F), dandick.ACI_RangesList.IndexOf(20F));
             var result2 = dandick.SetACSourceRange(0, 0);
-            Assert.True(result.IsSuccess);
+            //Assert.True(result.IsSuccess);
             Assert.True(result2.IsSuccess);
             dandick.Close();
-
+            
         }
+
         /// <summary>
         /// 设置交流源幅值测试
         /// </summary>
@@ -119,7 +144,58 @@ namespace DandickDeviceTest
         {
             dandick.Open();
             var result = dandick.WriteACSourceAmplitude(57.7f, 100f, 220f, 1f, 2f, 3f);
+            var result2 = dandick.WriteACSourceAmplitude(57.7f, 1f);
             Assert.True(result.IsSuccess);
+            Assert.True(result2.IsSuccess);
+            dandick.Close();
+        }
+
+        [Fact]
+        public void WritePhaseTEST()
+        {
+            dandick.Open();            
+            var result = dandick.WritePhase(121F,241F,0,121F,241F);
+            Assert.True(result.IsSuccess);         
+            dandick.Close();
+        }
+
+        /// <summary>
+        /// 设置频率测试
+        /// </summary>
+        [Fact]
+        public void WriteFrequencyTEST()
+        {
+            dandick.Open();
+            var result = dandick.WriteFrequency(52F);
+            var result2 = dandick.WriteFrequency(52F,50F);
+            Assert.True(result.IsSuccess);
+            Assert.True(result2.IsSuccess);
+            dandick.Close();
+        }
+
+        /// <summary>
+        /// 设置接线模式测试
+        /// </summary>
+        [Fact]
+        public void SetWireModeTEST()
+        {
+            dandick.Open();
+            var result = dandick.SetWireMode(WireMode.WireMode_3Component);
+            Assert.True(result.IsSuccess);
+            dandick.Close();
+        }
+
+        /// <summary>
+        /// 设置闭环模式和谐波模式测试
+        /// </summary>
+        [Fact]
+        public void SetClosedLoopTEST()
+        {
+            dandick.Open();
+            var result =  dandick.SetClosedLoop(CloseLoopMode.OpenLoop, HarmonicMode.FundamentalConstant);
+            var result2 =  dandick.SetClosedLoop(CloseLoopMode.OpenLoop);
+            Assert.True(result.IsSuccess);
+            Assert.True(result2.IsSuccess);
             dandick.Close();
         }
     }

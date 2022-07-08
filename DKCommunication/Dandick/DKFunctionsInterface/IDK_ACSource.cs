@@ -2,7 +2,7 @@
 
 namespace DKCommunication.Dandick.DKInterface
 {
-    interface IDK_ACSource<TwireMode> where TwireMode:System.Enum
+    interface IDK_ACSource<TWireMode,TCloseLoopMode,THarmonicMode> 
     {
         #region Properties
         /// <summary>
@@ -122,12 +122,12 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 设置接线模式
         /// </summary>
-        OperateResult<byte[]> SetWireMode(TwireMode wireMode);
+        OperateResult<byte[]> SetWireMode(TWireMode wireMode);
 
         /// <summary>
         /// 闭环控制使能命令
         /// </summary>
-        OperateResult<byte[]> SetClosedLoop();
+        OperateResult<byte[]> SetClosedLoop(TCloseLoopMode closeLoopMode, THarmonicMode harmonicMode);
 
         /// <summary>
         /// 设置谐波参数

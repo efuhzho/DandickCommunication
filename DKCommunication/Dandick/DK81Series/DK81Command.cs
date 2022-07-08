@@ -10,77 +10,7 @@ namespace DKCommunication.Dandick.DK81Series
     /// </summary>
     public class DK81Command : DK_DeviceBase<RegularByteTransform>
     {
-
-
-        #region 私有字段
-        #region ID
-        /// <summary>
-        /// 接收终端的设备ID
-        /// </summary>
-        private readonly byte _RxID;
-
-        /// <summary>
-        /// 发送终端的设备ID
-        /// </summary>
-        private readonly byte _TxID;
-
-
-
-        #endregion
-
-        /*******************/
-
-        #region Ranges
-        //private byte RangeUa;
-        //private byte RangeUb;
-        //private byte RangeUc;
-        //private byte RangeIa;
-        //private byte RangeIb;
-        //private byte RangeIc;
-        //private byte RangeIPa;
-        //private byte RangeIPb;
-        //private byte RangeIPc;
-        #endregion Ranges
-
-        #endregion 私有字段
-
-        /*****************************************************************************************************/
-
-        #region Public Properties
-        public WireMode WireMode { get; set; }
-
-        public DisplayPage DisplayPage { get; set; }
-
-        public SystemMode SystemMode { get; set; }
-
-        #region 档位
-        //public byte Range_ACU { get; set; }
-        //public byte Range_ACI { get; set; }
-        //public byte Range_DCU { get; set; }
-        //public byte Range_DCI { get; set; }
-        //public byte Range_DCM { get; set; }
-        //public byte Range_IProtect { get; set; }
-        #endregion
-
-        /*******************/
-
-        #region 相别
-        public float UA { get; }
-        public float UB { get; }
-        public float UC { get; }
-        public float IA { get; }
-        public float IB { get; }
-        public float IC { get; }
-        public float IProtectA { get; }
-        public float IProtectB { get; }
-        public float IProtectC { get; }
-        #endregion
-
-        #endregion Public Properties
-
-        /*****************************************************************************************************/
-
-        #region Constructor
+        #region --------------------------------- Constructor -------------------------------------
         /// <summary>
         /// 实例化一个默认的对象，使用默认的地址（0x0000）
         /// </summary>
@@ -115,11 +45,227 @@ namespace DKCommunication.Dandick.DK81Series
                 throw new Exception(result.Message);
             }
         }
+        #endregion Constructor
+
+        #region --------------------------------- 私有字段 ----------------------------------------
+        #region ID
+        /// <summary>
+        /// 接收终端的设备ID
+        /// </summary>
+        private readonly byte _RxID;
+
+        /// <summary>
+        /// 发送终端的设备ID
+        /// </summary>
+        private readonly byte _TxID;
+
+
+
         #endregion
 
-        /*****************************************************************************************************/
+        /*******************/
 
-        #region private CommandBuilder【报文创建】
+        #region Ranges
+        //private byte RangeUa;
+        //private byte RangeUb;
+        //private byte RangeUc;
+        //private byte RangeIa;
+        //private byte RangeIb;
+        //private byte RangeIc;
+        //private byte RangeIPa;
+        //private byte RangeIPb;
+        //private byte RangeIPc;
+        #endregion Ranges
+
+        #endregion 私有字段
+
+        #region --------------------------------- Public Properties--------------------------------
+        public WireMode WireMode { get; set; }
+
+        public DisplayPage DisplayPage { get; set; }
+
+        public SystemMode SystemMode { get; set; }
+
+        public CloseLoopMode CloseLoopMode { get; set; }
+
+        public HarmonicMode HarmonicMode { get; set; }
+
+        #region 档位
+        //public byte Range_ACU { get; set; }
+        //public byte Range_ACI { get; set; }
+        //public byte Range_DCU { get; set; }
+        //public byte Range_DCI { get; set; }
+        //public byte Range_DCM { get; set; }
+        //public byte Range_IProtect { get; set; }
+        #endregion
+
+        /*******************/
+
+        #region 相别
+        public float UA { get; }
+        public float UB { get; }
+        public float UC { get; }
+        public float IA { get; }
+        public float IB { get; }
+        public float IC { get; }
+        public float IProtectA { get; }
+        public float IProtectB { get; }
+        public float IProtectC { get; }
+        #endregion
+
+        #endregion Public Properties
+
+        #region --------------------------------- Private CommandBuilder Helper 【报文创建助手】---
+        /// <summary>
+        /// 创建完整指令长度的【指令头】，长度大于7的报文不带CRC校验码，不可直接发送给串口，长度等于7则带校验码
+        /// </summary>
+        /// <param name="commandCode">命令码</param>
+        /// <param name="commandLength">指令长度</param>
+        /// <returns>带指令信息的结果：完整指令长度</returns>
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength)
+        {
+            //尝试预创建报文
+            try
+            {
+                byte[] buffer = new byte[commandLength];
+                buffer[0] = DK81CommunicationInfo.FrameID;
+                buffer[1] = _RxID;
+                buffer[2] = _TxID;
+                buffer[3] = BitConverter.GetBytes(commandLength)[0];
+                buffer[4] = BitConverter.GetBytes(commandLength)[1];
+                buffer[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
+                if (commandLength == 7)
+                {
+                    buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);    //如果是不带数据的命令则加上校验码
+                }
+                return OperateResult.CreateSuccessResult(buffer);
+            }
+
+            //发生异常
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811200, ex.Message + "From:CreateCommandHelper");
+            }
+        }
+
+        /// <summary>
+        /// 创建指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
+        /// </summary>
+        /// <typeparam name="T">泛型枚举，必须可以被转换为byte</typeparam>
+        /// <param name="data">数据</param>
+        /// <returns>带指令信息的结果</returns>
+        private OperateResult<byte[]> CreateCommandHelper<T>(byte commandCode, ushort commandLength, T byteData) where T : Enum //TODO 添加T类型约束
+        {
+            try
+            {
+                OperateResult<byte[]> result = CreateCommandHelper(commandCode, commandLength);
+
+                if (result.IsSuccess)
+                {
+                    result.Content[6] = Convert.ToByte(byteData);
+                    result.Content[7] = DK81CommunicationInfo.CRCcalculator(result.Content);
+                    return result;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811202, ex.Message + "From:CreateCommandHelper");
+            }
+        }
+
+        /// <summary>
+        /// 创建完整的指令，带CRC校验码，可直接发送给串口
+        /// </summary>
+        /// <param name="commandCode">命令码</param>
+        /// <param name="commandLength">完整指令长度</param>
+        /// <param name="dataBytes">传入的数据</param>
+        /// <returns>完整的指令，带CRC校验码，可直接发送给串口</returns>
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, byte[] dataBytes)
+        {
+            try
+            {
+                OperateResult<byte[]> dataBytesLess = CreateCommandHelper(commandCode, commandLength);
+                if (dataBytesLess.IsSuccess)
+                {
+                    Array.Copy(dataBytes, 0, dataBytesLess.Content, 6, dataBytes.Length);
+                    dataBytesLess.Content[commandLength - 1] = DK81CommunicationInfo.CRCcalculator(dataBytesLess.Content);
+                    return dataBytesLess;
+                }
+                else
+                {
+                    return dataBytesLess;
+                }
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811204, ex.Message + ":CreateCommandHelper");
+            }
+        }
+
+        /// <summary>
+        /// 创建完整的指令，带CRC校验码，可直接发送给串口
+        /// </summary>
+        /// <param name="commandCode">命令码</param>
+        /// <param name="commandLength">报文长度</param>
+        /// <param name="data">传入的浮点型数据</param>
+        /// <returns>完整的指令，带CRC校验码，可直接发送给串口</returns>
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, float[] data)
+        {
+            try
+            {
+                //将浮点型数据转换成字节数组
+                byte[] dataBytes = ByteTransform.TransByte(data);
+
+                //创建完整的指令报文
+                OperateResult<byte[]> commandBytes = CreateCommandHelper(commandCode, commandLength, dataBytes);
+                return commandBytes;
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811205, ex.Message + "8112:CreateCommandHelper");
+            }
+        }
+
+        /// <summary>
+        /// 创建完整的指令，带CRC校验码，可直接发送给串口
+        /// </summary>
+        /// <param name="commandCode">命令码</param>
+        /// <param name="commandLength">报文长度</param>
+        /// <param name="data">传入的浮点型数据</param>
+        /// <param name="Flag"></param>
+        /// <returns>完整的指令，带CRC校验码，可直接发送给串口</returns>
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, float[] data, byte Flag)
+        {
+            try
+            {
+                //将浮点型数据转换成字节数组
+                byte[] datas = ByteTransform.TransByte(data);
+
+                //将Flag数据和data合并在一起
+                byte[] dataBytes = new byte[datas.Length + 1];
+                Array.Copy(datas, dataBytes, datas.Length);
+                dataBytes[dataBytes.Length - 1] = Flag;
+
+                //创建完整的指令报文
+                OperateResult<byte[]> commandBytes = CreateCommandHelper(commandCode, commandLength, dataBytes);
+                return commandBytes;
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811205, ex.Message + "8112:CreateCommandHelper");
+            }
+        }
+
+
+
+        #endregion
+
+        #region --------------------------------- private CommandBuilder【报文创建】---------------
+
         #region 系统命令【报文创建】
         /// <summary>
         /// 创建一个【联机指令】原始报文
@@ -171,7 +317,40 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion 系统命令【报文创建】
 
-        /*******************/
+        #region 设备信息【报文创建】
+        /// <summary>
+        /// 创建读取交流标准源和标准表档位信息报文
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadACSourceRanges()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceRanges, DK81CommunicationInfo.ReadACSourceRangesLength);
+
+            return bytesHeader;
+        }
+
+        /// <summary>
+        /// 创建读取直流源档位信息的报文
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadDCSourceRanges()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceRanges, DK81CommunicationInfo.ReadDCSourceRangesLength);
+
+            return bytesHeader;
+        }
+
+        /// <summary>
+        /// 创建读取直流表档位信息的报文
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadDCMeterourceRanges()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRanges, DK81CommunicationInfo.ReadDCMeterRangesLength);
+
+            return bytesHeader;
+        }
+        #endregion 设备信息【报文创建】       
 
         #region 交流表源命令【报文创建】
         /// <summary>
@@ -270,191 +449,24 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetWireMode, DK81CommunicationInfo.SetWireModeLength, wireMode);
             return bytes;
         }
-        #endregion 交流表源命令【报文创建】
-
-        /*******************/
-
-        #region 设备信息【报文创建】
-        /// <summary>
-        /// 创建读取交流标准源和标准表档位信息报文
-        /// </summary>
-        /// <returns></returns>
-        private OperateResult<byte[]> CreateReadACSourceRanges()
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceRanges, DK81CommunicationInfo.ReadACSourceRangesLength);
-
-            return bytesHeader;
-        }
 
         /// <summary>
-        /// 创建读取直流源档位信息的报文
+        ///  创建【闭环控制】完整报文
         /// </summary>
-        /// <returns></returns>
-        private OperateResult<byte[]> CreateReadDCSourceRanges()
+        /// <param name="closeLoopMode">闭环模式枚举</param>
+        /// <param name="harmonicMode">谐波模式枚举</param>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateSetClosedLoop(CloseLoopMode closeLoopMode, HarmonicMode harmonicMode)
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceRanges, DK81CommunicationInfo.ReadDCSourceRangesLength);
-
-            return bytesHeader;
+            byte[] data = new byte[2] { (byte)closeLoopMode, (byte)harmonicMode };
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetClosedLoop, DK81CommunicationInfo.SetClosedLoopLength, data);
+            return bytes;
         }
-
-        /// <summary>
-        /// 创建读取直流表档位信息的报文
-        /// </summary>
-        /// <returns></returns>
-        private OperateResult<byte[]> CreateReadDCMeterourceRanges()
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRanges, DK81CommunicationInfo.ReadDCMeterRangesLength);
-
-            return bytesHeader;
-        }
-        #endregion 设备信息【报文创建】
-
-        /*******************/
-
-        #region Private CommandBuilder Helper 【报文创建】
-        /// <summary>
-        /// 创建完整指令长度的【指令头】，长度大于7的报文不带CRC校验码，不可直接发送给串口，长度等于7则带校验码
-        /// </summary>
-        /// <param name="commandCode">命令码</param>
-        /// <param name="commandLength">指令长度</param>
-        /// <returns>带指令信息的结果：完整指令长度</returns>
-        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength)
-        {
-            //尝试预创建报文
-            try
-            {
-                byte[] buffer = new byte[commandLength];
-                buffer[0] = DK81CommunicationInfo.FrameID;
-                buffer[1] = _RxID;
-                buffer[2] = _TxID;
-                buffer[3] = BitConverter.GetBytes(commandLength)[0];
-                buffer[4] = BitConverter.GetBytes(commandLength)[1];
-                buffer[5] = commandCode;   //默认为：联机命令：DK81CommunicationInfo.HandShake 
-                if (commandLength == 7)
-                {
-                    buffer[6] = DK81CommunicationInfo.CRCcalculator(buffer);    //如果是不带数据的命令则加上校验码
-                }
-                return OperateResult.CreateSuccessResult(buffer);
-            }
-
-            //发生异常
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>(811200, ex.Message + "From:CreateCommandHelper");
-            }
-        }
-
-        /// <summary>
-        /// 创建指令时的【统一预处理】：返回完整指令长度的字节数组，即：包含校验码的空字节空间
-        /// </summary>
-        /// <typeparam name="T">泛型类，必须可以被转换为byte</typeparam>
-        /// <param name="data">数据</param>
-        /// <returns>带指令信息的结果</returns>
-        private OperateResult<byte[]> CreateCommandHelper<T>(byte commandCode, ushort commandLength, T byteData) where T : System.Enum //TODO 添加T类型约束
-        {
-            try
-            {
-                OperateResult<byte[]> result = CreateCommandHelper(commandCode, commandLength);
-
-                if (result.IsSuccess)
-                {
-                    result.Content[6] = Convert.ToByte(byteData);
-                    result.Content[7] = DK81CommunicationInfo.CRCcalculator(result.Content);
-                    return result;
-                }
-                else
-                {
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>(811202, ex.Message + "From:CreateCommandHelper");
-            }
-        }
-
-        /// <summary>
-        /// 创建完整的指令，带CRC校验码，可直接发送给串口
-        /// </summary>
-        /// <param name="commandCode">命令码</param>
-        /// <param name="commandLength">完整指令长度</param>
-        /// <param name="dataBytes">传入的数据</param>
-        /// <returns>完整的指令，带CRC校验码，可直接发送给串口</returns>
-        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, byte[] dataBytes)
-        {
-            try
-            {
-                OperateResult<byte[]> dataBytesLess = CreateCommandHelper(commandCode, commandLength);
-                if (dataBytesLess.IsSuccess)
-                {
-                    Array.Copy(dataBytes, 0, dataBytesLess.Content, 6, dataBytes.Length);
-                    dataBytesLess.Content[commandLength - 1] = DK81CommunicationInfo.CRCcalculator(dataBytesLess.Content);
-                    return dataBytesLess;
-                }
-                else
-                {
-                    return dataBytesLess;
-                }
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>(811204, ex.Message + ":CreateCommandHelper");
-            }
-        }
-
-        /// <summary>
-        /// 创建完整的指令，带CRC校验码，可直接发送给串口
-        /// </summary>
-        /// <param name="commandCode">命令码</param>
-        /// <param name="commandLength">报文长度</param>
-        /// <param name="data">传入的浮点型数据</param>
-        /// <returns></returns>
-        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, float[] data)
-        {
-            try
-            {
-                //将浮点型数据转换成字节数组
-                byte[] dataBytes = ByteTransform.TransByte(data);
-
-                //创建完整的指令报文
-                OperateResult<byte[]> commandBytes = CreateCommandHelper(commandCode, commandLength, dataBytes);
-                return commandBytes;
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>(811205, ex.Message + "8112:CreateCommandHelper");
-            }
-        }
-
-        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, float[] data, byte Flag)
-        {
-            try
-            {
-                //将浮点型数据转换成字节数组
-                byte[] datas = ByteTransform.TransByte(data);
-
-                //将Flag数据和data合并在一起
-                byte[] dataBytes = new byte[datas.Length + 1];
-                Array.Copy(datas, dataBytes, datas.Length);
-                dataBytes[dataBytes.Length - 1] = Flag;
-
-                //创建完整的指令报文
-                OperateResult<byte[]> commandBytes = CreateCommandHelper(commandCode, commandLength, dataBytes);
-                return commandBytes;
-            }
-            catch (Exception ex)
-            {
-                return new OperateResult<byte[]>(811205, ex.Message + "8112:CreateCommandHelper");
-            }
-        }
-
-        #endregion
+        #endregion 交流表源命令【报文创建】      
 
         #endregion private CommandBuilder【报文创建】
 
-        /*****************************************************************************************************/
-
-        #region Core Interative 核心交互
+        #region --------------------------------- Core Interative 核心交互-------------------------
         protected virtual OperateResult<byte[]> CheckResponse(byte[] send)
         {
             // 发送报文并获取回复报文
@@ -500,9 +512,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion
 
-        /*****************************************************************************************************/
-
-        #region protected Commands【操作命令】
+        #region --------------------------------- protected Commands【操作命令】-------------------------
 
         #region 系统命令【操作命令】
 
@@ -754,9 +764,28 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> response = CheckResponse(createResult.Content);
             return response;
         }
+
+        /// <summary>
+        ///  执行【闭环控制】命令并获取下位机回复的报文：返回OK
+        /// </summary>
+        /// <param name="closeLoopMode">闭环模式枚举</param>
+        /// <param name="harmonicMode">谐波模式枚举</param>
+        /// <returns>带成功标志的操作结果</returns>
+        internal OperateResult<byte[]> SetClosedLoopCommmand(CloseLoopMode closeLoopMode, HarmonicMode harmonicMode)
+        {
+            OperateResult<byte[]> createResult = CreateSetClosedLoop(closeLoopMode, harmonicMode);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
         #endregion 交流源（表）【操作命令】
 
         #endregion protected Commands【操作命令】
 
     }
 }
+

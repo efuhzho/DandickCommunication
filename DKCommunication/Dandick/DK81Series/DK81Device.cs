@@ -6,9 +6,15 @@ using System.Text;
 
 namespace DKCommunication.Dandick.DK81Series
 {
-    public class DK81Device : DK81Command, IDK_BaseInterface<DisplayPage,SystemMode>, IDK_ACSource<WireMode>, IDK_DCMeter, IDK_DCSource, IDK_ElectricityModel, IDK_IOModel                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
+    public class DK81Device : DK81Command,
+        IDK_BaseInterface<DisplayPage, SystemMode>,
+        IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode>,
+        IDK_DCMeter,
+        IDK_DCSource,
+        IDK_ElectricityModel,
+        IDK_IOModel                          
     {
-     
+
         #region 私有字段
         #region ACSource
         private byte _uRangesCount;
@@ -92,7 +98,7 @@ namespace DKCommunication.Dandick.DK81Series
         public byte IProtectRanges_Asingle => _iProtectRanges_Asingle;
         public byte URanges_Asingle => _uRanges_Asingle;
 
-      
+
         #endregion
         #region DCSource
         public byte DCU_RangesCount => _DCURangesCount;
@@ -142,10 +148,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="mode">系统模式</param>
         /// <returns>返回OK,下位机回复的原始报文，用于自主解析，通常可忽略</returns>
         public OperateResult<byte[]> SetSystemMode(SystemMode mode)
-        {            
+        {
             OperateResult<byte[]> response = SetSystemModeCommand(mode);
             return response;
-        }      
+        }
 
         /// <summary>
         /// 【显示页面设置】返回OK
@@ -404,19 +410,40 @@ namespace DKCommunication.Dandick.DK81Series
             float[] data = new float[] { FrequencyAB, FrequencyAB, FrequencyC };
             return WriteFrequency(data);
         }
-       
+
         /// <summary>
         /// 【设置接线方式】，返回OK
         /// </summary>
         /// <param name="wireMode">枚举接线方式</param>
         /// <returns></returns>
-       public OperateResult<byte[]> SetWireMode(WireMode wireMode)
+        public OperateResult<byte[]> SetWireMode(WireMode wireMode)
         {
             OperateResult<byte[]> response = SetWireModeCommmand(wireMode);
             return response;
         }
 
-        
+        /// <summary>
+        /// 【设置闭环模式】
+        /// </summary>
+        /// <param name="closeLoopMode">枚举闭环模式</param>
+        /// <param name="harmonicMode">枚举谐波模式</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> SetClosedLoop(CloseLoopMode closeLoopMode, HarmonicMode harmonicMode)
+        {
+            OperateResult<byte[]> response = SetClosedLoopCommmand(closeLoopMode, harmonicMode);
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置闭环模式】，谐波模式为真有效值恒定
+        /// </summary>
+        /// <param name="closeLoopMode">枚举闭环模式</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> SetClosedLoop(CloseLoopMode closeLoopMode)
+        {
+            return SetClosedLoop(closeLoopMode, HarmonicMode.ValidValuesConstant);
+        }
+
         #endregion 交流源（表）操作命令
 
         /*******************/
@@ -508,10 +535,6 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-        public OperateResult<byte[]> SetClosedLoop()
-        {
-            throw new NotImplementedException();
-        }
 
         public OperateResult<byte[]> SetDCMeterDataWithTwoCh()
         {
@@ -538,11 +561,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-        public OperateResult<byte[]> SetWireMode()
-        {
-            throw new NotImplementedException();
-        }
-
+      
         public OperateResult<byte[]> Start()
         {
             throw new NotImplementedException();
@@ -579,10 +598,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> WriteFrequency()
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public OperateResult<byte[]> WriteHarmonics()
         {
@@ -723,7 +739,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         /******************************************************************************************************/
 
-      
+
 
     }
 }

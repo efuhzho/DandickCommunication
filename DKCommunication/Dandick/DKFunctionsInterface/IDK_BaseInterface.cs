@@ -2,7 +2,7 @@
 
 namespace DKCommunication.Dandick.DKInterface
 {
-    public interface IDK_BaseInterface<TDisplayPage, TSystemMode> where TDisplayPage : Enum where TSystemMode : Enum
+    public interface IDK_BaseInterface<TDisplayPage, TSystemMode> 
     {
         #region Methods
         /// <summary>
