@@ -11,7 +11,7 @@ namespace DKCommunication.Dandick.Base
     /// </summary>
     public class DK_DeviceBase <TTransform>: SerialBase where TTransform:IByteTransform,new()
     {
-        public DK_DeviceBase()
+        internal DK_DeviceBase()
         {
             byteTransform = new TTransform();    // 实例化数据转换规则
         }
@@ -53,7 +53,7 @@ namespace DKCommunication.Dandick.Base
         /// </summary>
         /// <param name="id">设备ID</param>
         /// <returns>返回带有信息的结果</returns>
-        public virtual OperateResult<byte[]> AnalysisID(ushort id)
+        internal virtual OperateResult<byte[]> AnalysisID(ushort id)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace DKCommunication.Dandick.Base
         /// </summary>
         /// <param name="id">设备ID</param>
         /// <returns>返回带有信息的结果</returns>
-        public virtual OperateResult<byte> AnalysisIDtoByte(ushort id)
+        internal virtual OperateResult<byte> AnalysisIDtoByte(ushort id)
         {
             try
             {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DKCommunication.Dandick.DKInterface
 {
-    interface IDK_ACSource
+    interface IDK_ACSource<TwireMode> where TwireMode:System.Enum
     {
         #region Properties
         /// <summary>
@@ -63,6 +63,8 @@ namespace DKCommunication.Dandick.DKInterface
         /// 保护电流档位集合
         /// </summary>
         List<float> IProtect_RangesList { get; set; }
+
+       
         #endregion
 
         /******************************************************************************************************************************/
@@ -96,17 +98,35 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 设置相位参数
         /// </summary>
-        OperateResult<byte[]> WritePhase();
+        OperateResult<byte[]> WritePhase(float[] data);
+        OperateResult<byte[]> WritePhase(float PhaseUb, float PhaseUc, float PhaseIa, float PhaseIb, float PhaseIc);
 
         /// <summary>
         /// 设置频率参数
         /// </summary>
-        OperateResult<byte[]> WriteFrequency();
+        /// <param name="data">浮点数组：FrequencyA，FrequencyB(必须等于A相)，FrequencyC</param>
+        /// <returns></returns>
+        OperateResult<byte[]> WriteFrequency(float[] data);
+
+        /// <summary>
+        /// 【设置源频率】，返回OK，【推荐使用】
+        /// </summary>
+        /// <param name="FrequencyAll">设置三相频率值</param>
+        /// <returns>带成功标志的操作结果</returns>
+        OperateResult<byte[]> WriteFrequency(float FrequencyAll);
+
+        /// <summary>
+        /// 【设置源频率】，返回OK
+        /// </summary>
+        /// <param name="FrequencyAB">设置AB相频率值</param>
+        /// <param name="FrequencyC">设置C相频率值</param>
+        /// <returns>带成功标志的操作结果</returns>
+        OperateResult<byte[]> WriteFrequency(float FrequencyAB,float FrequencyC);
 
         /// <summary>
         /// 设置接线模式
         /// </summary>
-        OperateResult<byte[]> SetWireMode();
+        OperateResult<byte[]> SetWireMode(TwireMode wireMode);
 
         /// <summary>
         /// 闭环控制使能命令

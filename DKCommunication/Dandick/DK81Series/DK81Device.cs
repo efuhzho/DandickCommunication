@@ -6,8 +6,9 @@ using System.Text;
 
 namespace DKCommunication.Dandick.DK81Series
 {
-    public class DK81Device : DK81Command, IDK_BaseInterface, IDK_ACSource, IDK_DCMeter, IDK_DCSource, IDK_ElectricityModel, IDK_IOModel                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
+    public class DK81Device : DK81Command, IDK_BaseInterface<DisplayPage,SystemMode>, IDK_ACSource<WireMode>, IDK_DCMeter, IDK_DCSource, IDK_ElectricityModel, IDK_IOModel                          /* :SerialDeviceBase<RegularByteTransform>,*//*IReadWriteDK*/
     {
+     
         #region 私有字段
         #region ACSource
         private byte _uRangesCount;
@@ -91,10 +92,7 @@ namespace DKCommunication.Dandick.DK81Series
         public byte IProtectRanges_Asingle => _iProtectRanges_Asingle;
         public byte URanges_Asingle => _uRanges_Asingle;
 
-        //public enum ACU_Ranges
-        //{
-
-        //}
+      
         #endregion
         #region DCSource
         public byte DCU_RangesCount => _DCURangesCount;
@@ -144,10 +142,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="mode">系统模式</param>
         /// <returns>返回OK,下位机回复的原始报文，用于自主解析，通常可忽略</returns>
         public OperateResult<byte[]> SetSystemMode(SystemMode mode)
-        {
+        {            
             OperateResult<byte[]> response = SetSystemModeCommand(mode);
             return response;
-        }
+        }      
 
         /// <summary>
         /// 【显示页面设置】返回OK
@@ -256,18 +254,22 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 【设置交流源幅度】命令，返回OK
+        /// 【设置交流源幅度】命令，返回OK，【不推荐使用】
         /// </summary>
-        /// <param name="data">将要设定的幅值（组合）</param>
+        /// <param name="data">将要设定的幅值（6个或9个浮点数据：UA,UB,UC,IA,IB,IC,IPA(可选),IPB(可选),IPC(可选)）</param>
         /// <returns>操作结果</returns>
         public OperateResult<byte[]> WriteACSourceAmplitude(float[] data)
         {
+            if (data.Length != 6 && data.Length != 9)
+            {
+                return new OperateResult<byte[]>("请输入6个浮点数据或9个浮点数据!");
+            }
             OperateResult<byte[]> response = WriteACSourceAmplitudeCommand(data);
             return response;
         }
 
         /// <summary>
-        /// 【设置交流源幅度】命令，返回OK
+        /// 【设置交流源幅度】命令，返回OK，【推荐使用】
         /// </summary>
         /// <param name="UA">A相电压幅值</param>
         /// <param name="UB">B相电压幅值</param>
@@ -286,7 +288,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 【设置交流源幅度】命令，返回OK
+        /// 【设置交流源幅度】命令，返回OK，【推荐使用】
         /// </summary>
         /// <param name="UA">A相电压幅值</param>
         /// <param name="UB">B相电压幅值</param>
@@ -302,7 +304,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 【设置交流源幅度】命令，返回OK
+        /// 【设置交流源幅度】命令，返回OK，【推荐使用】
         /// </summary>
         /// <param name="U">三相电压幅值</param>
         /// <param name="I">三相电流幅值</param>
@@ -315,17 +317,102 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 【设置交流源幅度】命令，返回OK
+        /// 【设置交流源幅度】命令，返回OK，【推荐使用】
         /// </summary>
         /// <param name="U">三相电压幅值</param>
         /// <param name="I">三相电流幅值</param>
         /// <returns></returns>
         public OperateResult<byte[]> WriteACSourceAmplitude(float U, float I)
         {
-            float[] data = new float[9] { U, U, U, I, I, I,0, 0,0 };
+            float[] data = new float[9] { U, U, U, I, I, I, 0, 0, 0 };
             return WriteACSourceAmplitude(data);
         }
 
+        /// <summary>
+        /// 【设置源相位】，返回OK，【不推荐使用】
+        /// </summary>
+        /// <param name="data">6个浮点数据：PhaseUA（基准相位必须是0）,PhaseUB,PhaseUC,PhaseIA,PhaseIB,PhaseIC</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WritePhase(float[] data)
+        {
+            if (data.Length != 6)
+            {
+                return new OperateResult<byte[]>("请输入正确的频率值组合：必须是6个浮点型数据");
+            }
+            OperateResult<byte[]> response = WritePhaseCommand(data);
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置源相位】，返回OK，【推荐使用】
+        /// </summary>
+        /// <param name="PhaseUb"></param>
+        /// <param name="PhaseUc"></param>
+        /// <param name="PhaseIa"></param>
+        /// <param name="PhaseIb"></param>
+        /// <param name="PhaseIc"></param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WritePhase(float PhaseUb, float PhaseUc, float PhaseIa, float PhaseIb, float PhaseIc)
+        {
+            float[] data = new float[] { 0f, PhaseUb, PhaseUc, PhaseIa, PhaseIb, PhaseIc };
+            OperateResult<byte[]> response = WritePhase(data);
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置源频率】，返回OK，【不推荐使用】
+        /// </summary>
+        /// <param name="data">浮点数组：FrequencyA，FrequencyB(必须等于A相)，FrequencyC</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WriteFrequency(float[] data)
+        {
+            //数据长度不是3：直接返回失败结果
+            if (data.Length != 3 || data == null)
+            {
+                return new OperateResult<byte[]>("请输入正确的频率值个数");
+            }
+
+            //数据长度是3
+            byte Flag = 3;
+            if (data[0] == data[1] && data[0] != data[2])
+            {
+                Flag = 2;
+            }
+
+            OperateResult<byte[]> response = WriteFrequencyCommand(data, Flag);
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置源频率】，返回OK，【推荐使用】
+        /// </summary>
+        /// <param name="FrequencyAll">设置三相频率值</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WriteFrequency(float FrequencyAll)
+        {
+            return WriteFrequency(FrequencyAll, FrequencyAll);
+        }
+
+        /// <summary>
+        /// 【设置源频率】，返回OK
+        /// </summary>
+        /// <param name="FrequencyAB">设置AB相频率值</param>
+        /// <param name="FrequencyC">设置C相频率值</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WriteFrequency(float FrequencyAB, float FrequencyC)
+        {
+            float[] data = new float[] { FrequencyAB, FrequencyAB, FrequencyC };
+            return WriteFrequency(data);
+        }
+       
+
+       public OperateResult<byte[]> SetWireMode(WireMode wireMode)
+        {
+            OperateResult<byte[]> response = SetWireModeCommmand(wireMode);
+            return response;
+        }
+
+        
         #endregion 交流源（表）操作命令
 
         /*******************/
@@ -624,7 +711,6 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
 
-     
 
 
         #endregion
@@ -633,9 +719,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         /******************************************************************************************************/
 
-
-
-
+      
 
     }
 }

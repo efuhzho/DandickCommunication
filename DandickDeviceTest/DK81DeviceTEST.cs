@@ -14,6 +14,10 @@ namespace DandickDeviceTest
             dandick.ReceiveTimeout = 5000;
             dandick.SleepTime = 20;
             dandick.ByteTransform.DataFormat = DataFormat.DCBA;
+            dandick.SetWireMode(WireMode.WireMode_3P4L);
+            DK81Command dK81Command = new DK81Command();
+            
+            
         }
 
 

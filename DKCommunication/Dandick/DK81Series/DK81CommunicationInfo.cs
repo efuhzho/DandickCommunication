@@ -7,7 +7,7 @@ namespace DKCommunication.Dandick.DK81Series
     /// <summary>
     /// 丹迪克81协议的相关信息
     /// </summary>
-    public class DK81CommunicationInfo
+    internal class DK81CommunicationInfo
     {
         #region 扩展定义
         /// <summary>
@@ -34,7 +34,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 系统应答命令:OK   ('K')
         /// </summary>
-        public const byte OK = 0x4B;      
+        public const byte OK = 0x4B;
         public const ushort OKLength = 8;
 
         /// <summary>
@@ -89,13 +89,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置源相位参数
         /// </summary>
-        public const byte WritePhase = 0x33;
+        public const byte WritePhase = 0x33;    //2022年7月8日 10点22分
         public const ushort WritePhaseLength = 31;
 
         /// <summary>
         /// 设置源频率参数:当 Fa=Fb!=Fc 时，Flag=2；Fa=Fb=Fc 时，Flag=3,只设置Fa则三相同频
         /// </summary>
-        public const byte WriteFrequency = 0x34;
+        public const byte WriteFrequency = 0x34;    //2022年7月8日 12点34分
         public const ushort WriteFrequencyLength = 20;//注意：设置时 Fa=Fb，Fc 可以设置为与 AB 相不同的频率
                                                       //也可以只设置 Fa，则默认为三相同频，用于兼容以前的设备通讯程序
 
@@ -109,7 +109,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 闭环控制使能命令：HarmonicMode ：谐波模式，0-以真有效值的百分比输入谐波（有效值恒定）；1-以基波值的百分比输入谐波（基波恒定）
         /// </summary>
         public const byte SetClosedLoop = 0x36;
-        public const ushort SetClosedLoopLength = 9;        
+        public const ushort SetClosedLoopLength = 9;
 
         /// <summary>
         /// 设置谐波参数：注意：建议协议长度不超过 256，超过 256 个字节建议分批发送。
@@ -334,7 +334,7 @@ namespace DKCommunication.Dandick.DK81Series
             return funcB;
         }
         //TODO 解析FuncS
-        
+
         /// <summary>
         /// 获取对应的数据的CRC校验码（异或和）
         /// </summary>
@@ -342,7 +342,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>返回CRC校验码</returns>
         public static byte CRCcalculator(byte[] sendBytes)
         {
-            byte crc = 0;   
+            byte crc = 0;
 
             //从第二个字节开始执行异或:忽略报文头
             for (int i = 1; i < sendBytes.Length; i++)
@@ -378,8 +378,8 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
 
-        
-        #endregion  
+
+        #endregion
     }
 
     /*****************************************************************************************************/
@@ -413,7 +413,7 @@ namespace DKCommunication.Dandick.DK81Series
     /// <summary>
     /// 交流输出档位枚举
     /// </summary>
-    [Flags]
+    [Flags] //TODO 删除
     public enum RangeAC : byte
     {
         [Description("交流电压380V")]
@@ -576,20 +576,35 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
         #endregion
     }
-    #endregion
+    #endregion    
 
-    #region Range Declartion 档位定义
-    public enum RangeACU : byte //TODO 档位定义是否保留
+    #region WireMode
+    public enum WireMode : byte
     {
-        ACU_380 = 0,
-        ACU_220 = 1,
-        ACU_100 = 2,
-        ACU_57 = 3,
-    }
+        /// <summary>
+        /// 三相四线制
+        /// </summary>
+        WireMode_3P4L = 00,
 
-    public enum RangACI : byte
-    {
+        /// <summary>
+        /// 三相三线制
+        /// </summary>
+        WireMode_3P3L = 01,
 
+        /// <summary>
+        /// 单相
+        /// </summary>
+        WireMode_1P1L = 02,
+
+        /// <summary>
+        /// 二线两元件（两个互感器）
+        /// </summary>
+        WireMode_2Component = 03,
+
+        /// <summary>
+        /// 二线三元件（三个互感器）
+        /// </summary>
+        WireMode_3Component = 04,
     }
     #endregion
 

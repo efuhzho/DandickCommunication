@@ -10,6 +10,8 @@ namespace DKCommunication.Dandick.DK81Series
     /// </summary>
     public class DK81Command : DK_DeviceBase<RegularByteTransform>
     {
+
+
         #region 私有字段
         #region ID
         /// <summary>
@@ -45,6 +47,11 @@ namespace DKCommunication.Dandick.DK81Series
         /*****************************************************************************************************/
 
         #region Public Properties
+        public WireMode WireMode { get; set; }
+
+        public DisplayPage DisplayPage { get; set; }
+
+        public SystemMode SystemMode { get; set; }
 
         #region 档位
         //public byte Range_ACU { get; set; }
@@ -223,13 +230,46 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建【设置交流源幅度】的完整报文
         /// </summary>
         /// <param name="data">将要设置的浮点型幅值</param>
-        /// <returns></returns>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateWriteACSourceAmplitude(float[] data)
         {
             OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteACSourceAmplitude, DK81CommunicationInfo.WriteACSourceAmplitudeLength, data);
             return bytes;
         }
 
+        /// <summary>
+        /// 创建【设置源相位】的完整报文，返回OK
+        /// </summary>
+        /// <param name="data">浮点数组：PhaseUa，PhaseUb，PhaseUc，PhaseIa，PhaseIb，PhaseIc</param>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateWritePhase(float[] data)
+        {
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WritePhase, DK81CommunicationInfo.WritePhaseLength, data);
+            return bytes;
+        }
+
+        /// <summary>
+        /// 创建【设置源频率】的完整报文，返回OK
+        /// </summary>
+        /// <param name="data">浮点型数组</param>
+        /// <param name="Flag">标志</param>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateWriteFrequency(float[] data, byte Flag)
+        {
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteFrequency, DK81CommunicationInfo.WriteFrequencyLength, data, Flag);
+            return bytes;
+        }
+
+        /// <summary>
+        /// 创建【设置接线模式】完整报文
+        /// </summary>
+        /// <param name="wireMode">接线模式</param>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateSetWireMode(WireMode wireMode)
+        {
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetWireMode, DK81CommunicationInfo.SetWireModeLength, wireMode);
+            return bytes;
+        }
         #endregion 交流表源命令【报文创建】
 
         /*******************/
@@ -300,7 +340,7 @@ namespace DKCommunication.Dandick.DK81Series
             //发生异常
             catch (Exception ex)
             {
-                return new OperateResult<byte[]>(811200, ex.Message + ":CreateCommandHelper");
+                return new OperateResult<byte[]>(811200, ex.Message + "From:CreateCommandHelper");
             }
         }
 
@@ -310,7 +350,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <typeparam name="T">泛型类，必须可以被转换为byte</typeparam>
         /// <param name="data">数据</param>
         /// <returns>带指令信息的结果</returns>
-        private OperateResult<byte[]> CreateCommandHelper<T>(byte commandCode, ushort commandLength, T data) where T : Enum //TODO 添加T类型约束
+        private OperateResult<byte[]> CreateCommandHelper<T>(byte commandCode, ushort commandLength, T byteData) where T : System.Enum //TODO 添加T类型约束
         {
             try
             {
@@ -318,7 +358,7 @@ namespace DKCommunication.Dandick.DK81Series
 
                 if (result.IsSuccess)
                 {
-                    result.Content[6] = Convert.ToByte(data);
+                    result.Content[6] = Convert.ToByte(byteData);
                     result.Content[7] = DK81CommunicationInfo.CRCcalculator(result.Content);
                     return result;
                 }
@@ -329,7 +369,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
             catch (Exception ex)
             {
-                return new OperateResult<byte[]>(811202, ex.Message + ":CreateCommandHelper");
+                return new OperateResult<byte[]>(811202, ex.Message + "From:CreateCommandHelper");
             }
         }
 
@@ -382,7 +422,29 @@ namespace DKCommunication.Dandick.DK81Series
             }
             catch (Exception ex)
             {
-                return new OperateResult<byte[]>(811205, ex.Message + ":CreateCommandHelper");
+                return new OperateResult<byte[]>(811205, ex.Message + "8112:CreateCommandHelper");
+            }
+        }
+
+        private OperateResult<byte[]> CreateCommandHelper(byte commandCode, ushort commandLength, float[] data, byte Flag)
+        {
+            try
+            {
+                //将浮点型数据转换成字节数组
+                byte[] datas = ByteTransform.TransByte(data);
+
+                //将Flag数据和data合并在一起
+                byte[] dataBytes = new byte[datas.Length + 1];
+                Array.Copy(datas, dataBytes, datas.Length);
+                dataBytes[dataBytes.Length - 1] = Flag;
+
+                //创建完整的指令报文
+                OperateResult<byte[]> commandBytes = CreateCommandHelper(commandCode, commandLength, dataBytes);
+                return commandBytes;
+            }
+            catch (Exception ex)
+            {
+                return new OperateResult<byte[]>(811205, ex.Message + "8112:CreateCommandHelper");
             }
         }
 
@@ -592,7 +654,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 设置交流源档位
+        /// 执行【设置交流源档位】命令并获取下位机回复的报文：返回OK
         /// </summary>
         /// <param name="ranges"></param>
         /// <returns>下位机回复的有效报文</returns>
@@ -613,7 +675,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 执行【设置交流源幅值】操作命令，并获取下位机返回的报文：OK
+        /// 执行【设置交流源幅值】命令并获取下位机回复的报文：返回OK
         /// </summary>
         /// <param name="data">操作结果信息</param>
         /// <returns></returns>
@@ -633,8 +695,63 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
 
+        /// <summary>
+        /// 执行【设置源相位】命令并获取下位机回复的报文：返回OK
+        /// </summary>
+        /// <param name="data">6个浮点数据：PhaseUA（基准相位必须是0）,PhaseUB,PhaseUC,PhaseIA,PhaseIB,PhaseIC</param>
+        /// <returns>带成功标志的操作结果</returns>
+        protected OperateResult<byte[]> WritePhaseCommand(float[] data)
+        {
+            //创建完整指令报文
+            OperateResult<byte[]> createResult = CreateWritePhase(data);
+
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
+
+        /// <summary>
+        /// 执行【设置源频率】命令并获取下位机回复的报文：返回OK
+        /// </summary>
+        /// <param name="data">浮点数组：FrequencyA，FrequencyB(必须等于A相)，FrequencyC</param>
+        /// <param name="Flag">标志</param>
+        /// <returns>带成功标志的操作结果</returns>
+        protected OperateResult<byte[]> WriteFrequencyCommand(float[] data, byte Flag)
+        {
+            //创建完整指令报文
+            OperateResult<byte[]> createResult = CreateWriteFrequency(data, Flag);
+
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
+
+        protected OperateResult<byte[]> SetWireModeCommmand(WireMode wireMode)
+        {
+            OperateResult<byte[]> createResult = CreateSetWireMode(wireMode);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
         #endregion 交流源（表）【操作命令】
 
         #endregion protected Commands【操作命令】
+
     }
 }
