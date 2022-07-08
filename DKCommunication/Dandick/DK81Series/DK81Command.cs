@@ -510,7 +510,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 执行【联机命令】并返回回复报文
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> HandshakeCommand()
+        internal OperateResult<byte[]> HandshakeCommand()
         {
             OperateResult<byte[]> createResult = CreateHandShake();
             //创建指令失败
@@ -528,7 +528,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="mode">要设置的系统模式</param>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> SetSystemModeCommand(SystemMode mode)
+        internal OperateResult<byte[]> SetSystemModeCommand(SystemMode mode)
         {
             OperateResult<byte[]> createResult = CreateSetSystemMode(mode);
             //创建指令失败
@@ -546,7 +546,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="mode">要显示的系统页面</param>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> SetDisplayPageCommand(DisplayPage page)
+        internal OperateResult<byte[]> SetDisplayPageCommand(DisplayPage page)
         {
             OperateResult<byte[]> createResult = CreateSetDisplayPage(page);
             //创建指令失败
@@ -568,7 +568,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取交流源档位
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> ReadACSourceRangesCommand()
+        internal OperateResult<byte[]> ReadACSourceRangesCommand()
         {
             OperateResult<byte[]> createResult = CreateReadACSourceRanges();
             //创建指令失败
@@ -585,7 +585,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取直流源档位
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> ReadDCSourceRangesCommand()
+        internal OperateResult<byte[]> ReadDCSourceRangesCommand()
         {
             OperateResult<byte[]> createResult = CreateReadDCSourceRanges();
             //创建指令失败
@@ -602,7 +602,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取直流表档位
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> ReadDCMeterRangesCommand()
+        internal OperateResult<byte[]> ReadDCMeterRangesCommand()
         {
             OperateResult<byte[]> createResult = CreateReadDCMeterourceRanges();
             //创建指令失败
@@ -623,7 +623,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 交流源关闭命令,返回OK
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> StopACSourceCommand()
+        internal OperateResult<byte[]> StopACSourceCommand()
         {
             OperateResult<byte[]> createResult = CreateStopACSource();
             //创建指令失败
@@ -640,7 +640,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 交流源关闭命令,返回OK
         /// </summary>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> StartACSourceCommand()
+        internal OperateResult<byte[]> StartACSourceCommand()
         {
             OperateResult<byte[]> createResult = CreateStartACSource();
             //创建指令失败
@@ -658,7 +658,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="ranges"></param>
         /// <returns>下位机回复的有效报文</returns>
-        protected OperateResult<byte[]> SetACSourceRangeCommand(int urange, int irange, int ipranges)
+        internal OperateResult<byte[]> SetACSourceRangeCommand(int urange, int irange, int ipranges)
         {
             //创建完整指令报文
             OperateResult<byte[]> createResult = CreatSetACSourceRange(urange, irange, ipranges);
@@ -679,7 +679,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="data">操作结果信息</param>
         /// <returns></returns>
-        protected OperateResult<byte[]> WriteACSourceAmplitudeCommand(float[] data)
+        internal OperateResult<byte[]> WriteACSourceAmplitudeCommand(float[] data)
         {
             //创建完整指令报文
             OperateResult<byte[]> createResult = CreateWriteACSourceAmplitude(data);
@@ -700,7 +700,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="data">6个浮点数据：PhaseUA（基准相位必须是0）,PhaseUB,PhaseUC,PhaseIA,PhaseIB,PhaseIC</param>
         /// <returns>带成功标志的操作结果</returns>
-        protected OperateResult<byte[]> WritePhaseCommand(float[] data)
+        internal OperateResult<byte[]> WritePhaseCommand(float[] data)
         {
             //创建完整指令报文
             OperateResult<byte[]> createResult = CreateWritePhase(data);
@@ -722,7 +722,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="data">浮点数组：FrequencyA，FrequencyB(必须等于A相)，FrequencyC</param>
         /// <param name="Flag">标志</param>
         /// <returns>带成功标志的操作结果</returns>
-        protected OperateResult<byte[]> WriteFrequencyCommand(float[] data, byte Flag)
+        internal OperateResult<byte[]> WriteFrequencyCommand(float[] data, byte Flag)
         {
             //创建完整指令报文
             OperateResult<byte[]> createResult = CreateWriteFrequency(data, Flag);
@@ -738,7 +738,12 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
 
-        protected OperateResult<byte[]> SetWireModeCommmand(WireMode wireMode)
+        /// <summary>
+        /// 执行【设置接线模式】命令并获取下位机回复的报文：返回OK
+        /// </summary>
+        /// <param name="wireMode">枚举接线方式</param>
+        /// <returns>带成功标志的操作结果</returns>
+        internal OperateResult<byte[]> SetWireModeCommmand(WireMode wireMode)
         {
             OperateResult<byte[]> createResult = CreateSetWireMode(wireMode);
             if (!createResult.IsSuccess)

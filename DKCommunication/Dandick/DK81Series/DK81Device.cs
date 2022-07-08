@@ -405,7 +405,11 @@ namespace DKCommunication.Dandick.DK81Series
             return WriteFrequency(data);
         }
        
-
+        /// <summary>
+        /// 【设置接线方式】，返回OK
+        /// </summary>
+        /// <param name="wireMode">枚举接线方式</param>
+        /// <returns></returns>
        public OperateResult<byte[]> SetWireMode(WireMode wireMode)
         {
             OperateResult<byte[]> response = SetWireModeCommmand(wireMode);

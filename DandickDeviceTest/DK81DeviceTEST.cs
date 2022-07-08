@@ -9,13 +9,11 @@ namespace DandickDeviceTest
         readonly DK81Device dandick = new();   //TODO 测试ID解析是否正常
         public DK81DeviceTEST()
         {
-            dandick.SerialPortInni("com3");
-            //dandick.Open();
+            dandick.SerialPortInni("com3");          
             dandick.ReceiveTimeout = 5000;
             dandick.SleepTime = 20;
             dandick.ByteTransform.DataFormat = DataFormat.DCBA;
             dandick.SetWireMode(WireMode.WireMode_3P4L);
-            DK81Command dK81Command = new DK81Command();
             
             
         }
