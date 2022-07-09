@@ -4,6 +4,10 @@ namespace DKCommunication.Dandick.DKInterface
 {
     public interface IDK_BaseInterface<TDisplayPage, TSystemMode> 
     {
+        TDisplayPage DisplayPage { get; set; }
+
+        TSystemMode SystemMode { get; set; }
+
         #region Methods
         /// <summary>
         /// 【联机】

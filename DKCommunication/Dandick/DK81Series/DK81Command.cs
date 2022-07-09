@@ -80,15 +80,7 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion 私有字段
 
         #region --------------------------------- Public Properties--------------------------------
-        public WireMode WireMode { get; set; }
-
-        public DisplayPage DisplayPage { get; set; }
-
-        public SystemMode SystemMode { get; set; }
-
-        public CloseLoopMode CloseLoopMode { get; set; }
-
-        public HarmonicMode HarmonicMode { get; set; }
+      
 
         #region 档位
         //public byte Range_ACU { get; set; }
@@ -462,6 +454,9 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetClosedLoop, DK81CommunicationInfo.SetClosedLoopLength, data);
             return bytes;
         }
+
+
+
         #endregion 交流表源命令【报文创建】      
 
         #endregion private CommandBuilder【报文创建】
@@ -570,9 +565,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         #endregion 系统命令【操作命令】
-
-        /*******************/
-
+       
         #region 设备信息【操作命令】
         /// <summary>
         /// 读取交流源档位
@@ -624,9 +617,7 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
             return responseBytes;
         }
-        #endregion 设备信息【操作命令】
-
-        /*******************/
+        #endregion 设备信息【操作命令】        
 
         #region 交流源（表）【操作命令】
         /// <summary>
@@ -782,9 +773,11 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> response = CheckResponse(createResult.Content);
             return response;
         }
+
+
         #endregion 交流源（表）【操作命令】
 
-        #endregion protected Commands【操作命令】
+        #endregion internal Commands【操作命令】
 
     }
 }

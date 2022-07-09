@@ -640,7 +640,7 @@ namespace DKCommunication.Dandick.DK81Series
     /// 故障码定义：枚举。此为获取故障信息的第二种方式
     /// </summary>
     [Flags]
-    public enum ErrorCode:byte
+    public enum ErrorCode : byte
     {
         ErrorUa = 0b_0000_0001,    // 0x01 // 1
         ErrorUb = 0b_0000_0010,    // 0x02 // 2
@@ -650,8 +650,23 @@ namespace DKCommunication.Dandick.DK81Series
         ErrorIc = 0b_0010_0000,    // 0x20 // 32
         ErrorDC = 0b_0100_0000     // 0x40 // 64
     }
-    #endregion
+    #endregion Error_Code Declaration 故障码解析
 
+    #region 设置谐波参数Channel
+    /// <summary>
+    /// 谐波设置通道选择
+    /// </summary>
+    [Flags]
+    public enum HarmonicChannels : byte
+    {
+        Channel_Ua = 0b_0000_0001,  // 0x01 // 1
+        Channel_Ub = 0b_0000_0010,  // 0x02 // 2
+        Channel_Uc = 0b_0000_0100,  // 0x04 // 4
+        Channel_Ia = 0b_0000_1000,  // 0x08 // 8
+        Channel_Ib = 0b_0001_0000,  // 0x10 // 16
+        Channel_Ic = 0b_0010_0000,  // 0x20 // 32
+    }                               
+    #endregion
     #endregion
 
 }

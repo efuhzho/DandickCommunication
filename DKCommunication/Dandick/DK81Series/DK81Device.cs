@@ -7,43 +7,112 @@ using System.Text;
 namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81Device : DK81Command,
-        IDK_BaseInterface<DisplayPage, SystemMode>,
-        IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode>,
-        IDK_DCMeter,
-        IDK_DCSource,
-        IDK_ElectricityModel,
-        IDK_IOModel                          
+        IDK_BaseInterface<DisplayPage, SystemMode>, //系统接口
+        IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode>,    //交流源接口
+        IDK_DCMeter,    //直流表接口
+        IDK_DCSource,   //直流源接口
+        IDK_ElectricityModel,   //电能模块接口
+        IDK_IOModel     //开关量模块接口
     {
 
-        #region 私有字段
-        #region ACSource
+        #region --------------------------------- 私有字段 ----------------------------------------
+
+        #region ACSource 交流源
+        /// <summary>
+        /// 交流电压档位数量
+        /// </summary>
         private byte _uRangesCount;
+
+        /// <summary>
+        /// 交流电流档位数量
+        /// </summary>
         private byte _iRangesCount;
+
+        /// <summary>
+        /// 保护电流档位数量
+        /// </summary>
         private byte _iProtectRangesCount;
+
+        /// <summary>
+        /// 只支持A相输出的电压档位起始索引
+        /// </summary>
         private byte _uRanges_Asingle;
+
+        /// <summary>
+        /// 只支持A相输出的电流档位起始索引
+        /// </summary>
         private byte _iRanges_Asingle;
+
+        /// <summary>
+        /// 只支持A相输出的保护电流档位起始索引
+        /// </summary>
         private byte _iProtectRanges_Asingle;
-        private List<float> _uRanges /*= new List<float> { 380f, 220f, 100f, 57.7f }*/;
-        private List<float> _iRanges /*= new List<float> { 20f, 5f, 2f, 1f }*/;
-        private List<float> _iProtectRanges/* = new List<float> { 0, 0, 0, 0 }*/;       //TODO 默认值设定？
-        #endregion
-        #region DCSource
+
+        /// <summary>
+        /// 交流电压档位列表
+        /// </summary>
+        private List<float> _uRanges = new List<float> { 380f, 220f, 100f, 57.7f };
+
+        /// <summary>
+        /// 交流电流档位列表
+        /// </summary>
+        private List<float> _iRanges = new List<float> { 20f, 5f, 2f, 1f };
+
+        /// <summary>
+        /// 保护电流档位列表
+        /// </summary>
+        private List<float> _iProtectRanges = new List<float> { 0, 0, 0, 0 };       //TODO 删除默认值设定？
+
+        #endregion ACSource 交流源
+
+        #region DCSource 直流源
+        /// <summary>
+        /// 直流电压档位数量
+        /// </summary>
         private byte _DCURangesCount;
+
+        /// <summary>
+        /// 直流电流档位数量
+        /// </summary>
         private byte _DCIRangesCount;
+
+        /// <summary>
+        /// 直流电压档位列表
+        /// </summary>
         private List<float> _DCURanges;
+
+        /// <summary>
+        /// 直流电流档位列表
+        /// </summary>
         private List<float> _DCIRanges;
         #endregion
-        #region DCMeter
+
+        #region DCMeter 直流表
+
+        /// <summary>
+        /// /直流表电压档位数量
+        /// </summary>
         private byte _DCMeterURangesCount;
+
+        /// <summary>
+        /// 直流表电流档位数量
+        /// </summary>
         private byte _DCMeterIRangesCount;
+
+        /// <summary>
+        /// 直流电压档位列表
+        /// </summary>
         private List<float> _DCMeterURanges;
+
+        /// <summary>
+        /// 直流电流档位列表
+        /// </summary>
         private List<float> _DCMeterIRanges;
         #endregion
-        #endregion
 
-        /*****************************************************************************************************/
+        #endregion 私有字段
 
-        #region Constructor   
+        #region --------------------------------- Constructor -------------------------------------  
         /// <summary>
         /// 无参构造方法，默认ID = 0;
         /// </summary>
@@ -60,52 +129,151 @@ namespace DKCommunication.Dandick.DK81Series
         {
 
         }
-        #endregion
+        #endregion Constructor
 
-        /*****************************************************************************************************/
+        #region --------------------------------- Public Properties 属性 --------------------------
 
-        #region Public Properties
+        #region Base 系统信号
+        /// <summary>
+        /// 当前显示页面
+        /// </summary>
+        public DisplayPage DisplayPage { get; set; }
+
+        /// <summary>
+        /// 系统模式
+        /// </summary>
+        public SystemMode SystemMode { get; set; }
+
+        #endregion Base 系统信号
+
         #region Functions
-        public bool IsACU_Activated { get; set; } = true;
-        public bool IsACI_Activated { get; set; } = true;
+
         public bool IsDCM_Activated { get; set; } = true;
         public bool IsDCU_Activated { get; set; } = true;
         public bool IsDCI_Activated { get; set; } = true;
         public bool IsPQ_Activated { get; set; } = true;
-        public bool IsIO_Activated { get; set; } = true;
+        public bool IsIO_Activated { get; set; }
         #endregion
 
-        #region ACSource
+        #region ACSource 交流源 
+        /// <summary>
+        /// 是否具备交流电压功能
+        /// </summary>
+        public bool IsACU_Activated { get; set; } = true;
+
+        /// <summary>
+        /// 是否具备交流电流功能
+        /// </summary>
+        public bool IsACI_Activated { get; set; } = true;
+
+        /// <summary>
+        /// 当前电压档位的索引值，0为最大档位，例如：0-380V；1-220V......
+        /// </summary>
+        public int ACU_Range { get; set; } = 2;
+
+        /// <summary>
+        /// 当前电流档位的索引值，0为最大档位,例如：0-20A；1-5A......
+        /// </summary>
+        public int ACI_Range { get; set; } = 1;
+
+        /// <summary>
+        /// 保护电流档位的索引值，0为最大档位
+        /// </summary>
+        public int IProtect_Range { get; set; } = 0;
+
+        /// <summary>
+        /// 交流电压档位个数
+        /// </summary>
         public byte ACU_RangesCount => _uRangesCount;
+
+        /// <summary>
+        /// 交流电流档位个数
+        /// </summary>
         public byte ACI_RangesCount => _iRangesCount;
+
+        /// <summary>
+        /// 保护电流档位个数
+        /// </summary>
         public byte IProtectRangesCount => _iProtectRangesCount;
+
+        /// <summary>
+        /// 交流电压档位列表
+        /// </summary>
         public List<float> ACU_RangesList
         {
             get { return _uRanges; }
             set { _uRanges = value; }
         }
+
+        /// <summary>
+        /// 交流电流档位列表
+        /// </summary>
         public List<float> ACI_RangesList
         {
             get { return _iRanges; }
             set { _iRanges = value; }
         }
+
+        /// <summary>
+        /// 保护电流档位列表
+        /// </summary>
         public List<float> IProtect_RangesList
         {
             get { return _iProtectRanges; }
             set { _iProtectRanges = value; }
         }
+
+        /// <summary>
+        /// 只支持A相电流输出的起始档位号
+        /// </summary>
         public byte IRanges_Asingle => _iRanges_Asingle;
+
+        /// <summary>
+        /// 只支持A相保护电流输出的起始档位号
+        /// </summary>
         public byte IProtectRanges_Asingle => _iProtectRanges_Asingle;
+
+        /// <summary>
+        /// 只支持A相电压输出的起始档位号
+        /// </summary>
         public byte URanges_Asingle => _uRanges_Asingle;
 
+        /// <summary>
+        /// 接线模式枚举
+        /// </summary>
+        public WireMode WireMode { get; set; } = WireMode.WireMode_3P4L;
 
-        #endregion
+        /// <summary>
+        /// 闭环模式枚举
+        /// </summary>
+        public CloseLoopMode CloseLoopMode { get; set; } = 0;
+
+        /// <summary>
+        /// 谐波模式枚举
+        /// </summary>
+        public HarmonicMode HarmonicMode { get; set; } = 0;
+
+        /// <summary>
+        /// AB相频率(A相、B相频率必须相同)，可当作【频率】
+        /// </summary>
+        public float FrequencyAB { get; set; } = 50F;
+
+        /// <summary>
+        /// C相频率
+        /// </summary>
+        public float FrequencyC { get; set; } = 50F;
+
+
+
+        #endregion ACSource 交流源
+
         #region DCSource
         public byte DCU_RangesCount => _DCURangesCount;
         public byte DCI_RangesCount => _DCIRangesCount;
         public List<float> DCU_Ranges => _DCURanges;
         public List<float> DCI_Ranges => _DCIRanges;
         #endregion
+
         #region DCMeter
         public byte DCM_URangesCount => _DCMeterURangesCount;
 
@@ -114,14 +282,15 @@ namespace DKCommunication.Dandick.DK81Series
         public List<float> DCM_URanges => _DCMeterURanges;
 
         public List<float> DCM_IRanges => _DCMeterIRanges;
+
+
+
         #endregion
-        #endregion
 
-        /*****************************************************************************************************/
+        #endregion Public Properties 属性
 
-        #region Public Methods
-        /*******************/
-
+        #region --------------------------------- Public Methods ----------------------------------
+       
         #region 系统信号
         /// <summary>
         /// 解析【联机指令】的回复报文，并单向初始化设备信息，不对初始化信息做任何判断
@@ -150,6 +319,7 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetSystemMode(SystemMode mode)
         {
             OperateResult<byte[]> response = SetSystemModeCommand(mode);
+            SystemMode = mode;
             return response;
         }
 
@@ -161,11 +331,10 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetDisplayPage(DisplayPage page)
         {
             OperateResult<byte[]> response = SetDisplayPageCommand(page);
+            DisplayPage = page;
             return response;
         }
-        #endregion 系统信号
-
-        /*******************/
+        #endregion 系统信号             
 
         #region 设备信息
         /// <summary>
@@ -210,9 +379,7 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
         #endregion 设备信息
-
-        /*******************/
-
+        
         #region 交流源（表）操作命令
         /// <summary>
         /// 交流源关闭命令,返回OK
@@ -234,6 +401,8 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
 
+        #region 【档位设置】
+
         /// <summary>
         /// 【档位设置】命令，返回OK
         /// </summary>
@@ -244,6 +413,9 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex, int IProtect_RangesIndex)  //TODO 档位有效值在属性中限定
         {
             OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangesIndex);
+            ACU_Range = ACU_RangesIndex;
+            ACI_Range = ACI_RangesIndex;
+            IProtect_Range = IProtect_RangesIndex;
             return response;
         }
 
@@ -255,9 +427,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns></returns>
         public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex)  //TODO 档位有效值在属性中限定
         {
-            OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, 0);
+            OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_Range);
             return response;
         }
+        #endregion 【档位设置】
+
+        #region 【设置交流源幅度】
 
         /// <summary>
         /// 【设置交流源幅度】命令，返回OK，【不推荐使用】
@@ -333,6 +508,9 @@ namespace DKCommunication.Dandick.DK81Series
             float[] data = new float[9] { U, U, U, I, I, I, 0, 0, 0 };
             return WriteACSourceAmplitude(data);
         }
+        #endregion 【设置交流源幅度】
+
+        #region 【设置源相位】
 
         /// <summary>
         /// 【设置源相位】，返回OK，【不推荐使用】
@@ -364,6 +542,9 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> response = WritePhase(data);
             return response;
         }
+        #endregion 【设置源相位】
+
+        #region 【设置源频率】
 
         /// <summary>
         /// 【设置源频率】，返回OK，【不推荐使用】
@@ -392,24 +573,27 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 【设置源频率】，返回OK，【推荐使用】
         /// </summary>
-        /// <param name="FrequencyAll">设置三相频率值</param>
+        /// <param name="frequencyAll">设置三相频率值</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteFrequency(float FrequencyAll)
+        public OperateResult<byte[]> WriteFrequency(float frequencyAll)
         {
-            return WriteFrequency(FrequencyAll, FrequencyAll);
+            return WriteFrequency(frequencyAll, frequencyAll);
         }
 
         /// <summary>
         /// 【设置源频率】，返回OK
         /// </summary>
-        /// <param name="FrequencyAB">设置AB相频率值</param>
-        /// <param name="FrequencyC">设置C相频率值</param>
+        /// <param name="frequencyAB">设置AB相频率值</param>
+        /// <param name="frequencyC">设置C相频率值</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteFrequency(float FrequencyAB, float FrequencyC)
+        public OperateResult<byte[]> WriteFrequency(float frequencyAB, float frequencyC)
         {
-            float[] data = new float[] { FrequencyAB, FrequencyAB, FrequencyC };
+            float[] data = new float[] { frequencyAB, frequencyAB, frequencyC };
+            FrequencyAB = frequencyAB;
+            FrequencyC = frequencyC;
             return WriteFrequency(data);
         }
+        #endregion 【设置源频率】
 
         /// <summary>
         /// 【设置接线方式】，返回OK
@@ -419,8 +603,11 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetWireMode(WireMode wireMode)
         {
             OperateResult<byte[]> response = SetWireModeCommmand(wireMode);
+            WireMode = wireMode;
             return response;
         }
+
+        #region 【设置闭环模式】
 
         /// <summary>
         /// 【设置闭环模式】
@@ -431,26 +618,37 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetClosedLoop(CloseLoopMode closeLoopMode, HarmonicMode harmonicMode)
         {
             OperateResult<byte[]> response = SetClosedLoopCommmand(closeLoopMode, harmonicMode);
+            CloseLoopMode = closeLoopMode;
+            HarmonicMode = harmonicMode;
             return response;
         }
 
         /// <summary>
-        /// 【设置闭环模式】，谐波模式为真有效值恒定
+        /// 【设置闭环模式】
         /// </summary>
         /// <param name="closeLoopMode">枚举闭环模式</param>
         /// <returns>带成功标志的操作结果</returns>
         public OperateResult<byte[]> SetClosedLoop(CloseLoopMode closeLoopMode)
         {
-            return SetClosedLoop(closeLoopMode, HarmonicMode.ValidValuesConstant);
+            return SetClosedLoop(closeLoopMode, HarmonicMode);
         }
 
-        #endregion 交流源（表）操作命令
+        /// <summary>
+        /// 【设置闭环模式】
+        /// </summary>
+        /// <param name="harmonicMode">枚举谐波模式</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> SetClosedLoop(HarmonicMode harmonicMode)
+        {
+            return SetClosedLoop(CloseLoopMode, harmonicMode);
+        }
+        #endregion 【设置闭环模式】
 
-        /*******************/
+
+        #endregion 交流源（表）操作命令       
 
         #endregion Public Methods
 
-        /******************************************************************************************************/
 
 
         public OperateResult<byte[]> Calibrate_ClearData()
@@ -561,7 +759,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-      
+
         public OperateResult<byte[]> Start()
         {
             throw new NotImplementedException();
@@ -598,7 +796,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-      
+
 
         public OperateResult<byte[]> WriteHarmonics()
         {
@@ -619,10 +817,9 @@ namespace DKCommunication.Dandick.DK81Series
         {
             throw new NotImplementedException();
         }
-        /******************************************************************************************************/
 
-        #region private Methods Helper 解析
-        /******************************************************************************************************************************/
+        #region --------------------------------- private Methods Helper 解析数据------------------
+
         #region 解析【系统信号】
         /// <summary>
         /// 解析设备信息：并非所有设备都会回复有效信息
@@ -658,11 +855,11 @@ namespace DKCommunication.Dandick.DK81Series
             IsDCM_Activated = funb[3];   //直流表功能
             IsPQ_Activated = funb[4];    //电能校验功能
 
-            //特殊功能状态解析，暂不处理
-            //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    
+
+            //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    //特殊功能状态解析，暂不处理
         }
         #endregion 
-        /******************************************************************************************************************************/
+
         #region 解析【设备信息】
 
         /// <summary>
@@ -735,11 +932,6 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion
 
-        #endregion
-
-        /******************************************************************************************************/
-
-
-
+        #endregion private Methods Helper 解析数据
     }
 }
