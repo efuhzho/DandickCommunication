@@ -49,12 +49,12 @@ namespace DKCommunication.Dandick.DK81Series
         private byte _iProtectRanges_Asingle;
 
         /// <summary>
-        /// 交流电压档位列表
+        /// 交流电压档位列表:如果初始化失败则默认DK-34B1档位
         /// </summary>
         private List<float> _uRanges = new List<float> { 380f, 220f, 100f, 57.7f };
 
         /// <summary>
-        /// 交流电流档位列表
+        /// 交流电流档位列表:如果初始化失败则默认DK-34B1档位
         /// </summary>
         private List<float> _iRanges = new List<float> { 20f, 5f, 2f, 1f };
 
@@ -137,12 +137,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 当前显示页面
         /// </summary>
-        public DisplayPage DisplayPage { get; set; }
+        public DisplayPage DisplayPage { get; set; } = DisplayPage.PageDefault;
 
         /// <summary>
         /// 系统模式
         /// </summary>
-        public SystemMode SystemMode { get; set; }
+        public SystemMode SystemMode { get; set; } = SystemMode.ModeDefault;
 
         #endregion Base 系统信号
 
@@ -863,7 +863,7 @@ namespace DKCommunication.Dandick.DK81Series
         #region 解析【设备信息】
 
         /// <summary>
-        /// 解析交流源档位
+        /// 解析交流源档位，并初始化设备属性
         /// </summary>
         /// <param name="response">下位机回复的档位信息报文</param>
         private void AnalysisReadACSourceRanges(byte[] response)
@@ -874,6 +874,7 @@ namespace DKCommunication.Dandick.DK81Series
             _iRanges_Asingle = response[9];
             _iProtectRangesCount = response[10];
             _iProtectRanges_Asingle = response[11];
+
             if (_uRangesCount > 0)
             {
                 float[] uRanges = ByteTransform.TransSingle(response, 12, _uRangesCount);
@@ -894,7 +895,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 解析直流源档位
+        /// 解析直流源档位，并初始化设备属性
         /// </summary>
         /// <param name="response"></param>
         private void AnalysisReadDCSourceRanges(byte[] response)
@@ -911,7 +912,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 解析直流表档位
+        /// 解析直流表档位，并初始化设备属性
         /// </summary>
         /// <param name="response">经过验证的有效回复数据</param>
         private void AnalysisReadDCMeterRanges(byte[] response)
@@ -927,9 +928,6 @@ namespace DKCommunication.Dandick.DK81Series
                 _DCMeterIRanges = dcmIanges.ToList();
             }
         }
-
-
-
         #endregion
 
         #endregion private Methods Helper 解析数据

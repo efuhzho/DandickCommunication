@@ -449,7 +449,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 标准源模式
         /// </summary>
-        ModeStandardSource = 0,
+        ModeDefault = 0,
 
         /// <summary>
         /// 标准表模式
