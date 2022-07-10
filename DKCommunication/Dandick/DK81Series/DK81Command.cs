@@ -80,7 +80,7 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion 私有字段
 
         #region --------------------------------- Public Properties--------------------------------
-      
+
 
         #region 档位
         //public byte Range_ACU { get; set; }
@@ -252,9 +252,22 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
 
+        private byte[] HarmonicToBytes(Harmonics harmonics)
+        {
+            byte[] bytes = new byte[9];
+            bytes[0] = harmonics.HarmonicTimes;
+
+            //将谐波幅度转换为字节
+            ByteTransform.TransByte(harmonics.Amplitude).CopyTo(bytes, 1);
+
+            //将谐波相位转换为字节
+            ByteTransform.TransByte(harmonics.Angle).CopyTo(bytes, 5);
+
+            return bytes;
+        }
 
 
-        #endregion
+        #endregion Private CommandBuilder Helper 【报文创建助手】
 
         #region --------------------------------- private CommandBuilder【报文创建】---------------
 
@@ -455,6 +468,39 @@ namespace DKCommunication.Dandick.DK81Series
             return bytes;
         }
 
+        private OperateResult<byte[]> CreateWriteHarmonics(HarmonicChannels harmonicChannels, Harmonics[] harmonics)
+        {
+            byte count = (byte)harmonics.Length;    //要设置的谐波个数
+            ushort dataLength = (ushort)(2 + count * 9);     //数据区长度
+            byte[] data = new byte[dataLength];              //数据区报文
+
+            byte[] harmonicsData = new byte[count * 9]; //谐波参数报文
+
+            //所有谐波数据转换成字节数组
+            for (int i = 0; i < count; i++)
+            {
+                HarmonicToBytes(harmonics[i]).CopyTo(harmonicsData, i * 9);
+            }
+
+            //拼装数据区报文
+            data[0] = (byte)harmonicChannels;
+            data[1] = count;
+            harmonicsData.CopyTo(data, 2);
+            
+            //创建完整报文            
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteHarmonics,(ushort)(dataLength+7), data);
+            return bytes;
+        }
+
+        /// <summary>
+        /// 创建【清空谐波】报文
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateWriteHarmonicsClear()
+        {
+            byte[] data = new byte[2] {(byte)HarmonicChannels.Channel_Clear,0 };
+            return CreateCommandHelper(DK81CommunicationInfo.WriteHarmonics,DK81CommunicationInfo.WriteHarmonicsClearLength,data);            
+        }
 
 
         #endregion 交流表源命令【报文创建】      
@@ -565,7 +611,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         #endregion 系统命令【操作命令】
-       
+
         #region 设备信息【操作命令】
         /// <summary>
         /// 读取交流源档位
@@ -752,6 +798,7 @@ namespace DKCommunication.Dandick.DK81Series
                 return createResult;
             }
 
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
             OperateResult<byte[]> response = CheckResponse(createResult.Content);
             return response;
         }
@@ -770,11 +817,46 @@ namespace DKCommunication.Dandick.DK81Series
                 return createResult;
             }
 
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);            
+            return response;
+        }
+
+        /// <summary>
+        /// 执行【谐波参数设置】命令并获取下位机回复的报文：返回OK
+        /// </summary>
+        /// <param name="harmonicChannels">谐波通道</param>
+        /// <param name="harmonics">谐波参数</param>
+        /// <returns>带成功标志的操作结果</returns>
+        internal OperateResult<byte[]> WriteHarmonicsCommmand(HarmonicChannels harmonicChannels, Harmonics[] harmonics)
+        {
+            OperateResult<byte[]> createResult = CreateWriteHarmonics(harmonicChannels, harmonics);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
             OperateResult<byte[]> response = CheckResponse(createResult.Content);
             return response;
         }
 
+        /// <summary>
+        /// 执行【清空谐波】命令
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        internal OperateResult<byte[]> WriteHarmonicsClearCommmand()
+        {
+            OperateResult<byte[]> createResult = CreateWriteHarmonicsClear();
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
 
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
         #endregion 交流源（表）【操作命令】
 
         #endregion internal Commands【操作命令】

@@ -2,7 +2,7 @@
 
 namespace DKCommunication.Dandick.DKInterface
 {
-    interface IDK_ACSource<TWireMode, TCloseLoopMode, THarmonicMode>
+    interface IDK_ACSource<TWireMode, TCloseLoopMode, THarmonicMode, THarmonicChannels, THarmonics>
     {
         #region Properties
         /// <summary>
@@ -100,6 +100,20 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         float FrequencyC { get; set; }
 
+        /// <summary>
+        /// 当前输出的谐波个数
+        /// </summary>
+        byte HarmonicCount { get; set; }
+
+        /// <summary>
+        /// 当前所有谐波输出通道
+        /// </summary>
+        THarmonicChannels HarmonicChannels { get; set; }
+
+        /// <summary>
+        /// 当前所有谐波输出数据
+        /// </summary>
+        THarmonics[] Harmonics { get; set; }
         #endregion
 
         /******************************************************************************************************************************/
@@ -204,8 +218,9 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 设置谐波参数
         /// </summary>
-        OperateResult<byte[]> WriteHarmonics();
+        OperateResult<byte[]> WriteHarmonics(THarmonicChannels harmonicChannels, THarmonics[] harmonics);
 
+        OperateResult<byte[]> ClearHarmonics();
         /// <summary>
         /// 读取交流源当前输出数据
         /// </summary>

@@ -8,7 +8,7 @@ namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81Device : DK81Command,
         IDK_BaseInterface<DisplayPage, SystemMode>, //系统接口
-        IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode>,    //交流源接口
+        IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode, HarmonicChannels, Harmonics>,    //交流源接口
         IDK_DCMeter,    //直流表接口
         IDK_DCSource,   //直流源接口
         IDK_ElectricityModel,   //电能模块接口
@@ -62,6 +62,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 保护电流档位列表
         /// </summary>
         private List<float> _iProtectRanges = new List<float> { 0, 0, 0, 0 };       //TODO 删除默认值设定？
+
 
         #endregion ACSource 交流源
 
@@ -263,7 +264,31 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public float FrequencyC { get; set; } = 50F;
 
+        private byte _harmonicCount = 0;
+        /// <summary>
+        /// 当前输出的谐波个数
+        /// </summary>
+        public byte HarmonicCount
+        {
+            get { return _harmonicCount; }
+            set
+            {
+                if (_harmonicCount >= 0 && _harmonicCount < 28) //协议建议长度超过256最好分批发送
+                {
+                    _harmonicCount = value;
+                }
+            }
+        }
 
+        /// <summary>
+        /// 当前所有谐波输出通道
+        /// </summary>
+        public HarmonicChannels HarmonicChannels { get; set; }
+
+        /// <summary>
+        /// 当前所有谐波输出数据
+        /// </summary>
+        public Harmonics[] Harmonics { get; set; }
 
         #endregion ACSource 交流源
 
@@ -290,7 +315,7 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion Public Properties 属性
 
         #region --------------------------------- Public Methods ----------------------------------
-       
+
         #region 系统信号
         /// <summary>
         /// 解析【联机指令】的回复报文，并单向初始化设备信息，不对初始化信息做任何判断
@@ -379,7 +404,7 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
         #endregion 设备信息
-        
+
         #region 交流源（表）操作命令
         /// <summary>
         /// 交流源关闭命令,返回OK
@@ -642,8 +667,34 @@ namespace DKCommunication.Dandick.DK81Series
         {
             return SetClosedLoop(CloseLoopMode, harmonicMode);
         }
-        #endregion 【设置闭环模式】
+        #endregion 设置闭环模式
 
+        #region 【设置谐波参数】
+        /// <summary>
+        /// 【谐波参数设置】
+        /// </summary>
+        /// <param name="harmonicChannels">枚举谐波通道</param>
+        /// <param name="harmonics">谐波数据结构体组合</param>
+        /// <remarks>
+        /// 使用方法举例1：this.WriteHarmonics(（HarmonicChannels）30,data)则表示选择了Ub,Uc,Ia,Ib通道
+        /// 使用方法举例2：this.WriteHarmonics(HarmonicChannels.Channel_Ua,data)则表示选择了Ua通道
+        /// </remarks>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WriteHarmonics(HarmonicChannels harmonicChannels, Harmonics[] harmonics)
+        {
+            OperateResult<byte[]> response = WriteHarmonicsCommmand(harmonicChannels, harmonics);
+            return response;
+        }
+
+        /// <summary>
+        /// 清空谐波
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> ClearHarmonics()
+        {
+            return WriteHarmonicsClearCommmand();
+        }
+        #endregion 设置谐波参数
 
         #endregion 交流源（表）操作命令       
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using DKCommunication.BasicFramework;
-
+using DKCommunication.Core;
 namespace DKCommunication.Dandick.DK81Series
 {
     /// <summary>
@@ -115,7 +115,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 设置谐波参数：注意：建议协议长度不超过 256，超过 256 个字节建议分批发送。
         /// </summary>
         public const byte WriteHarmonics = 0x58;
-        public const short WriteHarmonicsLength = 0x58;
+        public const ushort WriteHarmonicsClearLength = 9;
 
         /// <summary>
         /// 设置有功功率参数
@@ -488,7 +488,7 @@ namespace DKCommunication.Dandick.DK81Series
         ModeDCMeterCalibrate = 14
     }
 
-    #endregion
+    #endregion 系统模式定义
 
     #region Page Declaration 显示页面定义
     //TODO 确认彩屏显示界面，以下是黑白屏数据，不同型号可能界面不一样
@@ -496,7 +496,7 @@ namespace DKCommunication.Dandick.DK81Series
     public enum DisplayPage : byte
     {
         //TODO 使用【Atribute】特性显示信息
-        #region 交流标准源输出
+
         /// <summary>
         /// Menu功能选择界面：仅彩屏有效，黑白屏无效。需先切换到Menu界面才能继续操作显示其他界面
         /// </summary>
@@ -526,9 +526,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 电能校验界面
         /// </summary>
         PageElectricity = 8,
-        #endregion
 
-        #region 直流
         /// <summary>
         /// 直流测量界面
         /// </summary>
@@ -538,9 +536,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 直流输出界面
         /// </summary>
         PageDC = 6,
-        #endregion
 
-        #region 交流标准表
         /// <summary>
         /// 参数测量界面
         /// </summary>
@@ -574,9 +570,9 @@ namespace DKCommunication.Dandick.DK81Series
         PageClampPhasor = 14,
 
         #endregion
-        #endregion
+
     }
-    #endregion    
+    #endregion  DisplayPage   
 
     #region WireMode
     public enum WireMode : byte
@@ -606,7 +602,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         WireMode_3Component = 04,
     }
-    #endregion
+    #endregion WireMode
 
     #region CloseLoop 闭环控制定义、谐波模式
     public enum CloseLoopMode : byte
@@ -665,8 +661,74 @@ namespace DKCommunication.Dandick.DK81Series
         Channel_Ia = 0b_0000_1000,  // 0x08 // 8
         Channel_Ib = 0b_0001_0000,  // 0x10 // 16
         Channel_Ic = 0b_0010_0000,  // 0x20 // 32
-    }                               
-    #endregion
+        Channel_Clear = 0b_0000_0000
+    }
     #endregion
 
+    #endregion Enum Classes
+
+    #region Structs
+    /// <summary>
+    /// 谐波参数:9个字节长度
+    /// </summary>
+    public struct Harmonics
+    {
+
+        private byte _harmonicTimes;
+        /// <summary>
+        /// 谐波次数:2--32次
+        /// </summary>
+        public byte HarmonicTimes
+        {
+            get { return _harmonicTimes; }
+            set
+            {
+                if (_harmonicTimes >= 2 && _harmonicTimes <= 32)
+                {
+                    _harmonicTimes = value;
+                }
+            }
+        }
+
+        private float _amplitude;
+        /// <summary>
+        /// 谐波幅度：0--0.4（0%--40%）
+        /// </summary>
+        public float Amplitude
+        {
+            get { return _amplitude; }
+            set
+            {
+                if (_amplitude >= 0 && _amplitude <= 0.4F)
+                {
+                    _amplitude = value;
+                }
+            }
+        }
+
+        private float _angle;
+        /// <summary>
+        /// 谐波相位：0--359.99
+        /// </summary>
+        public float Angle
+        {
+            get { return _angle; }
+            set
+            {
+                if (_angle >= 0 && _angle <= 359.99F)
+                {
+                    _angle = value;
+                }
+            }
+        }
+
+        //public byte[] HarmonicToBytes(Harmonics harmonics)
+        //{
+        //    byte[] bytes = new byte[9];
+        //    bytes[0] = _harmonicTimes;
+
+
+        //}
+    }
+    #endregion Structs
 }
