@@ -120,13 +120,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置有功功率
         /// </summary>
-        public const byte WriteWattPower = 0x50; //TODO
+        public const byte WriteWattPower = 0x50; 
         public const ushort WriteWattPowerLength = 12;
 
         /// <summary>
         /// 设置无功功率
         /// </summary>
-        public const byte WriteWattlessPower = 0x51; //TODO
+        public const byte WriteWattlessPower = 0x51; //TODO 确认协议描述是否有误
         public const byte WriteWattlessPowerLength = 12;
 
         /// <summary>
@@ -139,6 +139,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读系统状态位：Flag=0表示输出稳定，Flag=1表示输出未稳定。：读标准源输出状态
         /// </summary>
         public const byte ReadACStatus = 0x4E;
+        public const byte ReadACStatusLength = 7;
         #endregion
 
         #region 电能
@@ -577,7 +578,7 @@ namespace DKCommunication.Dandick.DK81Series
     }
     #endregion  DisplayPage   
 
-    #region WireMode
+    #region WireMode 接线方式
     public enum WireMode : byte
     {
         /// <summary>
@@ -608,6 +609,9 @@ namespace DKCommunication.Dandick.DK81Series
     #endregion WireMode
 
     #region CloseLoop 闭环控制定义、谐波模式
+    /// <summary>
+    /// 闭环控制定义
+    /// </summary>
     public enum CloseLoopMode : byte
     {
         /// <summary>
@@ -620,6 +624,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         OpenLoop = 1
     }
+
+    /// <summary>
+    /// 谐波模式
+    /// </summary>
     public enum HarmonicMode : byte
     {
         /// <summary>

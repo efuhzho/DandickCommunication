@@ -35,17 +35,32 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// 当前电压档位的索引值，0为最大档位
         /// </summary>
-        int ACU_Range { get; set; }
+        int ACU_RangeIndex { get; set; }
+
+        /// <summary>
+        /// 当前交流电压档位值，单位V
+        /// </summary>
+        float ACU_Range { get;  }
 
         /// <summary>
         /// 当前电流档位的索引值，0为最大档位
         /// </summary>
-        int ACI_Range { get; set; }
+        int ACI_RangeIndex { get; set; }
+
+        /// <summary>
+        /// 当前交流电流档位值，单位A
+        /// </summary>
+        float ACI_Range { get; }
 
         /// <summary>
         /// 保护电流档位的索引值，0为最大档位
         /// </summary>
-        int IProtect_Range { get; set; }
+        int IProtect_RangeIndex { get; set; }
+
+        /// <summary>
+        /// 当前保护电流档位值，单位A
+        /// </summary>
+        float IProtect_Range { get; }
 
         /// <summary>
         /// 保护电流档位个数
@@ -137,6 +152,38 @@ namespace DKCommunication.Dandick.DKInterface
         float IaPhase { get; set; }
         float IbPhase { get; set; }
         float IcPhase { get; set; }
+        float Pa { get; set; }
+        float Pb { get; set; }
+        float Pc{ get; set; }
+        float P { get; set; }
+        float Qa { get; set; }
+        float Qb { get; set; }
+        float Qc { get; set; }
+        float Q { get; set; }
+        float Sa { get; set; }
+        float Sb { get; set; }
+        float Sc { get; set; }
+        float S { get; set; }
+        float CosFaiA { get; set; }
+        float CosFaiB { get; set; }
+        float CosFaiC { get; set; }
+        float CosFai { get; set; }
+
+        /// <summary>
+        /// FLAG=1表示输出不稳定，FLAG=0表示输出已稳定
+        /// </summary>
+        byte Flag_A { get; }
+
+        /// <summary>
+        /// FLAG=1表示输出不稳定，FLAG=0表示输出已稳定
+        /// </summary>
+        byte Flag_B { get; }
+
+        /// <summary>
+        /// FLAG=1表示输出不稳定，FLAG=0表示输出已稳定
+        /// </summary>
+        byte Flag_C { get; }
+
 
         #endregion
 

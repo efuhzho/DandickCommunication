@@ -170,17 +170,17 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 当前电压档位的索引值，0为最大档位，例如：0-380V；1-220V......
         /// </summary>
-        public int ACU_Range { get; set; } = 2;
+        public int ACU_RangeIndex { get; set; } = 2;
 
         /// <summary>
         /// 当前电流档位的索引值，0为最大档位,例如：0-20A；1-5A......
         /// </summary>
-        public int ACI_Range { get; set; } = 1;
+        public int ACI_RangeIndex { get; set; } = 1;
 
         /// <summary>
         /// 保护电流档位的索引值，0为最大档位
         /// </summary>
-        public int IProtect_Range { get; set; } = 0;
+        public int IProtect_RangeIndex { get; set; } = 0;
 
         /// <summary>
         /// 交流电压档位个数
@@ -440,6 +440,225 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _IcPhase; }
             set { _IcPhase = value; }
         }
+
+        private float _Pa;
+        /// <summary>
+        /// A相有功功率
+        /// </summary>
+        public float Pa
+        {
+            get { return _Pa; }
+            set { _Pa = value; }
+        }
+
+        private float _Pb;
+        /// <summary>
+        /// B相有功功率
+        /// </summary>
+        public float Pb
+        {
+            get { return _Pb; }
+            set { _Pb = value; }
+        }
+
+        private float _Pc;
+        /// <summary>
+        /// C相有功功率
+        /// </summary>
+        public float Pc
+        {
+            get { return _Pc; }
+            set { _Pc = value; }
+        }
+
+        private float _P;
+        /// <summary>
+        /// 有功功率
+        /// </summary>
+        public float P
+        {
+            get { return _P; }
+            set { _P = value; }
+        }
+
+        private float _Qa;
+        /// <summary>
+        /// A相无功功率
+        /// </summary>
+        public float Qa
+        {
+            get { return _Qa; }
+            set { _Qa = value; }
+        }
+
+        private float _Qb;
+        /// <summary>
+        /// B相无功功率
+        /// </summary>
+        public float Qb
+        {
+            get { return _Qb; }
+            set { _Qb = value; }
+        }
+
+        private float _Qc;
+        /// <summary>
+        /// C相无功功率
+        /// </summary>
+        public float Qc
+        {
+            get { return _Qc; }
+            set { _Qc = value; }
+        }
+
+        private float _Q;
+        /// <summary>
+        /// 无功功率
+        /// </summary>
+        public float Q
+        {
+            get { return _Q; }
+            set { _Q = value; }
+        }
+
+        private float _Sa;
+        /// <summary>
+        /// A相视在功率
+        /// </summary>
+        public float Sa
+        {
+            get { return _Sa; }
+            set { _Sa = value; }
+        }
+
+        private float _Sb;
+        /// <summary>
+        /// B相视在功率
+        /// </summary>
+        public float Sb
+        {
+            get { return _Sb; }
+            set { _Pb = value; }
+        }
+
+        private float _Sc;
+        /// <summary>
+        /// C相视在功率
+        /// </summary>
+        public float Sc
+        {
+            get { return _Sc; }
+            set { _Sc = value; }
+        }
+
+        private float _S;
+        /// <summary>
+        /// 视在功率
+        /// </summary>
+        public float S
+        {
+            get { return _S; }
+            set { _S = value; }
+        }
+
+
+        private float _CosFaiA;
+        /// <summary>
+        /// A相功率因数
+        /// </summary>
+        public float CosFaiA
+        {
+            get { return _CosFaiA; }
+            set { _CosFaiA = value; }
+        }
+
+        private float _CosFaiB;
+        /// <summary>
+        /// B相功率因数
+        /// </summary>
+        public float CosFaiB
+        {
+            get { return _CosFaiB; }
+            set { _CosFaiB = value; }
+        }
+
+        private float _CosFaiC;
+        /// <summary>
+        /// C相功率因数
+        /// </summary>
+        public float CosFaiC
+        {
+            get { return _CosFaiC; }
+            set { _CosFaiC = value; }
+        }
+
+        private float _CosFai;
+        /// <summary>
+        /// 功率因数
+        /// </summary>
+        public float CosFai
+        {
+            get { return _CosFai; }
+            set { _CosFai = value; }
+        }
+
+        private byte _Flag_A;
+        /// <summary>
+        /// FLAG=1表示输出不稳定，FLAG=0表示输出已稳定
+        /// </summary>
+        public byte Flag_A
+        {
+            get { return _Flag_A; }
+            //set { _Flag_A = value; }
+        }
+
+        private byte _Flag_B;
+        /// <summary>
+        /// FLAG=1表示输出不稳定，FLAG=0表示输出已稳定
+        /// </summary>
+        public byte Flag_B
+        {
+            get { return _Flag_B; }
+            //set { _Flag_B = value; }
+        }
+
+        private byte _Flag_C;
+        /// <summary>
+        /// FLAG=1表示输出不稳定，FLAG=0表示输出已稳定
+        /// </summary>
+        public byte Flag_C
+        {
+            get { return _Flag_C; }
+            //set { _Flag_C = value; }
+        }
+
+        private float _ACU_Range;
+        /// <summary>
+        /// 当前交流电压档位值，单位V
+        /// </summary>
+        public float ACU_Range
+        {
+            get { return _ACU_Range; }
+        }
+
+        private float _ACI_Range;
+        /// <summary>
+        /// 当前交流电流档位值，单位A
+        /// </summary>
+        public float ACI_Range
+        {
+            get { return _ACI_Range; }
+        }
+
+        private float _IProtect_Range;
+        /// <summary>
+        /// 当前保护电流档位值，单位A
+        /// </summary>
+        public float IProtect_Range
+        {
+            get { return _IProtect_Range; }
+        }
+
         #endregion ACSource 交流源
 
         #region DCSource
@@ -588,9 +807,9 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex, int IProtect_RangesIndex)  //TODO 档位有效值在属性中限定
         {
             OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangesIndex);
-            ACU_Range = ACU_RangesIndex;
-            ACI_Range = ACI_RangesIndex;
-            IProtect_Range = IProtect_RangesIndex;
+            ACU_RangeIndex = ACU_RangesIndex;
+            ACI_RangeIndex = ACI_RangesIndex;
+            IProtect_RangeIndex = IProtect_RangesIndex;
             return response;
         }
 
@@ -602,7 +821,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns></returns>
         public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex)  //TODO 档位有效值在属性中限定
         {
-            OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_Range);
+            OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangeIndex);
             return response;
         }
         #endregion 【档位设置】
@@ -882,6 +1101,10 @@ namespace DKCommunication.Dandick.DK81Series
             return WriteWattPowerLessCommmand(channel, q);
         }
 
+        /// <summary>
+        /// 【读取交流源当前输出值】
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
         public OperateResult<byte[]> ReadACSourceData()
         {
             OperateResult<byte[]> response = ReadACSourceDataCommmand();
@@ -895,6 +1118,22 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
 
+        /// <summary>
+        /// 【读取当前交流源输出状态】
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> ReadACStatus()
+        {
+            OperateResult<byte[]> response = ReadACStatusCommmand();
+            if (!response.IsSuccess)
+            {
+                return response;
+            }
+
+            //命令执行成功则解析数据
+            AnalysisReadACStatus(response.Content);
+            return response;
+        }
         #endregion 交流源（表）操作命令       
 
         #endregion Public Methods
@@ -1178,13 +1417,15 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region 解析交流源（表）
+        /// <summary>
+        /// 解析【读取交流源当前输出值】回复报文
+        /// </summary>
+        /// <param name="response"></param>
         private void AnalysisReadACSourceData(byte[] response)
         {
-            //byte[] id = new byte[2]{ response[1], response[2] };
-            //ID = BitConverter.ToUInt16(id, 0);
             Frequency = ByteTransform.TransSingle(response, 6);
-            ACU_Range = response[7];
-            ACI_Range = response[10];
+            ACU_RangeIndex = response[7];
+            ACI_RangeIndex = response[10];
 
             _UA = ByteTransform.TransSingle(response, 16);
             _UB = ByteTransform.TransSingle(response, 20);
@@ -1198,8 +1439,44 @@ namespace DKCommunication.Dandick.DK81Series
             _IaPhase = ByteTransform.TransSingle(response, 52);
             _IbPhase = ByteTransform.TransSingle(response, 56);
             _IcPhase = ByteTransform.TransSingle(response, 60);
+            _Pa = ByteTransform.TransSingle(response, 64);
+            _Pb = ByteTransform.TransSingle(response, 68);
+            _Pc = ByteTransform.TransSingle(response, 72);
+            _P = ByteTransform.TransSingle(response, 76);
+            _Qa = ByteTransform.TransSingle(response, 80);
+            _Qb = ByteTransform.TransSingle(response, 84);
+            _Qc = ByteTransform.TransSingle(response, 88);
+            _Q = ByteTransform.TransSingle(response, 92);
+            _Sa = ByteTransform.TransSingle(response, 96);
+            _Sb = ByteTransform.TransSingle(response, 100);
+            _Sc = ByteTransform.TransSingle(response, 104);
+            _S = ByteTransform.TransSingle(response, 108);
+            _CosFaiA = ByteTransform.TransSingle(response, 112);
+            _CosFaiB = ByteTransform.TransSingle(response, 116);
+            _CosFaiC = ByteTransform.TransSingle(response, 120);
+            _CosFai = ByteTransform.TransSingle(response, 124);
+            WireMode = (WireMode)response[128];
+            CloseLoopMode = (CloseLoopMode)response[129];
+            HarmonicMode = (HarmonicMode)response[130];
+        }
 
-
+        /// <summary>
+        /// 解析【读取当前交流源输出状态】回复报文
+        /// </summary>
+        /// <param name="response"></param>
+        private void AnalysisReadACStatus(byte[] response)
+        {
+            _Flag_A = response[6];
+            _Flag_B = response[7];
+            _Flag_C = response[8];
+            Frequency = ByteTransform.TransSingle(response, 9);
+            FrequencyC = ByteTransform.TransSingle(response, 17);
+            _IProtectA = ByteTransform.TransSingle(response, 21);
+            _IProtectB = ByteTransform.TransSingle(response, 25);
+            _IProtectC = ByteTransform.TransSingle(response, 29);
+            _ACU_Range = ByteTransform.TransSingle(response, 33);
+            _ACI_Range = ByteTransform.TransSingle(response, 37);
+            _IProtect_Range = ByteTransform.TransSingle(response, 41);
         }
         #endregion
 

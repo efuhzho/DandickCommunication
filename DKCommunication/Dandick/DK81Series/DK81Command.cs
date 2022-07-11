@@ -515,7 +515,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="channel"></param>
         /// <param name="p"></param>
-        /// <returns></returns>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateWriteWattLessPower(ChannelWattLessPower channel, float p)
         {
             byte[] data = new byte[5];
@@ -526,10 +526,25 @@ namespace DKCommunication.Dandick.DK81Series
             return bytes;
         }
 
+        /// <summary>
+        /// 创建【读取当前交流源输出值】报文
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateReadACSourceData()
         {      
 
             OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceData, DK81CommunicationInfo.ReadACSourceDataLength);
+            return bytes;
+        }
+
+        /// <summary>
+        /// 创建【读取当前交流源输出状态】报文
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateReadACStatus()
+        {
+
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.ReadACStatus, DK81CommunicationInfo.ReadACStatusLength);
             return bytes;
         }
         #endregion 交流表源命令【报文创建】      
@@ -925,9 +940,30 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
 
+        /// <summary>
+        /// 执行【读取交流源当前输出值】命令，并获取下位机回复报文
+        /// </summary>
+        /// <returns></returns>
         internal OperateResult<byte[]> ReadACSourceDataCommmand()
         {
             OperateResult<byte[]> createResult = CreateReadACSourceData();
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
+
+        /// <summary>
+        /// 执行【读取交流源当前输出状态】命令，并获取下位机回复报文
+        /// </summary>
+        /// <returns></returns>
+        internal OperateResult<byte[]> ReadACStatusCommmand()
+        {
+            OperateResult<byte[]> createResult = CreateReadACStatus();
             if (!createResult.IsSuccess)
             {
                 return createResult;
