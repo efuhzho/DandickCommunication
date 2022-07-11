@@ -683,7 +683,7 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _harmonicTimes; }
             set
             {
-                if (_harmonicTimes >= 2 && _harmonicTimes <= 32)
+                if (_harmonicTimes > 1 && _harmonicTimes < 32)    //谐波次数为2到31次
                 {
                     _harmonicTimes = value;
                 }
@@ -699,7 +699,7 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _amplitude; }
             set
             {
-                if (_amplitude >= 0 && _amplitude <= 0.4F)
+                if (_amplitude >= 0 && _amplitude <= 0.4F)  //谐波幅度叠加不超过40%；
                 {
                     _amplitude = value;
                 }

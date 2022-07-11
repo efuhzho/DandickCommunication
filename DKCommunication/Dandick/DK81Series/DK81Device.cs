@@ -659,7 +659,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 【设置闭环模式】
+        /// 【设置闭环模式】：谐波模式设置
         /// </summary>
         /// <param name="harmonicMode">枚举谐波模式</param>
         /// <returns>带成功标志的操作结果</returns>
@@ -671,7 +671,7 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region 【设置谐波参数】
         /// <summary>
-        /// 【谐波参数设置】
+        /// 【谐波参数设置】:设置多个谐波参数
         /// </summary>
         /// <param name="harmonicChannels">枚举谐波通道</param>
         /// <param name="harmonics">谐波数据结构体组合</param>
@@ -686,6 +686,19 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
 
+        /// <summary>
+        /// 【谐波参数设置】：设置一个谐波参数
+        /// </summary>
+        /// <param name="harmonicChannels">谐波通道选择</param>
+        /// <param name="harmonic">谐波参数</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WriteHarmonics(HarmonicChannels harmonicChannels, Harmonics harmonic)
+        {
+            Harmonics[] data = new Harmonics[1] { harmonic };
+            OperateResult<byte[]> response = WriteHarmonicsCommmand(harmonicChannels, data);
+            return response;
+        }
+               
         /// <summary>
         /// 清空谐波
         /// </summary>

@@ -216,10 +216,22 @@ namespace DKCommunication.Dandick.DKInterface
         #endregion 【设置闭环模式】
 
         /// <summary>
-        /// 设置谐波参数
+        /// 设置多个谐波参数【建议一次最多27个】
         /// </summary>
         OperateResult<byte[]> WriteHarmonics(THarmonicChannels harmonicChannels, THarmonics[] harmonics);
 
+        /// <summary>
+        /// 设置一个谐波参数
+        /// </summary>
+        /// <param name="harmonicChannels"></param>
+        /// <param name="harmonics"></param>
+        /// <returns></returns>
+        OperateResult<byte[]> WriteHarmonics(THarmonicChannels harmonicChannels, THarmonics harmonics);
+
+        /// <summary>
+        /// 清空谐波
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
         OperateResult<byte[]> ClearHarmonics();
         /// <summary>
         /// 读取交流源当前输出数据

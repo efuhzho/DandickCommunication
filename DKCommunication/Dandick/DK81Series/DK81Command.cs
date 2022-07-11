@@ -468,6 +468,12 @@ namespace DKCommunication.Dandick.DK81Series
             return bytes;
         }
 
+        /// <summary>
+        ///  创建【设置谐波】完整报文
+        /// </summary>
+        /// <param name="harmonicChannels">谐波通道选择</param>
+        /// <param name="harmonics">谐波参数</param>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateWriteHarmonics(HarmonicChannels harmonicChannels, Harmonics[] harmonics)
         {
             byte count = (byte)harmonics.Length;    //要设置的谐波个数
