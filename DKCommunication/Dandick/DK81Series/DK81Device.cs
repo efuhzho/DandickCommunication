@@ -8,7 +8,7 @@ namespace DKCommunication.Dandick.DK81Series
 {
     public class DK81Device : DK81Command,
         IDK_BaseInterface<DisplayPage, SystemMode>, //系统接口
-        IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode, HarmonicChannels, Harmonics>,    //交流源接口
+        IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode, ChannelsHarmonic, Harmonics, ChannelWattPower, ChannelWattLessPower>,    //交流源接口
         IDK_DCMeter,    //直流表接口
         IDK_DCSource,   //直流源接口
         IDK_ElectricityModel,   //电能模块接口
@@ -255,9 +255,9 @@ namespace DKCommunication.Dandick.DK81Series
         public HarmonicMode HarmonicMode { get; set; } = 0;
 
         /// <summary>
-        /// AB相频率(A相、B相频率必须相同)，可当作【频率】
+        /// 【频率F】:，通常情况下为【频率F】，特殊情况下指AB相频率(A相、B相频率必须相同)
         /// </summary>
-        public float FrequencyAB { get; set; } = 50F;
+        public float Frequency { get; set; } = 50F;
 
         /// <summary>
         /// C相频率
@@ -283,13 +283,163 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 当前所有谐波输出通道
         /// </summary>
-        public HarmonicChannels HarmonicChannels { get; set; }
+        public ChannelsHarmonic HarmonicChannels { get; set; }
 
         /// <summary>
         /// 当前所有谐波输出数据
         /// </summary>
         public Harmonics[] Harmonics { get; set; }
 
+
+        private float _UA;
+        /// <summary>
+        /// 当前UA的输出值
+        /// </summary>  
+        public float UA
+        {
+            get { return _UA; }
+            set { _UA = value; }
+        }
+
+        private float _UB;
+        /// <summary>
+        /// 当前UB的输出值
+        /// </summary>  
+        public float UB
+        {
+            get { return _UB; }
+            set { _UB = value; }
+        }
+
+        private float _UC;
+        /// <summary>
+        /// 当前UC的输出值
+        /// </summary>  
+        public float UC
+        {
+            get { return _UC; }
+            set { _UC = value; }
+        }
+
+        private float _IA;
+        /// <summary>
+        /// 当前IA的输出值
+        /// </summary>  
+        public float IA
+        {
+            get { return _IA; }
+            set { _IA = value; }
+        }
+
+        private float _IB;
+        /// <summary>
+        /// 当前IB的输出值
+        /// </summary>  
+        public float IB
+        {
+            get { return _IB; }
+            set { _IB = value; }
+        }
+
+        private float _IC;
+        /// <summary>
+        /// 当前IC的输出值
+        /// </summary>  
+        public float IC
+        {
+            get { return _IC; }
+            set { _IC = value; }
+        }
+
+        private float _IProtectA;
+        /// <summary>
+        /// 当前IProtectA的输出值
+        /// </summary>  
+        public float IProtectA
+        {
+            get { return _IProtectA; }
+            set { _IProtectA = value; }
+        }
+
+        private float _IProtectB;
+        /// <summary>
+        /// 当前IProtectB的输出值
+        /// </summary>  
+        public float IProtectB
+        {
+            get { return _IProtectB; }
+            set { _IProtectB = value; }
+        }
+
+        private float _IProtectC;
+        /// <summary>
+        /// 当前IProtectC的输出值
+        /// </summary>  
+        public float IProtectC
+        {
+            get { return _IProtectC; }
+            set { _IProtectC = value; }
+        }
+
+        private float _UaPhase;
+        /// <summary>
+        /// Ua相位
+        /// </summary>
+        public float UaPhase
+        {
+            get { return _UaPhase; }
+            set { _UaPhase = value; }
+        }
+
+        private float _UbPhase;
+        /// <summary>
+        /// Ub相位
+        /// </summary>
+        public float UbPhase
+        {
+            get { return _UbPhase; }
+            set { _UbPhase = value; }
+        }
+
+        private float _UcPhase;
+        /// <summary>
+        /// Uc相位
+        /// </summary>
+        public float UcPhase
+        {
+            get { return _UcPhase; }
+            set { _UcPhase = value; }
+        }
+
+        private float _IaPhase;
+        /// <summary>
+        /// Ia相位
+        /// </summary>
+        public float IaPhase
+        {
+            get { return _IaPhase; }
+            set { _IaPhase = value; }
+        }
+
+        private float _IbPhase;
+        /// <summary>
+        /// Ib相位
+        /// </summary>
+        public float IbPhase
+        {
+            get { return _IbPhase; }
+            set { _IbPhase = value; }
+        }
+
+        private float _IcPhase;
+        /// <summary>
+        /// Ic相位
+        /// </summary>
+        public float IcPhase
+        {
+            get { return _IcPhase; }
+            set { _IcPhase = value; }
+        }
         #endregion ACSource 交流源
 
         #region DCSource
@@ -614,7 +764,7 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> WriteFrequency(float frequencyAB, float frequencyC)
         {
             float[] data = new float[] { frequencyAB, frequencyAB, frequencyC };
-            FrequencyAB = frequencyAB;
+            Frequency = frequencyAB;
             FrequencyC = frequencyC;
             return WriteFrequency(data);
         }
@@ -680,7 +830,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 使用方法举例2：this.WriteHarmonics(HarmonicChannels.Channel_Ua,data)则表示选择了Ua通道
         /// </remarks>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteHarmonics(HarmonicChannels harmonicChannels, Harmonics[] harmonics)
+        public OperateResult<byte[]> WriteHarmonics(ChannelsHarmonic harmonicChannels, Harmonics[] harmonics)
         {
             OperateResult<byte[]> response = WriteHarmonicsCommmand(harmonicChannels, harmonics);
             return response;
@@ -692,22 +842,58 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="harmonicChannels">谐波通道选择</param>
         /// <param name="harmonic">谐波参数</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteHarmonics(HarmonicChannels harmonicChannels, Harmonics harmonic)
+        public OperateResult<byte[]> WriteHarmonics(ChannelsHarmonic harmonicChannels, Harmonics harmonic)
         {
             Harmonics[] data = new Harmonics[1] { harmonic };
             OperateResult<byte[]> response = WriteHarmonicsCommmand(harmonicChannels, data);
             return response;
         }
-               
+
         /// <summary>
-        /// 清空谐波
+        /// 【清空谐波】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
         public OperateResult<byte[]> ClearHarmonics()
         {
             return WriteHarmonicsClearCommmand();
         }
+
         #endregion 设置谐波参数
+
+        /// <summary>
+        /// 【设置有功功率】
+        /// </summary>
+        /// <param name="channel">0-Pa，1-Pb，2-Pc，3-ΣP</param>
+        /// <param name="p">有功功率设定值</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WriteWattPower(ChannelWattPower channel, float p)
+        {
+            return WriteWattPowerCommmand(channel, p);
+        }
+
+        /// <summary>
+        /// 【设置无功功率】
+        /// </summary>
+        /// <param name="channel">0-Qa，1-Qb，2-Qc，3-ΣQ</param>
+        /// <param name="p">无功功率设定值</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> WriteWattLessPower(ChannelWattLessPower channel, float q)
+        {
+            return WriteWattPowerLessCommmand(channel, q);
+        }
+
+        public OperateResult<byte[]> ReadACSourceData()
+        {
+            OperateResult<byte[]> response = ReadACSourceDataCommmand();
+            if (!response.IsSuccess)
+            {
+                return response;
+            }
+
+            //命令执行成功则解析数据
+            AnalysisReadACSourceData(response.Content);
+            return response;
+        }
 
         #endregion 交流源（表）操作命令       
 
@@ -762,10 +948,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-        public OperateResult<byte[]> ReadACSourceData()
-        {
-            throw new NotImplementedException();
-        }
+
 
         public OperateResult<byte[]> ReadACSourceStatus()
         {
@@ -991,6 +1174,32 @@ namespace DKCommunication.Dandick.DK81Series
                 _DCMeterURanges = dcmURanges.ToList();
                 _DCMeterIRanges = dcmIanges.ToList();
             }
+        }
+        #endregion
+
+        #region 解析交流源（表）
+        private void AnalysisReadACSourceData(byte[] response)
+        {
+            //byte[] id = new byte[2]{ response[1], response[2] };
+            //ID = BitConverter.ToUInt16(id, 0);
+            Frequency = ByteTransform.TransSingle(response, 6);
+            ACU_Range = response[7];
+            ACI_Range = response[10];
+
+            _UA = ByteTransform.TransSingle(response, 16);
+            _UB = ByteTransform.TransSingle(response, 20);
+            _UC = ByteTransform.TransSingle(response, 24);
+            _IA = ByteTransform.TransSingle(response, 28);
+            _IB = ByteTransform.TransSingle(response, 32);
+            _IC = ByteTransform.TransSingle(response, 36);
+            _UaPhase = ByteTransform.TransSingle(response, 40);
+            _UbPhase = ByteTransform.TransSingle(response, 44);
+            _UcPhase = ByteTransform.TransSingle(response, 48);
+            _IaPhase = ByteTransform.TransSingle(response, 52);
+            _IbPhase = ByteTransform.TransSingle(response, 56);
+            _IcPhase = ByteTransform.TransSingle(response, 60);
+
+
         }
         #endregion
 

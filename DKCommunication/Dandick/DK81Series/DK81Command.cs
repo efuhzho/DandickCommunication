@@ -91,20 +91,6 @@ namespace DKCommunication.Dandick.DK81Series
         //public byte Range_IProtect { get; set; }
         #endregion
 
-        /*******************/
-
-        #region 相别
-        public float UA { get; }
-        public float UB { get; }
-        public float UC { get; }
-        public float IA { get; }
-        public float IB { get; }
-        public float IC { get; }
-        public float IProtectA { get; }
-        public float IProtectB { get; }
-        public float IProtectC { get; }
-        #endregion
-
         #endregion Public Properties
 
         #region --------------------------------- Private CommandBuilder Helper 【报文创建助手】---
@@ -474,7 +460,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="harmonicChannels">谐波通道选择</param>
         /// <param name="harmonics">谐波参数</param>
         /// <returns>带成功标志的操作结果</returns>
-        private OperateResult<byte[]> CreateWriteHarmonics(HarmonicChannels harmonicChannels, Harmonics[] harmonics)
+        private OperateResult<byte[]> CreateWriteHarmonics(ChannelsHarmonic harmonicChannels, Harmonics[] harmonics)
         {
             byte count = (byte)harmonics.Length;    //要设置的谐波个数
             ushort dataLength = (ushort)(2 + count * 9);     //数据区长度
@@ -504,11 +490,48 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateWriteHarmonicsClear()
         {
-            byte[] data = new byte[2] {(byte)HarmonicChannels.Channel_Clear,0 };
+            byte[] data = new byte[2] {(byte)ChannelsHarmonic.Channel_Clear,0 };    //COUNT=0
             return CreateCommandHelper(DK81CommunicationInfo.WriteHarmonics,DK81CommunicationInfo.WriteHarmonicsClearLength,data);            
         }
 
+        /// <summary>
+        /// 创建【设置有功功率】报文
+        /// </summary>
+        /// <param name="channel">0-Pa，1-Pb，2-Pc，3-ΣP</param>
+        /// <param name="p">有功功率设定值</param>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateWriteWattPower(ChannelWattPower channel,float p)
+        {
+            byte[] data = new byte[5];
+            data[0] = (byte)channel;
+            ByteTransform.TransByte(p).CopyTo(data, 1);
 
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteWattPower, DK81CommunicationInfo.WriteWattPowerLength, data);
+            return bytes;
+        }
+
+        /// <summary>
+        /// 创建【设置无功功率】报文
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateWriteWattLessPower(ChannelWattLessPower channel, float p)
+        {
+            byte[] data = new byte[5];
+            data[0] = (byte)channel;
+            ByteTransform.TransByte(p).CopyTo(data, 1);
+
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteWattlessPower, DK81CommunicationInfo.WriteWattlessPowerLength, data);
+            return bytes;
+        }
+
+        private OperateResult<byte[]> CreateReadACSourceData()
+        {      
+
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceData, DK81CommunicationInfo.ReadACSourceDataLength);
+            return bytes;
+        }
         #endregion 交流表源命令【报文创建】      
 
         #endregion private CommandBuilder【报文创建】
@@ -834,7 +857,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="harmonicChannels">谐波通道</param>
         /// <param name="harmonics">谐波参数</param>
         /// <returns>带成功标志的操作结果</returns>
-        internal OperateResult<byte[]> WriteHarmonicsCommmand(HarmonicChannels harmonicChannels, Harmonics[] harmonics)
+        internal OperateResult<byte[]> WriteHarmonicsCommmand(ChannelsHarmonic harmonicChannels, Harmonics[] harmonics)
         {
             OperateResult<byte[]> createResult = CreateWriteHarmonics(harmonicChannels, harmonics);
             if (!createResult.IsSuccess)
@@ -854,6 +877,57 @@ namespace DKCommunication.Dandick.DK81Series
         internal OperateResult<byte[]> WriteHarmonicsClearCommmand()
         {
             OperateResult<byte[]> createResult = CreateWriteHarmonicsClear();
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
+
+        /// <summary>
+        /// 执行【设置有功功率】命令
+        /// </summary>
+        /// <param name="channel">0-Pa，1-Pb，2-Pc，3-ΣP</param>
+        /// <param name="p">有功功率设定值</param>
+        /// <returns>带成功标志的操作结果</returns>
+        internal OperateResult<byte[]> WriteWattPowerCommmand(ChannelWattPower channel, float p)
+        {
+            OperateResult<byte[]> createResult = CreateWriteWattPower( channel,  p);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
+
+        /// <summary>
+        /// 执行【设置无功功率】命令
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        internal OperateResult<byte[]> WriteWattPowerLessCommmand(ChannelWattLessPower channel, float p)
+        {
+            OperateResult<byte[]> createResult = CreateWriteWattLessPower(channel, p);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
+
+        internal OperateResult<byte[]> ReadACSourceDataCommmand()
+        {
+            OperateResult<byte[]> createResult = CreateReadACSourceData();
             if (!createResult.IsSuccess)
             {
                 return createResult;

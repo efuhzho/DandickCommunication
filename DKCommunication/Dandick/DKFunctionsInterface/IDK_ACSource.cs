@@ -2,7 +2,14 @@
 
 namespace DKCommunication.Dandick.DKInterface
 {
-    interface IDK_ACSource<TWireMode, TCloseLoopMode, THarmonicMode, THarmonicChannels, THarmonics>
+    interface IDK_ACSource
+        <TWireMode,
+        TCloseLoopMode,
+        THarmonicMode,
+        THarmonicChannels,
+        THarmonics,
+        TChannelWattPower,
+        TChannelWattLessPower>
     {
         #region Properties
         /// <summary>
@@ -93,7 +100,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// <summary>
         /// AB相频率(A相、B相频率必须相同)，可当作所有【频率】
         /// </summary>
-        float FrequencyAB { get; set; }
+        float Frequency { get; set; }
 
         /// <summary>
         /// C相频率
@@ -114,6 +121,23 @@ namespace DKCommunication.Dandick.DKInterface
         /// 当前所有谐波输出数据
         /// </summary>
         THarmonics[] Harmonics { get; set; }
+
+        float UA { get; set; }
+        float UB { get; set; }
+        float UC { get; set; }
+        float IA { get; set; }
+        float IB { get; set; }
+        float IC { get; set; }
+        float IProtectA { get; set; }
+        float IProtectB { get; set; }
+        float IProtectC { get; set; }
+        float UaPhase { get; set; }
+        float UbPhase { get; set; }
+        float UcPhase { get; set; }
+        float IaPhase { get; set; }
+        float IbPhase { get; set; }
+        float IcPhase { get; set; }
+
         #endregion
 
         /******************************************************************************************************************************/
@@ -233,6 +257,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
         OperateResult<byte[]> ClearHarmonics();
+
         /// <summary>
         /// 读取交流源当前输出数据
         /// </summary>
@@ -249,13 +274,13 @@ namespace DKCommunication.Dandick.DKInterface
         /// 设置有功功率参数
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> WriteWattPower();
+        OperateResult<byte[]> WriteWattPower(TChannelWattPower channel, float p);
 
         /// <summary>
         /// 设置无功功率参数
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> WriteWattlessPower();
+        OperateResult<byte[]> WriteWattLessPower(TChannelWattLessPower channel, float q);
 
         /// <summary>
         /// 切换交流校准档位

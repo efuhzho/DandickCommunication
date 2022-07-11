@@ -108,29 +108,32 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 闭环控制使能命令：HarmonicMode ：谐波模式，0-以真有效值的百分比输入谐波（有效值恒定）；1-以基波值的百分比输入谐波（基波恒定）
         /// </summary>
-        public const byte SetClosedLoop = 0x36;
+        public const byte SetClosedLoop = 0x36;     //2022年7月9日
         public const ushort SetClosedLoopLength = 9;
 
         /// <summary>
         /// 设置谐波参数：注意：建议协议长度不超过 256，超过 256 个字节建议分批发送。
         /// </summary>
-        public const byte WriteHarmonics = 0x58;
+        public const byte WriteHarmonics = 0x58; //2022年7月10日
         public const ushort WriteHarmonicsClearLength = 9;
 
         /// <summary>
-        /// 设置有功功率参数
+        /// 设置有功功率
         /// </summary>
-        public const byte WriteWattPower = 0x50;
+        public const byte WriteWattPower = 0x50; //TODO
+        public const ushort WriteWattPowerLength = 12;
 
         /// <summary>
-        /// 设置无功功率参数
+        /// 设置无功功率
         /// </summary>
-        public const byte WriteWattlessPower = 0x51;
+        public const byte WriteWattlessPower = 0x51; //TODO
+        public const byte WriteWattlessPowerLength = 12;
 
         /// <summary>
         /// 读交流标准表参数/数据：读标准源输出值
         /// </summary>
         public const byte ReadACSourceData = 0x4D;
+        public const byte ReadACSourceDataLength = 7;
 
         /// <summary>
         /// 读系统状态位：Flag=0表示输出稳定，Flag=1表示输出未稳定。：读标准源输出状态
@@ -653,7 +656,7 @@ namespace DKCommunication.Dandick.DK81Series
     /// 谐波设置通道选择
     /// </summary>
     [Flags]
-    public enum HarmonicChannels : byte
+    public enum ChannelsHarmonic : byte
     {
         Channel_Ua = 0b_0000_0001,  // 0x01 // 1
         Channel_Ub = 0b_0000_0010,  // 0x02 // 2
@@ -663,13 +666,39 @@ namespace DKCommunication.Dandick.DK81Series
         Channel_Ic = 0b_0010_0000,  // 0x20 // 32
         Channel_Clear = 0b_0000_0000
     }
-    #endregion
+    #endregion 设置谐波参数Channel
+
+    #region 设置有功功率 Channel
+    /// <summary>
+    /// 设置有功功率通道枚举
+    /// </summary>
+    public enum ChannelWattPower : byte
+    {
+        Channel_Pa = 0,
+        Channel_Pb = 1,
+        Channel_Pc = 2,
+        Channel_Pall = 3
+    }
+    #endregion 设置有功功率 Channel
+
+    #region 设置无功功率 Channel
+    /// <summary>
+    /// 设置有功功率通道枚举
+    /// </summary>
+    public enum ChannelWattLessPower : byte
+    {
+        Channel_Qa = 0,
+        Channel_Qb = 1,
+        Channel_Qc = 2,
+        Channel_Qall = 3
+    }
+    #endregion 设置有功功率 Channel
 
     #endregion Enum Classes
 
     #region Structs
     /// <summary>
-    /// 谐波参数:9个字节长度
+    /// 设置谐波参数:9个字节长度
     /// </summary>
     public struct Harmonics
     {
@@ -683,7 +712,7 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _harmonicTimes; }
             set
             {
-                if (_harmonicTimes > 1 && _harmonicTimes < 32)    //谐波次数为2到31次
+                if (value > 1 && value < 32)    //谐波次数为2到31次
                 {
                     _harmonicTimes = value;
                 }
@@ -699,7 +728,7 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _amplitude; }
             set
             {
-                if (_amplitude >= 0 && _amplitude <= 0.4F)  //谐波幅度叠加不超过40%；
+                if (value >= 0 && value <= 0.4F)  //谐波幅度叠加不超过40%；
                 {
                     _amplitude = value;
                 }
@@ -715,7 +744,7 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _angle; }
             set
             {
-                if (_angle >= 0 && _angle <= 359.99F)
+                if (value >= 0 && value <= 359.99F)
                 {
                     _angle = value;
                 }
@@ -726,8 +755,6 @@ namespace DKCommunication.Dandick.DK81Series
         //{
         //    byte[] bytes = new byte[9];
         //    bytes[0] = _harmonicTimes;
-
-
         //}
     }
     #endregion Structs
