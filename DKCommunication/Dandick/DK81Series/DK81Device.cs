@@ -1105,7 +1105,8 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取交流源当前输出值】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadACSourceData()
+        public OperateResult<byte[]> ReadACSource
+            Data()
         {
             OperateResult<byte[]> response = ReadACSourceDataCommmand();
             if (!response.IsSuccess)
@@ -1122,7 +1123,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取当前交流源输出状态】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadACStatus()
+        public OperateResult<byte[]> ReadACSourceStatus()
         {
             OperateResult<byte[]> response = ReadACStatusCommmand();
             if (!response.IsSuccess)
@@ -1189,10 +1190,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-        public OperateResult<byte[]> ReadACSourceStatus()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public OperateResult<byte[]> ReadDCMeterData()
         {
@@ -1241,29 +1239,10 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
 
-
-
-
-
-
-        public OperateResult<byte[]> Start()
-        {
-            throw new NotImplementedException();
-        }
-
-
-
         public OperateResult<byte[]> StartDCSource()
         {
             throw new NotImplementedException();
         }
-
-        public OperateResult<byte[]> Stop()
-        {
-            throw new NotImplementedException();
-        }
-
-
 
         public OperateResult<byte[]> StopDCSource()
         {
@@ -1284,25 +1263,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-        public OperateResult<byte[]> WriteHarmonics()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> WritePhase()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> WriteWattlessPower()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> WriteWattPower()
-        {
-            throw new NotImplementedException();
-        }
+       
 
         #region --------------------------------- private Methods Helper 解析数据------------------
 
