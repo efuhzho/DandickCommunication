@@ -11,7 +11,7 @@ namespace DKCommunication.Dandick.DK81Series
         IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode, ChannelsHarmonic, Harmonics, ChannelWattPower, ChannelWattLessPower>,    //交流源接口
         IDK_DCMeter,    //直流表接口
         IDK_DCSource,   //直流源接口
-        IDK_ElectricityModel,   //电能模块接口
+        IDK_ElectricityModel<ElectricityType>,   //电能模块接口
         IDK_IOModel     //开关量模块接口
     {
 
@@ -661,6 +661,37 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion ACSource 交流源
 
+        #region 电能     
+        /// <summary>
+        /// 电能校验类型（ 电能测量）
+        /// </summary>
+        public ElectricityType ElectricityType { get; set; } = ElectricityType.P;
+        /// <summary>
+        /// 电能测量有功常数
+        /// </summary>
+        public float MeterPConst { get; set; } = 3600_000;
+        /// <summary>
+        /// 电能测量无功常数
+        /// </summary>
+        public float MeterQConst { get; set; } = 3600_000;
+        /// <summary>
+        /// 脉冲源有功常数
+        /// </summary>
+        public float SourcePConst { get; set; } = 3600_000;
+        /// <summary>
+        /// 脉冲源无功常数
+        /// </summary>
+        public float SourceQConst { get; set; } = 3600_000;
+        /// <summary>
+        /// 电能测量分频系数
+        /// </summary>
+        public float MeterDIV { get; set; } = 1;
+        /// <summary>
+        /// 电能测量校验圈数
+        /// </summary>
+        public float MeterRounds { get; set; } = 10;
+        #endregion
+
         #region DCSource
         public byte DCU_RangesCount => _DCURangesCount;
         public byte DCI_RangesCount => _DCIRangesCount;
@@ -1105,8 +1136,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取交流源当前输出值】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadACSource
-            Data()
+        public OperateResult<byte[]> ReadACSourceData()
         {
             OperateResult<byte[]> response = ReadACSourceDataCommmand();
             if (!response.IsSuccess)
@@ -1135,7 +1165,73 @@ namespace DKCommunication.Dandick.DK81Series
             AnalysisReadACStatus(response.Content);
             return response;
         }
-        #endregion 交流源（表）操作命令       
+        #endregion 交流源（表）操作命令    
+
+        #region 电能模块操作命令 
+        /// <summary>
+        /// 【设置电能校验参数并启动电能校验】
+        /// </summary>
+        /// <param name="electricityType">电能类型</param>
+        /// <param name="meterPConst">电能测量有功常数</param>
+        /// <param name="meterQConst">电能测量无功常数</param>        
+        /// <param name="meterDIV">电能测量分频系数</param>
+        /// <param name="meterRounds">电能测量校验圈数</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> WriteElectricity(
+            ElectricityType electricityType,
+            float meterPConst,
+            float meterQConst,
+            float meterDIV,
+            float meterRounds)
+        {
+            OperateResult<byte[]> response = WriteElectricityCommmand(
+                electricityType,
+                meterPConst,
+                meterQConst,
+                SourcePConst,
+                SourceQConst,
+                meterDIV,
+                meterRounds);
+            return response;
+        }
+
+        /// <summary>
+        /// 设置源脉冲常数：有功脉冲常数和无功脉冲常数将同时设置为相同
+        /// </summary>
+        /// <param name="sourceConst">有功脉冲常数和无功脉冲常数将同时设置为相同</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> WriteElectricity(float sourceConst)
+        {
+            OperateResult<byte[]> response = WriteElectricityCommmand(
+                ElectricityType,
+                MeterPConst,
+                MeterQConst,
+                sourceConst,
+                sourceConst,
+                MeterDIV,
+                MeterRounds);
+            return response;
+        }
+
+        /// <summary>
+        /// 设置源有功脉冲常数和无功脉冲常数
+        /// </summary>
+        /// <param name="sourcePConst">源有功脉冲常数</param>
+        /// <param name="sourceQConst">源无功脉冲常数</param>
+        /// <returns></returns>
+        public OperateResult<byte[]> WriteElectricity(float sourcePConst, float sourceQConst)
+        {
+            OperateResult<byte[]> response = WriteElectricityCommmand(
+                ElectricityType,
+                MeterPConst,
+                MeterQConst,
+                sourcePConst,
+                sourceQConst,
+                MeterDIV,
+                MeterRounds);
+            return response;
+        }
+        #endregion 电能模块操作命令 
 
         #endregion Public Methods
 
@@ -1190,7 +1286,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-        
+
 
         public OperateResult<byte[]> ReadDCMeterData()
         {
@@ -1263,7 +1359,7 @@ namespace DKCommunication.Dandick.DK81Series
 
 
 
-       
+
 
         #region --------------------------------- private Methods Helper 解析数据------------------
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Text;
 using DKCommunication.BasicFramework;
 using DKCommunication.Core;
 namespace DKCommunication.Dandick.DK81Series
@@ -120,7 +121,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 设置有功功率
         /// </summary>
-        public const byte WriteWattPower = 0x50; 
+        public const byte WriteWattPower = 0x50;
         public const ushort WriteWattPowerLength = 12;
 
         /// <summary>
@@ -147,11 +148,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读电能误差
         /// </summary>
         public const byte ReadElectricityDeviation = 0x45;
+        public const byte ReadElectricityDeviationLength = 0x45;
 
         /// <summary>
-        /// 设置电能校验参数
+        /// 设置电能校验参数并启动电能校验
         /// </summary>
         public const byte WriteElectricity = 0x37;
+        public const byte WriteElectricityLength = 32;
         #endregion
 
         #region 直流表
@@ -702,6 +705,21 @@ namespace DKCommunication.Dandick.DK81Series
     }
     #endregion 设置有功功率 Channel
 
+    /// <summary>
+    /// 电能校验类型（ 电能测量）
+    /// </summary>
+    public enum ElectricityType : byte
+    {
+        /// <summary>
+        /// 有功功率
+        /// </summary>
+        P = 0x50,
+
+        /// <summary>
+        /// 无功功率
+        /// </summary>
+        Q = 0x51
+    }
     #endregion Enum Classes
 
     #region Structs

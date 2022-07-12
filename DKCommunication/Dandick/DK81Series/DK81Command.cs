@@ -547,9 +547,41 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.ReadACStatus, DK81CommunicationInfo.ReadACStatusLength);
             return bytes;
         }
-        #endregion 交流表源命令【报文创建】      
+        #endregion 交流表源命令【报文创建】 
 
-        #endregion private CommandBuilder【报文创建】
+        #region 电能【报文创建】 
+        /// <summary>
+        /// 创建【设置电能校验参数并启动电能校验】完整报文
+        /// </summary>
+        /// <param name="electricityType"></param>
+        /// <param name="meterPConst"></param>
+        /// <param name="meterQConst"></param>
+        /// <param name="sourcePConst"></param>
+        /// <param name="sourceQConst"></param>
+        /// <param name="meterDIV"></param>
+        /// <param name="meterRounds"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateWriteElectricity(ElectricityType electricityType,float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, float meterDIV, float meterRounds)
+        {
+            //数据区字节数组
+            byte[] data = new byte[25];
+
+            //拼装数据区
+            data[0] = (byte)electricityType;
+            ByteTransform.TransByte(meterPConst).CopyTo(data,1);
+            ByteTransform.TransByte(meterQConst).CopyTo(data, 5);
+            ByteTransform.TransByte(sourcePConst).CopyTo(data, 9);
+            ByteTransform.TransByte(sourceQConst).CopyTo(data, 13);
+            ByteTransform.TransByte(meterDIV).CopyTo(data, 17);
+            ByteTransform.TransByte(meterRounds).CopyTo(data, 21);
+
+            //返回创建好的完整报文
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteElectricity, DK81CommunicationInfo.WriteElectricityLength,data);
+            return bytes;
+        }
+        #endregion 电能报文创建
+
+        #endregion private CommandBuilder报文创建
 
         #region --------------------------------- Core Interative 核心交互-------------------------
         protected virtual OperateResult<byte[]> CheckResponse(byte[] send)
@@ -973,9 +1005,26 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> response = CheckResponse(createResult.Content);
             return response;
         }
-        #endregion 交流源（表）【操作命令】
 
-        #endregion internal Commands【操作命令】
+
+        #endregion 交流源（表）操作命令
+
+        #region 电能 【操作命令】
+        internal OperateResult<byte[]> WriteElectricityCommmand(ElectricityType electricityType, float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, float meterDIV, float meterRounds)
+        {
+            OperateResult<byte[]> createResult = CreateWriteElectricity(electricityType, meterPConst, meterQConst, sourcePConst, sourceQConst, meterDIV, meterRounds);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
+        #endregion 电能操作命令
+
+        #endregion internal Commands操作命令
 
     }
 }

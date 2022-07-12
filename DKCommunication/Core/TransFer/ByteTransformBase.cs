@@ -612,6 +612,7 @@ namespace DKCommunication.Core
             if (value == null) return null;
 
             return encoding.GetBytes( value );
+
         }
 
 
