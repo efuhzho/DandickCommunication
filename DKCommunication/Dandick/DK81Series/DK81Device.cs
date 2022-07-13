@@ -731,9 +731,9 @@ namespace DKCommunication.Dandick.DK81Series
                 AnalysisHandshake(response.Content);
 
                 //TODO 需要删除
-                ReadACSourceRanges();
-                ReadDCSourceRanges();
-                ReadDCMeterRanges();
+                //ReadACSourceRanges();
+                //ReadDCSourceRanges();
+                //ReadDCMeterRanges();
             }
             return response;
         }
