@@ -25,7 +25,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// 读电能误差
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> ReadElectricityDeviation();
+        OperateResult<byte, float, uint, byte[]> ReadElectricityDeviation();
 
         /// <summary>
         /// 设置电能校验参数并启动电能校验

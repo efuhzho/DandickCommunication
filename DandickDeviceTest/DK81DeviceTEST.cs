@@ -51,7 +51,7 @@ namespace DandickDeviceTest
         public void ReadACSourceRangesTEST()
         {
             dandick.Open();
-
+            
             var result = dandick.ReadACSourceRanges();
             Assert.True(result.IsSuccess);
             Assert.True(dandick.ACI_RangesList[0] == 20F);

@@ -579,6 +579,13 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteElectricity, DK81CommunicationInfo.WriteElectricityLength,data);
             return bytes;
         }
+
+        private OperateResult<byte[]> CreateReadElectricityDeviation()
+        {
+
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.ReadElectricityDeviation, DK81CommunicationInfo.ReadElectricityDeviationLength);
+            return bytes;
+        }
         #endregion 电能报文创建
 
         #endregion private CommandBuilder报文创建
@@ -1013,6 +1020,19 @@ namespace DKCommunication.Dandick.DK81Series
         internal OperateResult<byte[]> WriteElectricityCommmand(ElectricityType electricityType, float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, float meterDIV, float meterRounds)
         {
             OperateResult<byte[]> createResult = CreateWriteElectricity(electricityType, meterPConst, meterQConst, sourcePConst, sourceQConst, meterDIV, meterRounds);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+
+            //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
+            return response;
+        }
+
+        internal OperateResult<byte[]> ReadElectricityDeviationCommmand()
+        {
+            OperateResult<byte[]> createResult = CreateReadElectricityDeviation();
             if (!createResult.IsSuccess)
             {
                 return createResult;

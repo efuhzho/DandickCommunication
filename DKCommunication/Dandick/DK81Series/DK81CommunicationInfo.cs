@@ -148,7 +148,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读电能误差
         /// </summary>
         public const byte ReadElectricityDeviation = 0x45;
-        public const byte ReadElectricityDeviationLength = 0x45;
+        public const byte ReadElectricityDeviationLength = 7;
 
         /// <summary>
         /// 设置电能校验参数并启动电能校验

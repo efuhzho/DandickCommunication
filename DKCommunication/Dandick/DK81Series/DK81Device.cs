@@ -726,9 +726,11 @@ namespace DKCommunication.Dandick.DK81Series
         {
             OperateResult<byte[]> response = HandshakeCommand();
 
-            if (response.IsSuccess)
+            if (response.IsSuccess )
             {
                 AnalysisHandshake(response.Content);
+
+                //TODO 需要删除
                 ReadACSourceRanges();
                 ReadDCSourceRanges();
                 ReadDCMeterRanges();
@@ -1176,7 +1178,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="meterQConst">电能测量无功常数</param>        
         /// <param name="meterDIV">电能测量分频系数</param>
         /// <param name="meterRounds">电能测量校验圈数</param>
-        /// <returns></returns>
+        /// <returns>
+        /// IsSuccess:是否操作成功
+        /// ErrorCode:错误码：IsSuccess为True时忽略
+        /// Messege:错误信息：IsSuccess为True时忽略
+        /// Content:下位机回复的原始报文：通常可忽略，当怀疑回复数据解析有误的时候才需要观阅
+        /// </returns>
         public OperateResult<byte[]> WriteElectricity(
             ElectricityType electricityType,
             float meterPConst,
@@ -1199,7 +1206,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// 设置源脉冲常数：有功脉冲常数和无功脉冲常数将同时设置为相同
         /// </summary>
         /// <param name="sourceConst">有功脉冲常数和无功脉冲常数将同时设置为相同</param>
-        /// <returns></returns>
+        /// <returns>
+        /// IsSuccess:是否操作成功
+        /// ErrorCode:错误码：IsSuccess为True时忽略
+        /// Messege:错误信息：IsSuccess为True时忽略
+        /// Content:下位机回复的原始报文：通常可忽略，当怀疑回复数据解析有误的时候才需要观阅
+        /// </returns>
         public OperateResult<byte[]> WriteElectricity(float sourceConst)
         {
             OperateResult<byte[]> response = WriteElectricityCommmand(
@@ -1214,11 +1226,16 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 设置源有功脉冲常数和无功脉冲常数
+        /// 分别设置源有功脉冲常数和无功脉冲常数
         /// </summary>
         /// <param name="sourcePConst">源有功脉冲常数</param>
         /// <param name="sourceQConst">源无功脉冲常数</param>
-        /// <returns></returns>
+        /// <returns>
+        /// IsSuccess:是否操作成功
+        /// ErrorCode:错误码：IsSuccess为True时忽略
+        /// Messege:错误信息：IsSuccess为True时忽略
+        /// Content:下位机回复的原始报文：通常可忽略，当怀疑回复数据解析有误的时候才需要观阅
+        /// </returns>
         public OperateResult<byte[]> WriteElectricity(float sourcePConst, float sourceQConst)
         {
             OperateResult<byte[]> response = WriteElectricityCommmand(
@@ -1230,6 +1247,33 @@ namespace DKCommunication.Dandick.DK81Series
                 MeterDIV,
                 MeterRounds);
             return response;
+        }
+
+        /// <summary>
+        /// 【读取电能误差】，返回的数据：电能标志Flag,误差数据（%）EV,当前校验圈数ROUND,下位机回复的原始报文RESPONSE
+        /// </summary>
+        /// <returns>
+        /// IsSuccess：是否操作成功；
+        /// ErrorCode：错误码，IsSuccess为True时忽略；
+        /// Messege：错误信息，IsSuccess为True时忽略；
+        /// Content1：电能标志位Flag，Flag=0 表示EV值无效，Flag=80 表示EV值为有功电能校验误差，Flag=81 表示EV值为无功电能校验误差；
+        /// Content2：误差数据（%），浮点型数据,单位：%；
+        /// Content3：当前校验圈数，32位无符号整数数据，高字节在前；
+        /// Content4：下位机回复的原始报文，通常可忽略，当怀疑回复数据解析有误的时候才需要观阅 ；       
+        /// </returns>
+        public OperateResult<byte, float, uint, byte[]> ReadElectricityDeviation()
+        {
+            OperateResult<byte[]> response = ReadElectricityDeviationCommmand();
+            if (!response.IsSuccess)
+            {
+                return OperateResult.CreateFailedResult<byte, float, uint, byte[]>(response);
+            }
+
+            //命令执行成功则解析数据
+            byte flag = response.Content[6];
+            float eValue = ByteTransform.TransSingle(response.Content, 7);
+            uint round = ByteTransform.TransUInt32(response.Content, 11);
+            return OperateResult.CreateSuccessResult(flag, eValue, round, response.Content);
         }
         #endregion 电能模块操作命令 
 
@@ -1305,10 +1349,6 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> ReadElectricityDeviation()
-        {
-            throw new NotImplementedException();
-        }
 
 
 
