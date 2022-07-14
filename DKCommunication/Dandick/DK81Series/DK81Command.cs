@@ -81,16 +81,6 @@ namespace DKCommunication.Dandick.DK81Series
 
         #region --------------------------------- Public Properties--------------------------------
 
-
-        #region 档位
-        //public byte Range_ACU { get; set; }
-        //public byte Range_ACI { get; set; }
-        //public byte Range_DCU { get; set; }
-        //public byte Range_DCI { get; set; }
-        //public byte Range_DCM { get; set; }
-        //public byte Range_IProtect { get; set; }
-        #endregion
-
         #endregion Public Properties
 
         #region --------------------------------- Private CommandBuilder Helper 【报文创建助手】---
@@ -629,7 +619,7 @@ namespace DKCommunication.Dandick.DK81Series
             //检查命令码：命令码不一致且不是OK命令
             if (send[5] != response.Content[5])
             {
-                return new OperateResult<byte[]>(response.Content[5], $"Receive Command Check Failed: ");
+                return new OperateResult<byte[]>(response.Content[5], $"Receive CommandCode Check Failed:SendCode is {send[5]},ReceivedCode is {response.Content[5]}");
             }
 
             return response;

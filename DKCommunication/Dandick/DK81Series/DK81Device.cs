@@ -1349,11 +1349,6 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-
-
-
-
-
         public OperateResult<byte[]> SetDCMeterDataWithTwoCh()
         {
             throw new NotImplementedException();
