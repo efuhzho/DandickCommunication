@@ -468,9 +468,9 @@ namespace DKCommunication.Dandick.DK81Series
             data[0] = (byte)harmonicChannels;
             data[1] = count;
             harmonicsData.CopyTo(data, 2);
-            
+
             //创建完整报文            
-            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteHarmonics,(ushort)(dataLength+7), data);
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteHarmonics, (ushort)(dataLength + 7), data);
             return bytes;
         }
 
@@ -480,8 +480,8 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateWriteHarmonicsClear()
         {
-            byte[] data = new byte[2] {(byte)ChannelsHarmonic.Channel_Clear,0 };    //COUNT=0
-            return CreateCommandHelper(DK81CommunicationInfo.WriteHarmonics,DK81CommunicationInfo.WriteHarmonicsClearLength,data);            
+            byte[] data = new byte[2] { (byte)ChannelsHarmonic.Channel_Clear, 0 };    //COUNT=0
+            return CreateCommandHelper(DK81CommunicationInfo.WriteHarmonics, DK81CommunicationInfo.WriteHarmonicsClearLength, data);
         }
 
         /// <summary>
@@ -490,7 +490,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="channel">0-Pa，1-Pb，2-Pc，3-ΣP</param>
         /// <param name="p">有功功率设定值</param>
         /// <returns>带成功标志的操作结果</returns>
-        private OperateResult<byte[]> CreateWriteWattPower(ChannelWattPower channel,float p)
+        private OperateResult<byte[]> CreateWriteWattPower(ChannelWattPower channel, float p)
         {
             byte[] data = new byte[5];
             data[0] = (byte)channel;
@@ -521,7 +521,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateReadACSourceData()
-        {      
+        {
 
             OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceData, DK81CommunicationInfo.ReadACSourceDataLength);
             return bytes;
@@ -551,14 +551,14 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="meterDIV"></param>
         /// <param name="meterRounds"></param>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateWriteElectricity(ElectricityType electricityType,float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, float meterDIV, float meterRounds)
+        private OperateResult<byte[]> CreateWriteElectricity(ElectricityType electricityType, float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, float meterDIV, float meterRounds)
         {
             //数据区字节数组
             byte[] data = new byte[25];
 
             //拼装数据区
             data[0] = (byte)electricityType;
-            ByteTransform.TransByte(meterPConst).CopyTo(data,1);
+            ByteTransform.TransByte(meterPConst).CopyTo(data, 1);
             ByteTransform.TransByte(meterQConst).CopyTo(data, 5);
             ByteTransform.TransByte(sourcePConst).CopyTo(data, 9);
             ByteTransform.TransByte(sourceQConst).CopyTo(data, 13);
@@ -566,7 +566,7 @@ namespace DKCommunication.Dandick.DK81Series
             ByteTransform.TransByte(meterRounds).CopyTo(data, 21);
 
             //返回创建好的完整报文
-            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteElectricity, DK81CommunicationInfo.WriteElectricityLength,data);
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.WriteElectricity, DK81CommunicationInfo.WriteElectricityLength, data);
             return bytes;
         }
 
@@ -605,7 +605,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
 
             //回复OK
-            if (response.Content[5] == DK81CommunicationInfo.OK)
+            if (response.Content[5] == DK81CommunicationInfo.OK && response.Content[6] == send[5])
             {
                 return response;
             }
@@ -891,7 +891,7 @@ namespace DKCommunication.Dandick.DK81Series
             }
 
             //创建指令成功则发送并获取回复数据：（已保证数据的有效性）
-            OperateResult<byte[]> response = CheckResponse(createResult.Content);            
+            OperateResult<byte[]> response = CheckResponse(createResult.Content);
             return response;
         }
 
@@ -939,7 +939,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>带成功标志的操作结果</returns>
         internal OperateResult<byte[]> WriteWattPowerCommmand(ChannelWattPower channel, float p)
         {
-            OperateResult<byte[]> createResult = CreateWriteWattPower( channel,  p);
+            OperateResult<byte[]> createResult = CreateWriteWattPower(channel, p);
             if (!createResult.IsSuccess)
             {
                 return createResult;
