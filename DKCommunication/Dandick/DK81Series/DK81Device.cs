@@ -170,12 +170,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 当前电压档位的索引值，0为最大档位，例如：0-380V；1-220V......
         /// </summary>
-        public int ACU_RangeIndex { get; set; } = 2;
+        public int ACU_RangeIndex { get; set; } 
 
         /// <summary>
         /// 当前电流档位的索引值，0为最大档位,例如：0-20A；1-5A......
         /// </summary>
-        public int ACI_RangeIndex { get; set; } = 1;
+        public int ACI_RangeIndex { get; set; } 
 
         /// <summary>
         /// 保护电流档位的索引值，0为最大档位
@@ -854,7 +854,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns></returns>
         public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex)  //TODO 档位有效值在属性中限定
         {
-            OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangeIndex);
+            OperateResult<byte[]> response = SetACSourceRange(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangeIndex);
             return response;
         }
         #endregion 【档位设置】

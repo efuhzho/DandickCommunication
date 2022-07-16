@@ -129,7 +129,8 @@ namespace DandickDeviceTest
             dandick.Open();
             //dandick.ReadACSourceRanges();
             //var result = dandick.SetACSourceRange(dandick.ACU_RangesList.IndexOf(380F), dandick.ACI_RangesList.IndexOf(20F));
-            var result2 = dandick.SetACSourceRange(0, 0);
+            var result2 = dandick.SetACSourceRange(3, 3);
+            Assert.True(dandick.ACU_RangeIndex == 3);
             //Assert.True(result.IsSuccess);
             Assert.True(result2.IsSuccess);
             dandick.Close();
