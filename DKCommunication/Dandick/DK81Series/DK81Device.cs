@@ -746,7 +746,10 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetSystemMode(SystemMode mode)
         {
             OperateResult<byte[]> response = SetSystemModeCommand(mode);
-            SystemMode = mode;
+            if (response.IsSuccess)
+            {
+                SystemMode = mode;
+            }
             return response;
         }
 
@@ -758,7 +761,10 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetDisplayPage(DisplayPage page)
         {
             OperateResult<byte[]> response = SetDisplayPageCommand(page);
-            DisplayPage = page;
+            if (response.IsSuccess)
+            {
+                DisplayPage = page;
+            }
             return response;
         }
         #endregion 系统信号             
@@ -840,9 +846,12 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex, int IProtect_RangesIndex)  //TODO 档位有效值在属性中限定
         {
             OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangesIndex);
-            ACU_RangeIndex = ACU_RangesIndex;
-            ACI_RangeIndex = ACI_RangesIndex;
-            IProtect_RangeIndex = IProtect_RangesIndex;
+            if (response.IsSuccess)
+            {
+                ACU_RangeIndex = ACU_RangesIndex;
+                ACI_RangeIndex = ACI_RangesIndex;
+                IProtect_RangeIndex = IProtect_RangesIndex;
+            }            
             return response;
         }
 
@@ -1016,8 +1025,11 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> WriteFrequency(float frequencyAB, float frequencyC)
         {
             float[] data = new float[] { frequencyAB, frequencyAB, frequencyC };
-            Frequency = frequencyAB;
-            FrequencyC = frequencyC;
+            if (WriteFrequency(data).IsSuccess)
+            {
+                Frequency = frequencyAB;
+                FrequencyC = frequencyC;
+            }          
             return WriteFrequency(data);
         }
         #endregion 【设置源频率】
@@ -1030,7 +1042,10 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetWireMode(WireMode wireMode)
         {
             OperateResult<byte[]> response = SetWireModeCommmand(wireMode);
-            WireMode = wireMode;
+            if (response.IsSuccess)
+            {
+                WireMode = wireMode;
+            }
             return response;
         }
 
@@ -1045,8 +1060,11 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> SetClosedLoop(CloseLoopMode closeLoopMode, HarmonicMode harmonicMode)
         {
             OperateResult<byte[]> response = SetClosedLoopCommmand(closeLoopMode, harmonicMode);
-            CloseLoopMode = closeLoopMode;
-            HarmonicMode = harmonicMode;
+            if (response.IsSuccess)
+            {
+                CloseLoopMode = closeLoopMode;
+                HarmonicMode = harmonicMode;
+            }         
             return response;
         }
 
