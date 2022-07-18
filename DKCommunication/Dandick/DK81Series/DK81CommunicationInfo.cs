@@ -745,7 +745,7 @@ namespace DKCommunication.Dandick.DK81Series
                 }
                 else
                 {
-                    MessageBox.Show("请输入2至31次");
+                    MessageBox.Show("谐波次数支持范围为2至31次");
                 }
             }
         }
@@ -785,7 +785,7 @@ namespace DKCommunication.Dandick.DK81Series
                 }
                 else
                 {
-                    MessageBox.Show("谐波相位支持范围为0.00至359.99，单位‘°’")
+                    MessageBox.Show("谐波相位支持范围为0.00至359.99，单位‘°’");
                 }
             }
         }
