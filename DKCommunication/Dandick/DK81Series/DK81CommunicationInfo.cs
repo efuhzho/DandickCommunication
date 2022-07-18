@@ -751,12 +751,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public float Amplitude
         {
-            get { return _amplitude; }
+            get { return _amplitude*100; }
             set
             {
-                if (value >= 0 && value <= 0.4F)  //谐波幅度叠加不超过40%；
+                if (value >= 0 && value <= 40F)  //谐波幅度叠加不超过40%；
                 {
-                    _amplitude = value;
+                    _amplitude = value/100;
                 }
             }
         }
