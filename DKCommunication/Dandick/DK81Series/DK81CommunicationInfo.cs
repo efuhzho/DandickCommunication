@@ -751,12 +751,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public float Amplitude
         {
-            get { return _amplitude*100; }
+            get { return _amplitude; }
             set
             {
-                if (value >= 0 && value <= 40F)  //谐波幅度叠加不超过40%；
+                if (value >= 0 && value <= 0.4F)  //谐波幅度叠加不超过40%；
                 {
-                    _amplitude = value/100;
+                    _amplitude = value;
                 }
             }
         }
@@ -777,10 +777,11 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
 
-        //public byte[] HarmonicToBytes(Harmonics harmonics)
+        //internal byte[] HarmonicToBytes(Harmonics harmonics)
         //{
         //    byte[] bytes = new byte[9];
         //    bytes[0] = _harmonicTimes;
+            
         //}
     }
     #endregion Structs
