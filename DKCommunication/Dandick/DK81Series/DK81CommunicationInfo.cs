@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Text;
+using System.Windows;
 using DKCommunication.BasicFramework;
 using DKCommunication.Core;
 namespace DKCommunication.Dandick.DK81Series
@@ -742,6 +743,10 @@ namespace DKCommunication.Dandick.DK81Series
                 {
                     _harmonicTimes = value;
                 }
+                else
+                {
+                    MessageBox.Show("请输入2至31次");
+                }
             }
         }
 
@@ -758,6 +763,10 @@ namespace DKCommunication.Dandick.DK81Series
                 {
                     _amplitude = value;
                 }
+                else
+                {
+                    MessageBox.Show("幅度支持范围为0至0.4，单位‘%’");
+                }
             }
         }
 
@@ -773,6 +782,10 @@ namespace DKCommunication.Dandick.DK81Series
                 if (value >= 0 && value <= 359.99F)
                 {
                     _angle = value;
+                }
+                else
+                {
+                    MessageBox.Show("谐波相位支持范围为0.00至359.99，单位‘°’")
                 }
             }
         }
