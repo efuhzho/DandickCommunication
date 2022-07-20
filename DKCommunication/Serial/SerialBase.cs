@@ -19,6 +19,8 @@ namespace DKCommunication.Serial
         {
             SP_ReadData = new SerialPort();
             hybirdLock = new SimpleHybirdLock();
+            SP_ReadData.ReadTimeout = _ReadTimeOut;
+            SP_ReadData.WriteTimeout = _WriteTimeOut;
         }
         #endregion
 
@@ -328,6 +330,27 @@ namespace DKCommunication.Serial
             set { isClearCacheBeforeRead = value; }
         }
 
+        private int _WriteTimeOut=1000;
+        /// <summary>
+        /// 写入串口数据超时时间
+        /// </summary>
+        public int WriteTimeOut
+        {
+            get { return _WriteTimeOut; }
+            set {if(value>0) _WriteTimeOut = value; }
+        }
+
+        private int _ReadTimeOut=1000;
+        /// <summary>
+        /// 写入串口数据超时时间
+        /// </summary>
+        public int ReadTimeOut
+        {
+            get { return _ReadTimeOut; }
+            set { if (value > 0) _ReadTimeOut = value; }
+        }
+
+        
         #endregion
 
         #region Private Member
