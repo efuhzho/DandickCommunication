@@ -303,7 +303,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// 清空谐波
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        OperateResult<byte[]> ClearHarmonics();
+        OperateResult<byte[]> ClearHarmonics(THarmonicChannels harmonicChannels);
 
         /// <summary>
         /// 读取交流源当前输出数据

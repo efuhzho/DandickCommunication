@@ -676,7 +676,9 @@ namespace DKCommunication.Dandick.DK81Series
         Channel_Ia = 0b_0000_1000,  // 0x08 // 8
         Channel_Ib = 0b_0001_0000,  // 0x10 // 16
         Channel_Ic = 0b_0010_0000,  // 0x20 // 32
-        Channel_Clear = 0b_0000_0000
+        Channel_U = 0b_0000_0111,   // 0x07 // 7
+        Channel_I = 0b_0011_1000,   // 0x38 // 56
+        Channel_All = 0b_0011_1111, // 0x3F // 63
     }
     #endregion 设置谐波参数Channel
 
@@ -794,7 +796,7 @@ namespace DKCommunication.Dandick.DK81Series
         //{
         //    byte[] bytes = new byte[9];
         //    bytes[0] = _harmonicTimes;
-            
+
         //}
     }
     #endregion Structs

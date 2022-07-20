@@ -478,9 +478,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建【清空谐波】报文
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        private OperateResult<byte[]> CreateWriteHarmonicsClear()
+        private OperateResult<byte[]> CreateWriteHarmonicsClear(ChannelsHarmonic channelsHarmonic)
         {
-            byte[] data = new byte[2] { (byte)ChannelsHarmonic.Channel_Clear, 0 };    //COUNT=0
+            byte[] data = new byte[2] { (byte)channelsHarmonic, 0 };    //COUNT=0表示清空指定通道的谐波
             return CreateCommandHelper(DK81CommunicationInfo.WriteHarmonics, DK81CommunicationInfo.WriteHarmonicsClearLength, data);
         }
 
@@ -918,9 +918,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 执行【清空谐波】命令
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        internal OperateResult<byte[]> WriteHarmonicsClearCommmand()
+        internal OperateResult<byte[]> WriteHarmonicsClearCommmand(ChannelsHarmonic channelsHarmonic)
         {
-            OperateResult<byte[]> createResult = CreateWriteHarmonicsClear();
+            OperateResult<byte[]> createResult = CreateWriteHarmonicsClear(channelsHarmonic);
             if (!createResult.IsSuccess)
             {
                 return createResult;

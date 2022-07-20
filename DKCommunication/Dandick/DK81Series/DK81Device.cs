@@ -1123,9 +1123,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【清空谐波】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ClearHarmonics()
+        public OperateResult<byte[]> ClearHarmonics(ChannelsHarmonic channelsHarmonic)
         {
-            return WriteHarmonicsClearCommmand();
+            return WriteHarmonicsClearCommmand(channelsHarmonic);
         }
 
         #endregion 设置谐波参数
