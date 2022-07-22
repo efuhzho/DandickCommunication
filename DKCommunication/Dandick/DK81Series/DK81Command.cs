@@ -595,7 +595,7 @@ namespace DKCommunication.Dandick.DK81Series
             // 长度校验
             if (response.Content.Length < 7)
             {
-                return new OperateResult<byte[]>(StringResources.Language.ReceiveDataLengthTooShort + "811300");
+                return new OperateResult<byte[]>(811300,StringResources.Language.ReceiveDataLengthTooShort + "811300");
             }
 
             // 检查crc
