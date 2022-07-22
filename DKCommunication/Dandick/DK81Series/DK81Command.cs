@@ -228,16 +228,21 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
 
-        private byte[] HarmonicToBytes(Harmonics harmonics)
+        /// <summary>
+        /// 谐波参数转化
+        /// </summary>
+        /// <param name="harmonic"></param>
+        /// <returns></returns>
+        private byte[] HarmonicToBytes(Harmonics harmonic)
         {
             byte[] bytes = new byte[9];
-            bytes[0] = harmonics.HarmonicTimes;
+            bytes[0] = harmonic.HarmonicTimes;
 
-            //将谐波幅度转换为字节
-            ByteTransform.TransByte(harmonics.Amplitude).CopyTo(bytes, 1);
+            //将谐波幅度转换为字节数组并复制到目标
+            ByteTransform.TransByte(harmonic.Amplitude).CopyTo(bytes, 1);
 
-            //将谐波相位转换为字节
-            ByteTransform.TransByte(harmonics.Angle).CopyTo(bytes, 5);
+            //将谐波相位转换为字节数组并复制到目标
+            ByteTransform.TransByte(harmonic.Angle).CopyTo(bytes, 5);
 
             return bytes;
         }
@@ -267,14 +272,7 @@ namespace DKCommunication.Dandick.DK81Series
         private OperateResult<byte[]> CreateSetSystemMode(SystemMode mode)
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetSystemMode, DK81CommunicationInfo.SetSystemModeCommandLength, mode);
-            if (bytesHeader.IsSuccess)
-            {
-                return bytesHeader;
-            }
-            else
-            {
-                return OperateResult.CreateFailedResult<byte[]>(bytesHeader);
-            }
+            return bytesHeader;
         }
 
         //TODO  建立故障代码监视器：ErrorCodeMonitor. //Page 5
@@ -287,14 +285,7 @@ namespace DKCommunication.Dandick.DK81Series
         private OperateResult<byte[]> CreateSetDisplayPage(DisplayPage page)    //TODO 将DisplayPage写成属性
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetDisplayPage, DK81CommunicationInfo.SetDisplayPageCommandLength, page);
-            if (bytesHeader.IsSuccess)
-            {
-                return bytesHeader;
-            }
-            else
-            {
-                return new OperateResult<byte[]>(811203, "创建指令失败");
-            }
+            return bytesHeader;
         }
         #endregion 系统命令【报文创建】
 
@@ -325,7 +316,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建读取直流表档位信息的报文
         /// </summary>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateReadDCMeterourceRanges()
+        private OperateResult<byte[]> CreateReadDCMeterSourceRanges()
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRanges, DK81CommunicationInfo.ReadDCMeterRangesLength);
 
@@ -551,7 +542,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="meterDIV"></param>
         /// <param name="meterRounds"></param>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateWriteElectricity(ElectricityType electricityType, float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, float meterDIV, float meterRounds)
+        private OperateResult<byte[]> CreateWriteElectricity(ElectricityType electricityType, float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, uint meterDIV, uint meterRounds)
         {
             //数据区字节数组
             byte[] data = new byte[25];
@@ -570,6 +561,10 @@ namespace DKCommunication.Dandick.DK81Series
             return bytes;
         }
 
+        /// <summary>
+        /// 创建【读取电能误差】命令报文
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateReadElectricityDeviation()
         {
 
@@ -577,6 +572,33 @@ namespace DKCommunication.Dandick.DK81Series
             return bytes;
         }
         #endregion 电能报文创建
+
+        #region 直流表【报文创建】
+        /// <summary>
+        /// 创建【设置直流表量程】命令报文
+        /// </summary>
+        /// <param name="rangeIndex">直流表档位索引字</param>
+        /// <param name="type">直流表测量类型</param>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateSetDCMeterRange(uint rangeIndex, DCMerterMeasureType type)
+        {
+            byte[] data = new byte[2];
+            data[0] = (byte)rangeIndex;
+            data[1] = (byte)type;
+            OperateResult<byte[]> bytes = CreateCommandHelper(DK81CommunicationInfo.SetDCMeterRange, DK81CommunicationInfo.SetDCMeterRangeLength, data);
+            return bytes;
+        }
+
+        /// <summary>
+        /// 创建【读取直流表数据】报文
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateReadDCMeterData()
+        {
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterData, DK81CommunicationInfo.ReadDCMeterDataLength);
+            return result;
+        }
+        #endregion
 
         #endregion private CommandBuilder报文创建
 
@@ -595,7 +617,7 @@ namespace DKCommunication.Dandick.DK81Series
             // 长度校验
             if (response.Content.Length < 7)
             {
-                return new OperateResult<byte[]>(811300,StringResources.Language.ReceiveDataLengthTooShort + "811300");
+                return new OperateResult<byte[]>(811300, StringResources.Language.ReceiveDataLengthTooShort + "811300");
             }
 
             // 检查crc
@@ -626,7 +648,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion
 
-        #region --------------------------------- protected Commands【操作命令】-------------------------
+        #region --------------------------------- internal Commands【操作命令】-------------------------
 
         #region 系统命令【操作命令】
 
@@ -726,7 +748,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>下位机回复的有效报文</returns>
         internal OperateResult<byte[]> ReadDCMeterRangesCommand()
         {
-            OperateResult<byte[]> createResult = CreateReadDCMeterourceRanges();
+            OperateResult<byte[]> createResult = CreateReadDCMeterSourceRanges();
             //创建指令失败
             if (!createResult.IsSuccess)
             {
@@ -1007,7 +1029,7 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion 交流源（表）操作命令
 
         #region 电能 【操作命令】
-        internal OperateResult<byte[]> WriteElectricityCommmand(ElectricityType electricityType, float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, float meterDIV, float meterRounds)
+        internal OperateResult<byte[]> WriteElectricityCommmand(ElectricityType electricityType, float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, uint meterDIV, uint meterRounds)
         {
             OperateResult<byte[]> createResult = CreateWriteElectricity(electricityType, meterPConst, meterQConst, sourcePConst, sourceQConst, meterDIV, meterRounds);
             if (!createResult.IsSuccess)
@@ -1034,6 +1056,42 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion 电能操作命令
 
+        #region 直流表 【操作命令】
+
+        /// <summary>
+        /// 执行【设置直流表量程】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="rangeIndex">当前直流表档位索引字</param>
+        /// <param name="type">直流表测量类型</param>
+        /// <returns>带成功标志的操作结果</returns>
+        internal OperateResult<byte[]> SetDCMeterRangeCommand(uint rangeIndex, DCMerterMeasureType type)
+        {
+            OperateResult<byte[]> result = CreateSetDCMeterRange(rangeIndex, type);
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            //发送报文，接收并校验下位机回复报文
+            OperateResult<byte[]> response = CheckResponse(result.Content);
+            return response;
+        }
+
+        /// <summary>
+        ///  执行【读取直流表数据】命令并返回下位机回复报文
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        internal OperateResult<byte[]> ReadDCMeterDataCommand()
+        {
+            OperateResult<byte[]> result = CreateReadDCMeterData();
+            if (!result.IsSuccess)
+            {
+                return result;
+            }
+            //发送报文，接收并校验下位机回复报文
+            OperateResult<byte[]> response = CheckResponse(result.Content);
+            return response;
+        }
+        #endregion 直流表操作命令
         #endregion internal Commands操作命令
 
     }

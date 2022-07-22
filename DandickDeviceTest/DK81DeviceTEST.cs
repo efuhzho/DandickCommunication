@@ -36,7 +36,7 @@ namespace DandickDeviceTest
             Assert.True(dandick.IsDCU_Activated == true);
             Assert.True(dandick.IsDCI_Activated == true);
             Assert.True(dandick.IsDCM_Activated == true);
-            Assert.True(dandick.IsPQ_Activated == true);
+            Assert.True(dandick.IsElectricity_Activated == true);
 
             //TODO ReadACSourceRanges();
             //TODO ReadDCSourceRanges();

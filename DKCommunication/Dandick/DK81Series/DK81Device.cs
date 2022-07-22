@@ -9,7 +9,7 @@ namespace DKCommunication.Dandick.DK81Series
     public class DK81Device : DK81Command,
         IDK_BaseInterface<DisplayPage, SystemMode>, //系统接口
         IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode, ChannelsHarmonic, Harmonics, ChannelWattPower, ChannelWattLessPower>,    //交流源接口
-        IDK_DCMeter,    //直流表接口
+        IDK_DCMeter<DCMerterMeasureType>,    //直流表接口
         IDK_DCSource,   //直流源接口
         IDK_ElectricityModel<ElectricityType>,   //电能模块接口
         IDK_IOModel     //开关量模块接口
@@ -152,7 +152,7 @@ namespace DKCommunication.Dandick.DK81Series
         public bool IsDCM_Activated { get; set; } = true;
         public bool IsDCU_Activated { get; set; } = true;
         public bool IsDCI_Activated { get; set; } = true;
-        public bool IsPQ_Activated { get; set; } = true;
+        public bool IsElectricity_Activated { get; set; } = true;
         public bool IsIO_Activated { get; set; }
         #endregion
 
@@ -170,12 +170,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 当前电压档位的索引值，0为最大档位，例如：0-380V；1-220V......
         /// </summary>
-        public int ACU_RangeIndex { get; set; } 
+        public int ACU_RangeIndex { get; set; }
 
         /// <summary>
         /// 当前电流档位的索引值，0为最大档位,例如：0-20A；1-5A......
         /// </summary>
-        public int ACI_RangeIndex { get; set; } 
+        public int ACI_RangeIndex { get; set; }
 
         /// <summary>
         /// 保护电流档位的索引值，0为最大档位
@@ -669,27 +669,55 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 电能测量有功常数
         /// </summary>
-        public float MeterPConst { get; set; } = 3600_000;
+        public float ElectricityMeterPConst { get; set; } = 3600_000;
         /// <summary>
         /// 电能测量无功常数
         /// </summary>
-        public float MeterQConst { get; set; } = 3600_000;
+        public float ElectricityMeterQConst { get; set; } = 3600_000;
         /// <summary>
         /// 脉冲源有功常数
         /// </summary>
-        public float SourcePConst { get; set; } = 3600_000;
+        public float ElectricitySourcePConst { get; set; } = 3600_000;
         /// <summary>
         /// 脉冲源无功常数
         /// </summary>
-        public float SourceQConst { get; set; } = 3600_000;
+        public float ElectricitySourceQConst { get; set; } = 3600_000;
         /// <summary>
         /// 电能测量分频系数
         /// </summary>
-        public float MeterDIV { get; set; } = 1;
+        public uint ElectricityMeterDIV { get; set; } = 1;
         /// <summary>
-        /// 电能测量校验圈数
+        /// 设置的电能测量校验圈数
         /// </summary>
-        public float MeterRounds { get; set; } = 10;
+        public uint ElectricitySetMeterRounds { get; set; } = 10;
+
+        private byte _ElectricityDeviationDataFlag;
+        /// <summary>
+        /// 电能误差有效标志位
+        /// </summary>
+        public byte ElectricityDeviationDataFlag
+        {
+            get { return _ElectricityDeviationDataFlag; }
+        }
+
+        private float _ElectricityDeviationData;
+        /// <summary>
+        /// 电能误差数据
+        /// </summary>
+        public float ElectricityDeviationData
+        {
+            get { return _ElectricityDeviationData; }
+        }
+
+        private uint _ElectricityMeasuredRounds;
+        /// <summary>
+        /// 当前校验圈数
+        /// </summary>
+        public uint ElectricityMeasuredRounds
+        {
+            get { return _ElectricityMeasuredRounds; }
+        }
+
         #endregion
 
         #region DCSource
@@ -700,15 +728,48 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region DCMeter
+        /// <summary>
+        /// 直流表电压档位数量
+        /// </summary>
         public byte DCM_URangesCount => _DCMeterURangesCount;
 
+        /// <summary>
+        /// 直流表电流档位数量
+        /// </summary>
         public byte DCM_IRangesCount => _DCMeterIRangesCount;
 
+        /// <summary>
+        /// 直流表电压档位集合
+        /// </summary>
         public List<float> DCM_URanges => _DCMeterURanges;
 
+        /// <summary>
+        /// 直流表电流档位集合
+        /// </summary>
         public List<float> DCM_IRanges => _DCMeterIRanges;
 
+        /// <summary>
+        /// 直流表测量类型
+        /// </summary>
+        public DCMerterMeasureType DCM_MeasureType { get; set; } = DCMerterMeasureType.DCM_Voltage;
 
+        private byte _DCM_RangeIndex;
+        /// <summary>
+        /// 当前直流表档位索引字
+        /// </summary>
+        public byte DCM_RangeIndex
+        {
+            get { return _DCM_RangeIndex; }
+        }
+
+        private float _DCM_Data;
+        /// <summary>
+        /// 直流表测量数据
+        /// </summary>
+        public float DCM_Data
+        {
+            get { return _DCM_Data; }           
+        }
 
         #endregion
 
@@ -726,7 +787,7 @@ namespace DKCommunication.Dandick.DK81Series
         {
             OperateResult<byte[]> response = HandshakeCommand();
 
-            if (response.IsSuccess )
+            if (response.IsSuccess)
             {
                 AnalysisHandshake(response.Content);
 
@@ -784,19 +845,7 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
 
-        /// <summary>
-        /// 读取【直流表档位】，初始化设备只读属性
-        /// </summary>
-        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadDCMeterRanges()
-        {
-            OperateResult<byte[]> response = ReadDCMeterRangesCommand();
-            if (response.IsSuccess)
-            {
-                AnalysisReadDCMeterRanges(response.Content);
-            }
-            return response;
-        }
+
 
         /// <summary>
         /// 读取【直流源档位】，初始化设备只读属性
@@ -851,7 +900,7 @@ namespace DKCommunication.Dandick.DK81Series
                 ACU_RangeIndex = ACU_RangesIndex;
                 ACI_RangeIndex = ACI_RangesIndex;
                 IProtect_RangeIndex = IProtect_RangesIndex;
-            }            
+            }
             return response;
         }
 
@@ -1029,7 +1078,7 @@ namespace DKCommunication.Dandick.DK81Series
             {
                 Frequency = frequencyAB;
                 FrequencyC = frequencyC;
-            }          
+            }
             return WriteFrequency(data);
         }
         #endregion 【设置源频率】
@@ -1064,7 +1113,7 @@ namespace DKCommunication.Dandick.DK81Series
             {
                 CloseLoopMode = closeLoopMode;
                 HarmonicMode = harmonicMode;
-            }         
+            }
             return response;
         }
 
@@ -1206,15 +1255,15 @@ namespace DKCommunication.Dandick.DK81Series
             ElectricityType electricityType,
             float meterPConst,
             float meterQConst,
-            float meterDIV,
-            float meterRounds)
+            uint meterDIV,
+            uint meterRounds)
         {
             OperateResult<byte[]> response = WriteElectricityCommmand(
                 electricityType,
                 meterPConst,
                 meterQConst,
-                SourcePConst,
-                SourceQConst,
+                ElectricitySourcePConst,
+                ElectricitySourceQConst,
                 meterDIV,
                 meterRounds);
             return response;
@@ -1234,12 +1283,12 @@ namespace DKCommunication.Dandick.DK81Series
         {
             OperateResult<byte[]> response = WriteElectricityCommmand(
                 ElectricityType,
-                MeterPConst,
-                MeterQConst,
+                ElectricityMeterPConst,
+                ElectricityMeterQConst,
                 sourceConst,
                 sourceConst,
-                MeterDIV,
-                MeterRounds);
+                ElectricityMeterDIV,
+                ElectricitySetMeterRounds);
             return response;
         }
 
@@ -1258,12 +1307,12 @@ namespace DKCommunication.Dandick.DK81Series
         {
             OperateResult<byte[]> response = WriteElectricityCommmand(
                 ElectricityType,
-                MeterPConst,
-                MeterQConst,
+                ElectricityMeterPConst,
+                ElectricityMeterQConst,
                 sourcePConst,
                 sourceQConst,
-                MeterDIV,
-                MeterRounds);
+                ElectricityMeterDIV,
+                ElectricitySetMeterRounds);
             return response;
         }
 
@@ -1273,27 +1322,79 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>
         /// IsSuccess：是否操作成功；
         /// ErrorCode：错误码，IsSuccess为True时忽略；
-        /// Messege：错误信息，IsSuccess为True时忽略；
-        /// Content1：电能标志位Flag，Flag=0 表示EV值无效，Flag=80 表示EV值为有功电能校验误差，Flag=81 表示EV值为无功电能校验误差；
-        /// Content2：误差数据（%），浮点型数据,单位：%；
-        /// Content3：当前校验圈数，32位无符号整数数据，高字节在前；
-        /// Content4：下位机回复的原始报文，通常可忽略，当怀疑回复数据解析有误的时候才需要观阅 ；       
+        /// Messege：错误信息，IsSuccess为True时忽略；       
+        /// Content：下位机回复的原始报文，通常可忽略，当怀疑回复数据解析有误的时候才需要观阅 ；       
         /// </returns>
-        public OperateResult<byte, float, uint, byte[]> ReadElectricityDeviation()
+        public OperateResult<byte[]> ReadElectricityDeviation()
         {
             OperateResult<byte[]> response = ReadElectricityDeviationCommmand();
-            if (!response.IsSuccess)
+            if (response.IsSuccess)
             {
-                return OperateResult.CreateFailedResult<byte, float, uint, byte[]>(response);
+                //命令执行成功则解析数据
+                AnalysisReadElectricityDeviation(response.Content);
             }
-
-            //命令执行成功则解析数据
-            byte flag = response.Content[6];
-            float eValue = ByteTransform.TransSingle(response.Content, 7);
-            uint round = ByteTransform.TransUInt32(response.Content, 11);
-            return OperateResult.CreateSuccessResult(flag, eValue, round, response.Content);
+            return response;
         }
         #endregion 电能模块操作命令 
+
+
+        #region 直流表
+
+        /// <summary>
+        /// 读取【直流表档位】，初始化设备只读属性
+        /// </summary>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> ReadDCMeterRanges()
+        {
+            OperateResult<byte[]> response = ReadDCMeterRangesCommand();
+            if (response.IsSuccess)
+            {
+                AnalysisReadDCMeterRanges(response.Content);
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置直流表量程】
+        /// </summary>
+        /// <param name="rangeIndex">当前直流表档位索引字</param>
+        /// <param name="type">直流表测量类型</param>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> SetDCMeterRange(uint rangeIndex, DCMerterMeasureType type)
+        {
+            OperateResult<byte[]> result = SetDCMeterRangeCommand(rangeIndex, type);
+            if (result.IsSuccess)
+            {
+                //执行成功则更新直流表测量类型属性
+                DCM_MeasureType = type;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 【设置直流表测量类型】
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult<byte[]> SetDCMeterMesureType()
+        {
+            return new OperateResult<byte[]>(110, "不支持的功能");
+        }
+
+        /// <summary>
+        /// 【读取直流表测量数据】
+        /// </summary>
+        /// <returns>带成功标志的操作结果</returns>
+        public OperateResult< byte[]> ReadDCMeterData()
+        {
+            OperateResult<byte[]> result = ReadDCMeterDataCommand();
+            if (result.IsSuccess)
+            {
+                //执行成功则解析下位机回复的报文
+                AnalysisReadDCMeterData(result.Content);
+            }
+            return result;
+        }
+        #endregion 直流表
 
         #endregion Public Methods
 
@@ -1344,17 +1445,6 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-
-
-
-
-
-
-        public OperateResult<byte[]> ReadDCMeterData()
-        {
-            throw new NotImplementedException();
-        }
-
         public OperateResult<byte[]> ReadDCMeterDataWithTwoCh()
         {
             throw new NotImplementedException();
@@ -1372,10 +1462,7 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
-        public OperateResult<byte[]> SetDCMeterMesureType()
-        {
-            throw new NotImplementedException();
-        }
+
 
         public OperateResult<byte[]> SetDCMeterRange()
         {
@@ -1449,7 +1536,7 @@ namespace DKCommunication.Dandick.DK81Series
             IsDCU_Activated = funb[2];   //直流电压源功能
             IsDCI_Activated = funb[2];   //直流电流源功能
             IsDCM_Activated = funb[3];   //直流表功能
-            IsPQ_Activated = funb[4];    //电能校验功能
+            IsElectricity_Activated = funb[4];    //电能校验功能
 
 
             //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    //特殊功能状态解析，暂不处理
@@ -1526,7 +1613,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion
 
-        #region 解析交流源（表）
+        #region 解析【交流源/表】
         /// <summary>
         /// 解析【读取交流源当前输出值】回复报文
         /// </summary>
@@ -1587,6 +1674,38 @@ namespace DKCommunication.Dandick.DK81Series
             _ACU_Range = ByteTransform.TransSingle(response, 33);
             _ACI_Range = ByteTransform.TransSingle(response, 37);
             _IProtect_Range = ByteTransform.TransSingle(response, 41);
+        }
+        #endregion
+
+        #region 解析【电能】
+        private void AnalysisReadElectricityDeviation(byte[] response)
+        {
+            //Flag=0 表示EV值无效，Flag=80 表示EV值为有功电能校验误差，Flag=81 表示EV值为无功电能校验误差
+            _ElectricityDeviationDataFlag = response[6];
+
+            //电能校验误差数据
+            _ElectricityDeviationData = ByteTransform.TransSingle(response, 7);
+
+            //当前校验圈数
+            _ElectricityMeasuredRounds = ByteTransform.TransUInt32(response, 11);          
+        }
+        #endregion
+
+        #region 解析【直流表】
+        /// <summary>
+        /// 解析读取直流表测量数据
+        /// </summary>
+        /// <param name="response">下位机回复的有效原始报文</param>
+        private void AnalysisReadDCMeterData(byte[] response)
+        {
+            //当前选择的直流表档位索引
+            _DCM_RangeIndex = response[6];
+
+            //当前直流表的测量数据
+            _DCM_Data = ByteTransform.TransSingle(response,7);
+
+            //当前直流表的测量类型
+            DCM_MeasureType = (DCMerterMeasureType)response[11];
         }
         #endregion
 

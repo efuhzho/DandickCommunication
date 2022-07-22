@@ -163,11 +163,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// 设置直流表量程
         /// </summary>
         public const byte SetDCMeterRange = 0x61;
+        public const byte SetDCMeterRangeLength = 9;
 
         /// <summary>
         /// 读直流表测量参数/数据
         /// </summary>
         public const byte ReadDCMeterData = 0x62;
+        public const byte ReadDCMeterDataLength = 7;
 
         /// <summary>
         /// 设置直流表测量类型：DCU or DCI
@@ -708,6 +710,7 @@ namespace DKCommunication.Dandick.DK81Series
     }
     #endregion 设置有功功率 Channel
 
+    #region 电能校验类型
     /// <summary>
     /// 电能校验类型（ 电能测量）
     /// </summary>
@@ -723,6 +726,36 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         Q = 0x51
     }
+    #endregion 电能校验类型
+
+    #region 直流表测量类型
+    /// <summary>
+    /// 直流表测量类型
+    /// </summary>
+    public enum DCMerterMeasureType : byte
+    {
+        /// <summary>
+        /// 直流电压
+        /// </summary>
+        DCM_Voltage = 0,
+
+        /// <summary>
+        /// 直流电流
+        /// </summary>
+        DCM_Current = 1,
+
+        /// <summary>
+        /// 纹波电压
+        /// </summary>
+        DCM_VoltageRipple = 2,
+
+        /// <summary>
+        /// 纹波电流
+        /// </summary>
+        DCM_CurrentRipple = 3
+    }
+    #endregion
+
     #endregion Enum Classes
 
     #region Structs
