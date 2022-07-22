@@ -312,16 +312,7 @@ namespace DKCommunication.Dandick.DK81Series
             return bytesHeader;
         }
 
-        /// <summary>
-        /// 创建读取直流表档位信息的报文
-        /// </summary>
-        /// <returns></returns>
-        private OperateResult<byte[]> CreateReadDCMeterRanges()
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRanges, DK81CommunicationInfo.ReadDCMeterRangesLength);
-
-            return bytesHeader;
-        }
+    
         #endregion 设备信息【报文创建】       
 
         #region 交流表源命令【报文创建】
@@ -598,7 +589,18 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterData, DK81CommunicationInfo.ReadDCMeterDataLength);
             return result;
         }
-        #endregion
+
+        /// <summary>
+        /// 创建读取直流表档位信息的报文
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadDCMeterRanges()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRanges, DK81CommunicationInfo.ReadDCMeterRangesLength);
+
+            return bytesHeader;
+        }
+        #endregion 直流表报文创建
 
         #endregion private CommandBuilder报文创建
 
@@ -742,22 +744,7 @@ namespace DKCommunication.Dandick.DK81Series
             return responseBytes;
         }
 
-        /// <summary>
-        /// 读取直流表档位
-        /// </summary>
-        /// <returns>下位机回复的有效报文</returns>
-        internal OperateResult<byte[]> ReadDCMeterRangesCommand()
-        {
-            OperateResult<byte[]> createResult = CreateReadDCMeterRanges();
-            //创建指令失败
-            if (!createResult.IsSuccess)
-            {
-                return createResult;
-            }
-            //创建指令成功则获取回复数据：（已保证数据的有效性）
-            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
-            return responseBytes;
-        }
+      
         #endregion 设备信息【操作命令】        
 
         #region 交流源（表）【操作命令】
@@ -1090,6 +1077,23 @@ namespace DKCommunication.Dandick.DK81Series
             //发送报文，接收并校验下位机回复报文
             OperateResult<byte[]> response = CheckResponse(result.Content);
             return response;
+        }
+
+        /// <summary>
+        /// 读取直流表档位
+        /// </summary>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> ReadDCMeterRangesCommand()
+        {
+            OperateResult<byte[]> createResult = CreateReadDCMeterRanges();
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
         }
         #endregion 直流表操作命令
         #endregion internal Commands操作命令
