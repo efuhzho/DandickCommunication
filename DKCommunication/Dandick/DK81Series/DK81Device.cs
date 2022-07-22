@@ -1208,13 +1208,11 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> ReadACSourceData()
         {
             OperateResult<byte[]> response = ReadACSourceDataCommmand();
-            if (!response.IsSuccess)
+            if (response.IsSuccess)
             {
-                return response;
+                //命令执行成功则解析数据
+                AnalysisReadACSourceData(response.Content);
             }
-
-            //命令执行成功则解析数据
-            AnalysisReadACSourceData(response.Content);
             return response;
         }
 
@@ -1225,13 +1223,11 @@ namespace DKCommunication.Dandick.DK81Series
         public OperateResult<byte[]> ReadACSourceStatus()
         {
             OperateResult<byte[]> response = ReadACStatusCommmand();
-            if (!response.IsSuccess)
+            if (response.IsSuccess)
             {
-                return response;
+                //命令执行成功则解析数据
+                AnalysisReadACStatus(response.Content);
             }
-
-            //命令执行成功则解析数据
-            AnalysisReadACStatus(response.Content);
             return response;
         }
         #endregion 交流源（表）操作命令    

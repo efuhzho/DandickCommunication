@@ -316,7 +316,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建读取直流表档位信息的报文
         /// </summary>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateReadDCMeterSourceRanges()
+        private OperateResult<byte[]> CreateReadDCMeterRanges()
         {
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCMeterRanges, DK81CommunicationInfo.ReadDCMeterRangesLength);
 
@@ -748,7 +748,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <returns>下位机回复的有效报文</returns>
         internal OperateResult<byte[]> ReadDCMeterRangesCommand()
         {
-            OperateResult<byte[]> createResult = CreateReadDCMeterSourceRanges();
+            OperateResult<byte[]> createResult = CreateReadDCMeterRanges();
             //创建指令失败
             if (!createResult.IsSuccess)
             {
