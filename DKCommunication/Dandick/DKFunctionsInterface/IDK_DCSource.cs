@@ -100,7 +100,13 @@ namespace DKCommunication.Dandick.DKInterface
         /// <param name="dCSourceType"></param>
         /// <returns></returns>
         OperateResult<byte[]> WriteDCSourceAmplitude(byte rangeIndex, float SData, TDCSourceType dCSourceType);
-        OperateResult<byte[]> ReadDCSourceData();
+
+        /// <summary>
+        /// 读取直流源数据
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <returns></returns>
+        OperateResult<byte[]> ReadDCSourceData(TDCSourceType dCSourceType);
 
 
         /// <summary>

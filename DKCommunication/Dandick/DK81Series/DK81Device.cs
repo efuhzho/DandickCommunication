@@ -1575,49 +1575,20 @@ namespace DKCommunication.Dandick.DK81Series
             throw new NotImplementedException();
         }
 
+
+        //TODO 暂不支持的功能
         public OperateResult<byte[]> ReadDCMeterDataWithTwoCh()
         {
-            throw new NotImplementedException();
+            return new OperateResult<byte[]>(110, "暂不支持的功能");
         }
 
-
-
-        public OperateResult<byte[]> ReadDCSourceData()
-        {
-            throw new NotImplementedException();
-        }
-
+        //TODO 暂不支持的功能
         public OperateResult<byte[]> SetDCMeterDataWithTwoCh()
         {
-            throw new NotImplementedException();
+            return new OperateResult<byte[]>(110, "暂不支持的功能");
         }
 
 
-
-        public OperateResult<byte[]> SetDCMeterRange()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> SetDCSourceRange()
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-
-
-
-        public OperateResult<byte[]> WriteDCSourceAmplitude()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> WriteElectricity()
-        {
-            throw new NotImplementedException();
-        }
 
 
 
