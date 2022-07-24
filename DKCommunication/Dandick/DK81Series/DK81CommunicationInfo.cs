@@ -197,6 +197,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 打开直流源
         /// </summary>
         public const byte StartDCSource = 0x67;
+        public const byte StartDCSourceLength = 8;
 
         /// <summary>
         /// 关闭直流源
@@ -753,6 +754,18 @@ namespace DKCommunication.Dandick.DK81Series
         /// 纹波电流
         /// </summary>
         DCM_CurrentRipple = 3
+    }
+    #endregion
+
+    #region 直流源操作类型
+    /// <summary>
+    /// 直流源操作类型
+    /// </summary>
+    public enum DCSourceType : byte
+    {
+        DCSourceType_U = (byte)'U', //85;0x55
+        DCSourceType_I = (byte)'I', //73;0x49
+        DCSourceType_R = (byte)'R'  //82;0x52
     }
     #endregion
 

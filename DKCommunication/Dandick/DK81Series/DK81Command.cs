@@ -311,8 +311,6 @@ namespace DKCommunication.Dandick.DK81Series
 
             return bytesHeader;
         }
-
-    
         #endregion 设备信息【报文创建】       
 
         #region 交流表源命令【报文创建】
@@ -601,6 +599,13 @@ namespace DKCommunication.Dandick.DK81Series
             return bytesHeader;
         }
         #endregion 直流表报文创建
+
+        #region 直流源【报文创建】
+        private OperateResult<byte[]> CreateStartDCSource()
+        {
+
+        }
+        #endregion
 
         #endregion private CommandBuilder报文创建
 
