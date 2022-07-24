@@ -19,16 +19,12 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion       
 
-        /*******************/
-
         #region FrameID 报文头0x81
         /// <summary>
         /// 报文头必须为0x81
         /// </summary>
         public const byte FrameID = 0x81;
         #endregion
-
-        /*******************/
 
         #region CommandCode Declaration 命令码定义
 
@@ -287,8 +283,6 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion   
 
         #endregion
-
-        /*******************/
 
         #region Static Helper Method
 
@@ -761,7 +755,7 @@ namespace DKCommunication.Dandick.DK81Series
     }
     #endregion
 
-    #region 直流源操作类型
+    #region 直流源输出类型
     /// <summary>
     /// 直流源输出类型
     /// </summary>
