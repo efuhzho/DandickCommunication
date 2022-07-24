@@ -10,7 +10,7 @@ namespace DKCommunication.Dandick.DK81Series
         IDK_BaseInterface<DisplayPage, SystemMode>, //系统接口
         IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode, ChannelsHarmonic, Harmonics, ChannelWattPower, ChannelWattLessPower>,    //交流源接口
         IDK_DCMeter<DCMerterMeasureType>,    //直流表接口
-        IDK_DCSource,   //直流源接口
+        IDK_DCSource<DCSourceType>,   //直流源接口
         IDK_ElectricityModel<ElectricityType>,   //电能模块接口
         IDK_IOModel     //开关量模块接口
     {
@@ -721,11 +721,59 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion
 
         #region DCSource
+        /// <summary>
+        /// 直流源电压档位个数
+        /// </summary>
         public byte DCU_RangesCount => _DCURangesCount;
+
+        /// <summary>
+        /// 直流源电流档位个数
+        /// </summary>
         public byte DCI_RangesCount => _DCIRangesCount;
+
+        /// <summary>
+        /// 直流源电压档位列表
+        /// </summary>
         public List<float> DCU_Ranges => _DCURanges;
+
+        /// <summary>
+        /// 直流源电流档位列表
+        /// </summary>
         public List<float> DCI_Ranges => _DCIRanges;
-        #endregion
+
+        /// <summary>
+        /// 当前直流源输出状态：true=源打开；false=源关闭
+        /// </summary>
+        private bool _DCS_Status;
+
+        /// <summary>
+        /// 当前直流源输出状态：true=源打开；false=源关闭
+        /// </summary>
+        public bool DCS_Status => _DCS_Status;
+
+        /// <summary>
+        /// 当前直流源幅值
+        /// </summary>
+        private float _DCSourceData;
+        /// <summary>
+        /// 当前直流源幅值
+        /// </summary>
+        public float DCSourceData
+        {
+            get { return _DCSourceData; }
+        }
+
+
+        /// <summary>
+        /// 直流源当前档位索引值
+        /// </summary>
+        public byte DCSourceRangeIndex { get; set; }
+
+        /// <summary>
+        /// 直流源输出类型
+        /// </summary>
+        public DCSourceType DCS_Type { get; set; }
+        #endregion DCSource
 
         #region DCMeter
         /// <summary>
@@ -768,7 +816,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         public float DCM_Data
         {
-            get { return _DCM_Data; }           
+            get { return _DCM_Data; }
         }
 
         #endregion
@@ -828,9 +876,9 @@ namespace DKCommunication.Dandick.DK81Series
             }
             return response;
         }
-        #endregion 系统信号             
+        #endregion 系统信号                    
 
-        #region 设备信息
+        #region 交流源（表）操作命令
         /// <summary>
         /// 读取【交流源档位】，初始化设备只读属性
         /// </summary>
@@ -845,24 +893,6 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
 
-
-
-        /// <summary>
-        /// 读取【直流源档位】，初始化设备只读属性
-        /// </summary>
-        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadDCSourceRanges()
-        {
-            OperateResult<byte[]> response = ReadDCSourceRangesCommand();
-            if (response.IsSuccess)
-            {
-                AnalysisReadDCSourceRanges(response.Content);
-            }
-            return response;
-        }
-        #endregion 设备信息
-
-        #region 交流源（表）操作命令
         /// <summary>
         /// 交流源关闭命令,返回OK
         /// </summary>
@@ -1333,7 +1363,6 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion 电能模块操作命令 
 
-
         #region 直流表
 
         /// <summary>
@@ -1380,7 +1409,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取直流表测量数据】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult< byte[]> ReadDCMeterData()
+        public OperateResult<byte[]> ReadDCMeterData()
         {
             OperateResult<byte[]> result = ReadDCMeterDataCommand();
             if (result.IsSuccess)
@@ -1392,6 +1421,111 @@ namespace DKCommunication.Dandick.DK81Series
         }
         #endregion 直流表
 
+        #region 直流源
+        /// <summary>
+        /// 读取【直流源档位】，初始化设备只读属性
+        /// </summary>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> ReadDCSourceRanges()
+        {
+            OperateResult<byte[]> response = ReadDCSourceRangesCommand();
+            if (response.IsSuccess)
+            {
+                AnalysisReadDCSourceRanges(response.Content);
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 【打开直流源】
+        /// </summary>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> StartDCSource(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> response = StartDCSourceCommand(dCSourceType);
+            if (response.IsSuccess)
+            {
+                DCS_Type = dCSourceType;
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 【关闭直流源】
+        /// </summary>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> StopDCSource(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> response = StopDCSourceCommand(dCSourceType);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【关闭直流源】
+        /// </summary>       
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> StopDCSource()
+        {
+            OperateResult<byte[]> response = StopDCSourceCommand(DCS_Type);
+
+            return response;
+        }
+
+        /// <summary>
+        ///【 设置直流源档位【
+        /// </summary>
+        /// <param name="rangeIndex">当前档位索引值</param>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> SetDCSourceRange(byte rangeIndex, DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> response = SetDCSourceRangeCommand(rangeIndex, dCSourceType);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置直流源档位为自动量程】/【支持自动换挡模式的设备有效】
+        /// </summary>
+        /// <returns></returns>
+        public OperateResult<byte[]> SetDCSourceRangeAuto()
+        {
+            OperateResult<byte[]> response = SetDCSourceRangeCommand(0xFF, DCS_Type);
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置直流源幅值】
+        /// </summary>
+        /// <param name="rangeIndex"></param>
+        /// <param name="SData"></param>
+        /// <param name="dCSourceType"></param>
+        /// <returns></returns>
+        public OperateResult<byte[]> WriteDCSourceAmplitude(byte rangeIndex, float SData, DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> response = WriteDCSourceAmplitudeCommand(rangeIndex, SData, dCSourceType);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【读取直流源参数】
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <returns></returns>
+        public OperateResult<byte[]> ReadDCSourceData(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> response = ReadDCSourceDataCommand(dCSourceType);
+            if (response.IsSuccess)
+            {
+                AnalysisReadDCSourceData(response.Content);
+            }
+            return response;
+        }
+        #endregion 直流源
         #endregion Public Methods
 
 
@@ -1471,15 +1605,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
 
-        public OperateResult<byte[]> StartDCSource()
-        {
-            throw new NotImplementedException();
-        }
 
-        public OperateResult<byte[]> StopDCSource()
-        {
-            throw new NotImplementedException();
-        }
 
 
 
@@ -1537,10 +1663,9 @@ namespace DKCommunication.Dandick.DK81Series
 
             //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    //特殊功能状态解析，暂不处理
         }
-        #endregion 
+        #endregion
 
-        #region 解析【设备信息】
-
+        #region 解析【交流源/表】
         /// <summary>
         /// 解析交流源档位，并初始化设备属性
         /// </summary>
@@ -1573,43 +1698,6 @@ namespace DKCommunication.Dandick.DK81Series
             }
         }
 
-        /// <summary>
-        /// 解析直流源档位，并初始化设备属性
-        /// </summary>
-        /// <param name="response"></param>
-        private void AnalysisReadDCSourceRanges(byte[] response)
-        {
-            if (response.Length > 8)
-            {
-                _DCURangesCount = response[6];
-                _DCIRangesCount = response[7];
-                float[] dcuRanges = ByteTransform.TransSingle(response, 8, _DCURangesCount);
-                float[] dciRanges = ByteTransform.TransSingle(response, 8 + _DCURangesCount * 4, _DCIRangesCount);
-                _DCURanges = dcuRanges.ToList();
-                _DCIRanges = dciRanges.ToList();
-            }
-        }
-
-        /// <summary>
-        /// 解析直流表档位，并初始化设备属性
-        /// </summary>
-        /// <param name="response">经过验证的有效回复数据</param>
-        private void AnalysisReadDCMeterRanges(byte[] response)
-        {
-            if (response.Length > 10)
-            {
-                //TODO 测试异常是否能在底层被完全捕获，确保response数据有效性
-                _DCMeterURangesCount = response[8];
-                _DCMeterIRangesCount = response[9];
-                float[] dcmURanges = ByteTransform.TransSingle(response, 10, _DCMeterURangesCount);
-                float[] dcmIanges = ByteTransform.TransSingle(response, 10 + 4 * _DCMeterURangesCount, _DCMeterIRangesCount);
-                _DCMeterURanges = dcmURanges.ToList();
-                _DCMeterIRanges = dcmIanges.ToList();
-            }
-        }
-        #endregion
-
-        #region 解析【交流源/表】
         /// <summary>
         /// 解析【读取交流源当前输出值】回复报文
         /// </summary>
@@ -1683,7 +1771,7 @@ namespace DKCommunication.Dandick.DK81Series
             _ElectricityDeviationData = ByteTransform.TransSingle(response, 7);
 
             //当前校验圈数
-            _ElectricityMeasuredRounds = ByteTransform.TransUInt32(response, 11);          
+            _ElectricityMeasuredRounds = ByteTransform.TransUInt32(response, 11);
         }
         #endregion
 
@@ -1698,12 +1786,66 @@ namespace DKCommunication.Dandick.DK81Series
             _DCM_RangeIndex = response[6];
 
             //当前直流表的测量数据
-            _DCM_Data = ByteTransform.TransSingle(response,7);
+            _DCM_Data = ByteTransform.TransSingle(response, 7);
 
             //当前直流表的测量类型
             DCM_MeasureType = (DCMerterMeasureType)response[11];
         }
+
+        /// <summary>
+        /// 解析直流表档位，并初始化设备属性
+        /// </summary>
+        /// <param name="response">经过验证的有效回复数据</param>
+        private void AnalysisReadDCMeterRanges(byte[] response)
+        {
+            if (response.Length > 10)
+            {
+                //TODO 测试异常是否能在底层被完全捕获，确保response数据有效性
+                _DCMeterURangesCount = response[8];
+                _DCMeterIRangesCount = response[9];
+                float[] dcmURanges = ByteTransform.TransSingle(response, 10, _DCMeterURangesCount);
+                float[] dcmIanges = ByteTransform.TransSingle(response, 10 + 4 * _DCMeterURangesCount, _DCMeterIRangesCount);
+                _DCMeterURanges = dcmURanges.ToList();
+                _DCMeterIRanges = dcmIanges.ToList();
+            }
+        }
         #endregion
+
+        #region 解析【直流源】
+        /// <summary>
+        /// 解析直流源档位，并初始化设备属性
+        /// </summary>
+        /// <param name="response"></param>
+        private void AnalysisReadDCSourceRanges(byte[] response)
+        {
+            if (response.Length > 8)
+            {
+                _DCURangesCount = response[6];
+                _DCIRangesCount = response[7];
+                float[] dcuRanges = ByteTransform.TransSingle(response, 8, _DCURangesCount);
+                float[] dciRanges = ByteTransform.TransSingle(response, 8 + _DCURangesCount * 4, _DCIRangesCount);
+                _DCURanges = dcuRanges.ToList();
+                _DCIRanges = dciRanges.ToList();
+            }
+        }
+
+        /// <summary>
+        /// 解析读取直流源参数
+        /// </summary>
+        /// <param name="response"></param>
+        private void AnalysisReadDCSourceData(byte[] response)
+        {
+            if (response.Length > 8)
+            {
+                DCSourceRangeIndex = response[6];
+                _DCSourceData = ByteTransform.TransSingle(response, 7);
+                DCS_Type = (DCSourceType)response[11];
+                _DCS_Status = ByteTransform.TransBool(response, 12);
+            }
+        }
+        #endregion 解析【直流源】
+
+
 
         #endregion private Methods Helper 解析数据
     }

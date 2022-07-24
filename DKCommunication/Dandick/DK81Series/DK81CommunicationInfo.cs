@@ -192,6 +192,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 设置直流源档位参数
         /// </summary>
         public const byte SetDCSourceRange = 0x66;
+        public const byte SetDCSourceRangeLength = 9;
 
         /// <summary>
         /// 打开直流源
@@ -203,16 +204,19 @@ namespace DKCommunication.Dandick.DK81Series
         /// 关闭直流源
         /// </summary>
         public const byte StopDCSource = 0x68;
+        public const byte StopDCSourceLength =8;
 
         /// <summary>
         /// 设置直流源幅值
         /// </summary>
         public const byte WriteDCSourceAmplitude = 0x69;
+        public const byte WriteDCSourceAmplitudeLength = 13;
 
         /// <summary>
         /// 读直流源参数/数据
         /// </summary>
         public const byte ReadDCSourceData = 0x79;
+        public const byte ReadDCSourceDataLength = 8;
         #endregion
 
         #region 校准
@@ -759,7 +763,7 @@ namespace DKCommunication.Dandick.DK81Series
 
     #region 直流源操作类型
     /// <summary>
-    /// 直流源操作类型
+    /// 直流源输出类型
     /// </summary>
     public enum DCSourceType : byte
     {

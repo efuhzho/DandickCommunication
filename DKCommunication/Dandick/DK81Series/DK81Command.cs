@@ -301,16 +301,7 @@ namespace DKCommunication.Dandick.DK81Series
             return bytesHeader;
         }
 
-        /// <summary>
-        /// 创建读取直流源档位信息的报文
-        /// </summary>
-        /// <returns></returns>
-        private OperateResult<byte[]> CreateReadDCSourceRanges()
-        {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceRanges, DK81CommunicationInfo.ReadDCSourceRangesLength);
-
-            return bytesHeader;
-        }
+     
         #endregion 设备信息【报文创建】       
 
         #region 交流表源命令【报文创建】
@@ -601,10 +592,84 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion 直流表报文创建
 
         #region 直流源【报文创建】
-        private OperateResult<byte[]> CreateStartDCSource()
-        {
 
+        /// <summary>
+        /// 创建读取直流源档位信息的报文
+        /// </summary>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadDCSourceRanges()
+        {
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceRanges, DK81CommunicationInfo.ReadDCSourceRangesLength);
+
+            return bytesHeader;
         }
+        /// <summary>
+        /// 创建【直流源打开命令】报文
+        /// </summary>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns>下位机回复的有效报文</returns>
+        private OperateResult<byte[]> CreateStartDCSource(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.StartDCSource, DK81CommunicationInfo.StartDCSourceLength,dCSourceType);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【直流源关闭命令】报文
+        /// </summary>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns>下位机回复的有效报文</returns>
+        private OperateResult<byte[]> CreateStopDCSource(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.StopDCSource, DK81CommunicationInfo.StopDCSourceLength, dCSourceType);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【设置直流源档位参数】报文
+        /// </summary>
+        /// <param name="rangeIndex">当前档位索引值</param>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateSetDCSourceRange(byte rangeIndex,DCSourceType dCSourceType)
+        {
+            byte[] data =new byte[2];
+            data[0] = rangeIndex;
+            data[1] = (byte)(dCSourceType);
+
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.SetDCSourceRange, DK81CommunicationInfo.SetDCSourceRangeLength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【设置直流源幅值】报文
+        /// </summary>
+        /// <param name="rangeIndex"></param>
+        /// <param name="SData"></param>
+        /// <param name="dCSourceType"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateWriteDCSourceAmplitude(byte rangeIndex,float SData, DCSourceType dCSourceType)
+        {
+            byte[] data = new byte[6];
+            data[0] = rangeIndex;
+            ByteTransform.TransByte(SData).CopyTo(data,1);
+            data[5] = (byte)(dCSourceType);
+
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.WriteDCSourceAmplitude, DK81CommunicationInfo.WriteDCSourceAmplitudeLength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【读取直流源参数】报文
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateReadDCSourceData(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceData, DK81CommunicationInfo.ReadDCSourceDataLength, dCSourceType);
+            return result;
+        }
+
         #endregion
 
         #endregion private CommandBuilder报文创建
@@ -732,22 +797,6 @@ namespace DKCommunication.Dandick.DK81Series
             return responseBytes;
         }
 
-        /// <summary>
-        /// 读取直流源档位
-        /// </summary>
-        /// <returns>下位机回复的有效报文</returns>
-        internal OperateResult<byte[]> ReadDCSourceRangesCommand()
-        {
-            OperateResult<byte[]> createResult = CreateReadDCSourceRanges();
-            //创建指令失败
-            if (!createResult.IsSuccess)
-            {
-                return createResult;
-            }
-            //创建指令成功则获取回复数据：（已保证数据的有效性）
-            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
-            return responseBytes;
-        }
 
       
         #endregion 设备信息【操作命令】        
@@ -1101,6 +1150,114 @@ namespace DKCommunication.Dandick.DK81Series
             return responseBytes;
         }
         #endregion 直流表操作命令
+
+        #region 【直流源】操作命令
+
+        /// <summary>
+        /// 读取直流源档位
+        /// </summary>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> ReadDCSourceRangesCommand()
+        {
+            OperateResult<byte[]> createResult = CreateReadDCSourceRanges();
+            //创建指令失败
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【打开直流源】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> StartDCSourceCommand(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> createResult = CreateStartDCSource(dCSourceType);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【关闭直流源】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> StopDCSourceCommand(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> createResult = CreateStopDCSource(dCSourceType);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【设置直流源档位】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="rangeIndex">当前档位索引值</param>
+        /// <param name="dCSourceType">直流源输出类型</param>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> SetDCSourceRangeCommand(byte rangeIndex, DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> createResult = CreateSetDCSourceRange(rangeIndex, dCSourceType);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【设置直流源幅值】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="rangeIndex"></param>
+        /// <param name="SData"></param>
+        /// <param name="dCSourceType"></param>
+        /// <returns></returns>
+        internal OperateResult<byte[]> WriteDCSourceAmplitudeCommand(byte rangeIndex,float SData, DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> createResult = CreateWriteDCSourceAmplitude( rangeIndex,  SData,  dCSourceType);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【读取直流源参数】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <returns></returns>
+        internal OperateResult<byte[]> ReadDCSourceDataCommand(DCSourceType dCSourceType)
+        {
+            OperateResult<byte[]> createResult = CreateReadDCSourceData(dCSourceType);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+        #endregion 【直流源】操作命令
         #endregion internal Commands操作命令
 
     }
