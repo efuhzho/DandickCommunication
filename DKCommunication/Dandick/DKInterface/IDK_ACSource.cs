@@ -329,34 +329,11 @@ namespace DKCommunication.Dandick.DKInterface
         OperateResult<byte[]> WriteWattLessPower(TChannelWattLessPower channel, float q);
 
         /// <summary>
-        /// 切换交流校准档位
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_SwitchACRange();
-
-        /// <summary>
-        /// 确认执行当前校准点的校准数据：在输入标准表数据后执行
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_DoAC();
-
-        /// <summary>
         /// 读取交流源档位信息
         /// </summary>
         /// <returns></returns>
         OperateResult<byte[]> ReadACSourceRanges();
 
-        /// <summary>
-        /// 切换校准点命令
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_SwitchACPoint();
-
-        /// <summary>
-        /// 交流标准表和钳形表校准命令
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_DoACMeter();
         #endregion
 
     }

@@ -7,7 +7,7 @@ using DKCommunication.Dandick.DKInterface;
 namespace DKCommunication.Dandick.Base
 {
     /// <summary>
-    /// 所有丹迪克设备通信协议的地址基础类
+    /// 所有丹迪克设备的基础类
     /// </summary>
     public class DK_DeviceBase <TTransform>: SerialBase where TTransform:IByteTransform,new()
     {
@@ -37,7 +37,7 @@ namespace DKCommunication.Dandick.Base
         public string SN { get; set; }
 
         /// <summary>
-        /// 当前客户端的数据变换机制，当你需要从字节数据转换类型数据的时候需要。
+        /// 当前客户端的数据变换机制，当需要从字节数据转换类型数据的时候需要。
         /// </summary>
         public TTransform ByteTransform
         {

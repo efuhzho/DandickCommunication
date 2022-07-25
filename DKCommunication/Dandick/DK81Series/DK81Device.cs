@@ -12,7 +12,8 @@ namespace DKCommunication.Dandick.DK81Series
         IDK_DCMeter<DCMerterMeasureType>,    //直流表接口
         IDK_DCSource<DCSourceType>,   //直流源接口
         IDK_ElectricityModel<ElectricityType>,   //电能模块接口
-        IDK_IOModel     //开关量模块接口
+        IDK_IOModel,     //开关量模块接口
+        IDK_Calibrate<CalibrateType, CalibrateLevel, Calibrate_DCSourceType>
     {
 
         #region --------------------------------- 私有字段 ----------------------------------------
@@ -821,6 +822,23 @@ namespace DKCommunication.Dandick.DK81Series
 
         #endregion
 
+        #region 校准
+        private CalibrateType _CalibrateType;
+        /// <summary>
+        /// 当前校准类型
+        /// </summary>
+        public CalibrateType CalibrateType
+        {
+            get { return _CalibrateType; }
+            set { _CalibrateType = value; }
+        }
+
+        /// <summary>
+        /// 当前校准点
+        /// </summary>
+        public CalibrateLevel CalibrateLevel { get; set; }
+        #endregion
+
         #endregion Public Properties 属性
 
         #region --------------------------------- Public Methods ----------------------------------
@@ -1503,7 +1521,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="rangeIndex"></param>
         /// <param name="SData"></param>
         /// <param name="dCSourceType"></param>
-        /// <returns></returns>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
         public OperateResult<byte[]> WriteDCSourceAmplitude(byte rangeIndex, float SData, DCSourceType dCSourceType)
         {
             OperateResult<byte[]> response = WriteDCSourceAmplitudeCommand(rangeIndex, SData, dCSourceType);
@@ -1515,7 +1533,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取直流源参数】
         /// </summary>
         /// <param name="dCSourceType"></param>
-        /// <returns></returns>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
         public OperateResult<byte[]> ReadDCSourceData(DCSourceType dCSourceType)
         {
             OperateResult<byte[]> response = ReadDCSourceDataCommand(dCSourceType);
@@ -1526,55 +1544,215 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
         #endregion 直流源
+
+        #region 校准
+        /// <summary>
+        /// 【清空校准参数：交流】
+        /// </summary>
+        /// <param name="calibrateType">校准时的操作类型</param>
+        /// <param name="uRangeIndex">电压档位索引值</param>
+        /// <param name="iRangeIndex">电流档位索引值</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> Calibrate_ClearData(CalibrateType calibrateType, byte uRangeIndex, byte iRangeIndex)
+        {
+            if ((int)calibrateType == 3 || (int)calibrateType == 4)
+            {
+                return new OperateResult<byte[]>(8113, "请使用直流源（表）数据清空方法:Calibrate_ClearDCU_Data或者Calibrate_ClearDCI_Data");
+            }
+
+            OperateResult<byte[]> response = Calibrate_ClearDataCommand(calibrateType, uRangeIndex, iRangeIndex);
+            if (response.IsSuccess)
+            {
+                _CalibrateType = calibrateType;
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 【清空校准参数：直流电压】
+        /// </summary>
+        /// <param name="calibrateType">校准时的操作类型</param>
+        /// <param name="uRangeIndex">电压档位索引值</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> Calibrate_ClearDCU_Data(CalibrateType calibrateType, byte uRangeIndex)
+        {
+            OperateResult<byte[]> response = Calibrate_ClearDataCommand(calibrateType, uRangeIndex, 100);    //100：保护无需清空的电压档位数据
+            if (response.IsSuccess)
+            {
+                _CalibrateType = calibrateType;
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 【清空校准参数：直流电流】
+        /// </summary>
+        /// <param name="calibrateType">校准时的操作类型</param>
+        /// <param name="iRange">电流档位索引值</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> Calibrate_ClearDCI_Data(CalibrateType calibrateType, byte iRangeIndex)
+        {
+            OperateResult<byte[]> response = Calibrate_ClearDataCommand(calibrateType, 100, iRangeIndex);    //100：保护无需清空的电流档位数据
+            if (response.IsSuccess)
+            {
+                _CalibrateType = calibrateType;
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 【切换交流源（表）校准档位】
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值</param>
+        /// <param name="iRangeIndex">电流档位索引值</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> Calibrate_SwitchACRange(byte uRangeIndex, byte iRangeIndex)
+        {
+            OperateResult<byte[]> response = Calibrate_SwitchACRangeCommand(uRangeIndex, iRangeIndex);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【切换交流源（表）校准点】
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值，校验用</param>
+        /// <param name="iRangeIndex">电流档位索引值，校验用</param>
+        /// <param name="calibrateLevel">当前校准点</param>
+        /// <param name="sUA">校准点的标准值</param>
+        /// <param name="sUB">校准点的标准值</param>
+        /// <param name="sUC">校准点的标准值</param>
+        /// <param name="sIA">校准点的标准值</param>
+        /// <param name="sIB">校准点的标准值</param>
+        /// <param name="sIC">校准点的标准值</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> Calibrate_SwitchACPoint(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float sUA, float sUB, float sUC, float sIA, float sIB, float sIC)
+        {
+            OperateResult<byte[]> response = Calibrate_SwitchACPointCommand(uRangeIndex, iRangeIndex, calibrateLevel, sUA, sUB, sUC, sIA, sIB, sIC);
+            if (response.IsSuccess)
+            {
+                CalibrateLevel = calibrateLevel;
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置相位校准点】
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值，校验用</param>
+        /// <param name="iRangeIndex">电流档位索引值，校验用</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> Calibrate_SwitchACPoint_Phase(byte uRangeIndex, byte iRangeIndex)
+        {
+            return Calibrate_SwitchACPoint(uRangeIndex, iRangeIndex, (CalibrateLevel)3, 0, 120f, 240f, 0, 120f, 240f);
+        }
+
+        /// <summary>
+        /// 【执行交流源校准】
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值，校验用</param>
+        /// <param name="iRangeIndex">电流档位索引值，校验用</param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="mUA">当前所接的标准表的读数：必须在标准值±20%范围内，否则下位机不执行校准命令</param>
+        /// <param name="mUB">当前所接的标准表的读数：必须在标准值±20%范围内，否则下位机不执行校准命令</param>
+        /// <param name="mUC">当前所接的标准表的读数：必须在标准值±20%范围内，否则下位机不执行校准命令</param>
+        /// <param name="mIA">当前所接的标准表的读数：必须在标准值±20%范围内，否则下位机不执行校准命令</param>
+        /// <param name="mIB">当前所接的标准表的读数：必须在标准值±20%范围内，否则下位机不执行校准命令</param>
+        /// <param name="mIC">当前所接的标准表的读数：必须在标准值±20%范围内，否则下位机不执行校准命令</param>
+        /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
+        public OperateResult<byte[]> Calibrate_DoAC(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float mUA, float mUB, float mUC, float mIA, float mIB, float mIC)
+        {
+            OperateResult<byte[]> response = Calibrate_SwitchACPointCommand(uRangeIndex, iRangeIndex, calibrateLevel, mUA, mUB, mUC, mIA, mIB, mIC);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【确认交流源校准，保存校准参数】
+        /// </summary>
+        /// <param name="uRangeIndex"></param>
+        /// <param name="iRangeIndex">电流档位索引，用作核验，只对5A有效</param>
+        /// <param name="calibrateLevel"></param>
+        /// <returns></returns>
+        public OperateResult<byte[]> Calibrate_Save(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel)
+        {
+            OperateResult<byte[]> response = Calibrate_SaveCommand(uRangeIndex, iRangeIndex, calibrateLevel);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【交流标准表和钳形表校准】
+        /// </summary>
+        /// <param name="uRangeIndex"></param>
+        /// <param name="iRangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <returns></returns>
+        public OperateResult<byte[]> Calibrate_DoACMeter(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float UA, float UB, float UC, float IA, float IB, float IC)
+        {
+            OperateResult<byte[]> response = Calibrate_DoACMeterCommand(uRangeIndex, iRangeIndex, calibrateLevel, UA, UB, UC, IA, IB, IC);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【设置直流源校准点】
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <param name="rangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="sDCAmplitude"></param>
+        /// <returns></returns>
+        public OperateResult<byte[]> Calibrate_SwitchDCPoint(
+            Calibrate_DCSourceType dCSourceType,
+            byte rangeIndex,
+            CalibrateLevel calibrateLevel,
+            float sDCAmplitude)
+        {
+            OperateResult<byte[]> response = Calibrate_SwitchDCPointCommand(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【执行直流源校准】
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <param name="rangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="sDCAmplitude"></param>
+        /// <returns></returns>
+        public OperateResult<byte[]> Calibrate_DoDC(
+          Calibrate_DCSourceType dCSourceType,
+          byte rangeIndex,
+          CalibrateLevel calibrateLevel,
+          float sDCAmplitude)
+        {
+            OperateResult<byte[]> response = Calibrate_DoDCCommand(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
+
+            return response;
+        }
+
+        /// <summary>
+        /// 【直流表校准】
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <param name="rangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="sDCAmplitude"></param>
+        /// <returns></returns>
+        public OperateResult<byte[]> Calibrate_DoDCMeter(
+            Calibrate_DCSourceType dCSourceType,
+            byte rangeIndex,
+            CalibrateLevel calibrateLevel,
+            float sDCAmplitude)
+        {
+            OperateResult<byte[]> response = Calibrate_DoDCMeterCommand(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
+
+            return response;
+        }
+        #endregion 校准
         #endregion Public Methods
-
-
-
-        public OperateResult<byte[]> Calibrate_ClearData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Calibrate_DoAC()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Calibrate_DoACMeter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Calibrate_DoDC()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Calibrate_DoDCMeter()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Calibrate_Save()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Calibrate_SwitchACPoint()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Calibrate_SwitchACRange()
-        {
-            throw new NotImplementedException();
-        }
-
-        public OperateResult<byte[]> Calibrate_SwitchDCPoint()
-        {
-            throw new NotImplementedException();
-        }
-
 
         //TODO 暂不支持的功能
         public OperateResult<byte[]> ReadDCMeterDataWithTwoCh()

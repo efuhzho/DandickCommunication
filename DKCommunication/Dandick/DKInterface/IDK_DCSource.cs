@@ -109,17 +109,6 @@ namespace DKCommunication.Dandick.DKInterface
         OperateResult<byte[]> ReadDCSourceData(TDCSourceType dCSourceType);
 
 
-        /// <summary>
-        /// 设置直流源校准点
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_SwitchDCPoint();
-
-        /// <summary>
-        /// 直流源校准
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_DoDC();
 
         /// <summary>
         /// 读取直流源档位

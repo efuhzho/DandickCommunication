@@ -81,13 +81,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// 读直流表测量参数/数据，适用于双通道
         /// </summary>
         /// <returns></returns>
-        OperateResult<byte[]> ReadDCMeterDataWithTwoCh();
-
-        /// <summary>
-        /// 直流表校准
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_DoDCMeter();
+        OperateResult<byte[]> ReadDCMeterDataWithTwoCh();     
 
         /// <summary>
         /// 读取指标表档位信息

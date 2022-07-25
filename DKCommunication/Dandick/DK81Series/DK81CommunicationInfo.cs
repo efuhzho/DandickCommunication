@@ -200,7 +200,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 关闭直流源
         /// </summary>
         public const byte StopDCSource = 0x68;
-        public const byte StopDCSourceLength =8;
+        public const byte StopDCSourceLength = 8;
 
         /// <summary>
         /// 设置直流源幅值
@@ -220,46 +220,55 @@ namespace DKCommunication.Dandick.DK81Series
         /// 清空校准参数，恢复初始状态
         /// </summary>
         public const byte Calibrate_ClearData = 0x20;
+        public const byte Calibrate_ClearDataLength = 10;
 
         /// <summary>
         /// 切换交流校准档位
         /// </summary>
         public const byte Calibrate_SwitchACRange = 0x21;
+        public const byte Calibrate_SwitchACRangeLength = 9;
 
         /// <summary>
-        /// 确认执行当前校准点的校准数据：在输入标准表数据后执行*！0x22还是0x23存疑，说明书不一致
+        /// 设置交流源校准点命令
         /// </summary>
-        public const byte Calibrate_DoAC = 0x22;
+        public const byte Calibrate_SwitchACPoint = 0x22;
+        public const byte Calibrate_SwitchACPointLength = 34;
 
         /// <summary>
-        /// 切换校准点命令
+        /// 确认执行当前校准点的校准数据：在输入标准表数据后执行*！0x22还是0x23存疑，说明书不一致 
         /// </summary>
-        public const byte Calibrate_SwitchACPoint = 0x23;
+        public const byte Calibrate_DoAC = 0x23;    //TODO 核实命令码
+        public const byte Calibrate_DoACLength = 34;
 
         /// <summary>
         /// 保存校准参数
         /// </summary>
         public const byte Calibrate_Save = 0x24;
+        public const byte Calibrate_SaveLength = 10;
 
         /// <summary>
         /// 交流标准表和钳形表校准命令
         /// </summary>
         public const byte Calibrate_DoACMeter = 0x25;
+        public const byte Calibrate_DoACMeterlength = 9;
 
         /// <summary>
         /// 设置直流源校准点
         /// </summary>
         public const byte Calibrate_SwitchDCPoint = 0x26;
+        public const byte Calibrate_SwitchDCPointLength = 14;
 
         /// <summary>
         /// 直流源校准
         /// </summary>
         public const byte Calibrate_DoDC = 0x27;
+        public const byte Calibrate_DoDClength = 14;
 
         /// <summary>
         /// 直流表校准
         /// </summary>
         public const byte Calibrate_DoDCMeter = 0x28;
+        public const byte Calibrate_DoDCMeterLength = 14;
         #endregion
 
         #region 设备信息
@@ -767,6 +776,47 @@ namespace DKCommunication.Dandick.DK81Series
     }
     #endregion
 
+    #region 校准类型
+    /// <summary>
+    /// 校准时的操作类型
+    /// </summary>
+    public enum CalibrateType : byte
+    {
+        标准源 = 0,
+        标准表 = 1,
+        钳形表 = 2,
+        直流源 = 3,
+        直流表 = 4,
+    }
+    #endregion
+
+    #region 校准点
+    /// <summary>
+    /// 当前校准点
+    /// </summary>
+    public enum CalibrateLevel : byte
+    {
+        //零点
+        零点 = 0,
+
+        //20%校准点
+        校准点20 = 1,
+
+        //100%校准点
+        校准点100 = 2,
+
+        //相位校准
+        相位校准 = 3,
+    }
+    #endregion
+
+    #region 直流源校准类型
+    public enum Calibrate_DCSourceType : byte
+    {
+        直流电压 = (byte)'U',
+        直流电流 = (byte)'I'
+    }
+    #endregion
     #endregion Enum Classes
 
     #region Structs

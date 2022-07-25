@@ -199,5 +199,14 @@ namespace DandickDeviceTest
             Assert.True(result2.IsSuccess);
             dandick.Close();
         }
+
+        [Fact]
+        public void StartDCSource()
+        {
+            dandick.Open();
+            var RES=  dandick.StartDCSource(DCSourceType.DCSourceType_U);
+            Assert.True(RES.IsSuccess);
+            dandick.Close();
+        }
     }
 }

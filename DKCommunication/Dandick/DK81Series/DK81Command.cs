@@ -301,7 +301,7 @@ namespace DKCommunication.Dandick.DK81Series
             return bytesHeader;
         }
 
-     
+
         #endregion 设备信息【报文创建】       
 
         #region 交流表源命令【报文创建】
@@ -521,7 +521,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="sourceQConst"></param>
         /// <param name="meterDIV"></param>
         /// <param name="meterRounds"></param>
-        /// <returns></returns>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateWriteElectricity(ElectricityType electricityType, float meterPConst, float meterQConst, float sourcePConst, float sourceQConst, uint meterDIV, uint meterRounds)
         {
             //数据区字节数组
@@ -607,10 +607,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建【直流源打开命令】报文
         /// </summary>
         /// <param name="dCSourceType">直流源输出类型</param>
-        /// <returns>下位机回复的有效报文</returns>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateStartDCSource(DCSourceType dCSourceType)
         {
-            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.StartDCSource, DK81CommunicationInfo.StartDCSourceLength,dCSourceType);
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.StartDCSource, DK81CommunicationInfo.StartDCSourceLength, dCSourceType);
             return result;
         }
 
@@ -618,7 +618,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建【直流源关闭命令】报文
         /// </summary>
         /// <param name="dCSourceType">直流源输出类型</param>
-        /// <returns>下位机回复的有效报文</returns>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateStopDCSource(DCSourceType dCSourceType)
         {
             OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.StopDCSource, DK81CommunicationInfo.StopDCSourceLength, dCSourceType);
@@ -630,10 +630,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="rangeIndex">当前档位索引值</param>
         /// <param name="dCSourceType">直流源输出类型</param>
-        /// <returns></returns>
-        private OperateResult<byte[]> CreateSetDCSourceRange(byte rangeIndex,DCSourceType dCSourceType)
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateSetDCSourceRange(byte rangeIndex, DCSourceType dCSourceType)
         {
-            byte[] data =new byte[2];
+            byte[] data = new byte[2];
             data[0] = rangeIndex;
             data[1] = (byte)(dCSourceType);
 
@@ -647,12 +647,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="rangeIndex"></param>
         /// <param name="SData"></param>
         /// <param name="dCSourceType"></param>
-        /// <returns></returns>
-        private OperateResult<byte[]> CreateWriteDCSourceAmplitude(byte rangeIndex,float SData, DCSourceType dCSourceType)
+        /// <returns>带成功标志的操作结果</returns>
+        private OperateResult<byte[]> CreateWriteDCSourceAmplitude(byte rangeIndex, float SData, DCSourceType dCSourceType)
         {
             byte[] data = new byte[6];
             data[0] = rangeIndex;
-            ByteTransform.TransByte(SData).CopyTo(data,1);
+            ByteTransform.TransByte(SData).CopyTo(data, 1);
             data[5] = (byte)(dCSourceType);
 
             OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.WriteDCSourceAmplitude, DK81CommunicationInfo.WriteDCSourceAmplitudeLength, data);
@@ -663,7 +663,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 创建【读取直流源参数】报文
         /// </summary>
         /// <param name="dCSourceType"></param>
-        /// <returns></returns>
+        /// <returns>带成功标志的操作结果</returns>
         private OperateResult<byte[]> CreateReadDCSourceData(DCSourceType dCSourceType)
         {
             OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.ReadDCSourceData, DK81CommunicationInfo.ReadDCSourceDataLength, dCSourceType);
@@ -671,6 +671,204 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         #endregion
+
+        #region 校准指令【报文创建】
+        /// <summary>
+        /// 创建【清空校准数据】报文
+        /// </summary>
+        /// <param name="calibrateType">校准时的操作类型</param>
+        /// <param name="uRangeIndex">电压档位</param>
+        /// <param name="iRangeIndex">电流档位</param>
+        /// <returns>带成功标志的操作结果：创建的完整报文</returns>
+        private OperateResult<byte[]> CreateCalibrate_ClearData(CalibrateType calibrateType, byte uRangeIndex, byte iRangeIndex)
+        {
+            byte[] data = new byte[3];
+            data[0] = (byte)calibrateType;
+            data[1] = uRangeIndex;
+            data[2] = iRangeIndex;
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_ClearData, DK81CommunicationInfo.Calibrate_ClearDataLength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【切换交流源（表）校准档位】报文
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值</param>
+        /// <param name="iRangeIndex">电流档位索引值</param>
+        /// <returns>带成功标志的操作结果：创建的完整报文</returns>
+        private OperateResult<byte[]> CreateCalibrate_SwitchACRange(byte uRangeIndex, byte iRangeIndex)
+        {
+            byte[] data = new byte[2];
+            data[0] = uRangeIndex;
+            data[1] = iRangeIndex;
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_SwitchACRange, DK81CommunicationInfo.Calibrate_SwitchACRangeLength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【设置交流源（表）校准点数据】报文
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值</param>
+        /// <param name="iRangeIndex">电流档位索引值</param>
+        /// <returns>带成功标志的操作结果：创建的完整报文</returns>
+        private OperateResult<byte[]> CreateCalibrate_SwitchACPoint(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float sUA, float sUB, float sUC, float sIA, float sIB, float sIC)
+        {
+            byte[] data = new byte[27];
+            data[0] = uRangeIndex;
+            data[1] = iRangeIndex;
+            data[2] = (byte)calibrateLevel;
+            ByteTransform.TransByte(sUA).CopyTo(data, 3);
+            ByteTransform.TransByte(sUB).CopyTo(data, 7);
+            ByteTransform.TransByte(sUC).CopyTo(data, 11);
+            ByteTransform.TransByte(sIA).CopyTo(data, 15);
+            ByteTransform.TransByte(sIB).CopyTo(data, 19);
+            ByteTransform.TransByte(sIC).CopyTo(data, 23);
+
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_SwitchACPoint, DK81CommunicationInfo.Calibrate_SwitchACPointLength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【执行交流源校准】报文
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值，校验用</param>
+        /// <param name="iRangeIndex">电流档位索引值，校验用</param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="mUA">当前所接的标准表的读数</param>
+        /// <param name="mUB">当前所接的标准表的读数</param>
+        /// <param name="mUC">当前所接的标准表的读数</param>
+        /// <param name="mIA">当前所接的标准表的读数</param>
+        /// <param name="mIB">当前所接的标准表的读数</param>
+        /// <param name="mIC">当前所接的标准表的读数</param>
+        /// <returns>带成功标志的操作结果：创建的完整报文</returns>
+        private OperateResult<byte[]> CreateCalibrate_DoAC(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float mUA, float mUB, float mUC, float mIA, float mIB, float mIC)
+        {
+            byte[] data = new byte[27];
+            data[0] = uRangeIndex;
+            data[1] = iRangeIndex;
+            data[2] = (byte)calibrateLevel;
+            ByteTransform.TransByte(mUA).CopyTo(data, 3);
+            ByteTransform.TransByte(mUB).CopyTo(data, 7);
+            ByteTransform.TransByte(mUC).CopyTo(data, 11);
+            ByteTransform.TransByte(mIA).CopyTo(data, 15);
+            ByteTransform.TransByte(mIB).CopyTo(data, 19);
+            ByteTransform.TransByte(mIC).CopyTo(data, 23);
+
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_DoAC, DK81CommunicationInfo.Calibrate_DoACLength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【确认交流源校准，保存校准参数】报文
+        /// </summary>
+        /// <param name="uRangeIndex"></param>
+        /// <param name="iRangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateCalibrate_Save(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel)
+        {
+            byte[] data = new byte[3];
+            data[0] = uRangeIndex;
+            data[1] = iRangeIndex;
+            data[2] = (byte)calibrateLevel;
+
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_Save, DK81CommunicationInfo.Calibrate_SaveLength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【交流标准表和钳形表校准】报文
+        /// </summary>
+        /// <param name="uRangeIndex"></param>
+        /// <param name="iRangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateCalibrate_DoACMeter(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float UA, float UB, float UC, float IA, float IB, float IC)
+        {
+            byte[] data = new byte[27];
+            data[0] = uRangeIndex;
+            data[1] = iRangeIndex;
+            data[2] = (byte)calibrateLevel;
+            ByteTransform.TransByte(UA).CopyTo(data, 3);
+            ByteTransform.TransByte(UB).CopyTo(data, 7);
+            ByteTransform.TransByte(UC).CopyTo(data, 11);
+            ByteTransform.TransByte(IA).CopyTo(data, 15);
+            ByteTransform.TransByte(IB).CopyTo(data, 19);
+            ByteTransform.TransByte(IC).CopyTo(data, 23);
+
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_DoACMeter, DK81CommunicationInfo.Calibrate_DoACMeterlength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【设置直流源校准点】报文
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <param name="rangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="sDCAmplitude"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateCalibrate_SwitchDCPoint(Calibrate_DCSourceType dCSourceType,byte rangeIndex,CalibrateLevel calibrateLevel,float sDCAmplitude)
+        {
+            if (calibrateLevel==CalibrateLevel.相位校准)
+            {
+                return new OperateResult<byte[]>(8112815,"请选择正确的校准点");
+            }
+            byte[] data=new byte[7];
+            data[0] = (byte)dCSourceType;
+            data[1] = rangeIndex;
+            data[2] = (byte)calibrateLevel;
+            ByteTransform.TransByte(sDCAmplitude).CopyTo(data, 3);
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_SwitchDCPoint, DK81CommunicationInfo.Calibrate_SwitchDCPointLength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【执行直流源校准】报文
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <param name="rangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="mDCAmplitude"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateCalibrate_DoDC(Calibrate_DCSourceType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float mDCAmplitude)
+        {
+            if (calibrateLevel == CalibrateLevel.相位校准)
+            {
+                return new OperateResult<byte[]>(8112815, "请选择正确的校准点");
+            }
+            byte[] data = new byte[7];
+            data[0] = (byte)dCSourceType;
+            data[1] = rangeIndex;
+            data[2] = (byte)calibrateLevel;
+            ByteTransform.TransByte(mDCAmplitude).CopyTo(data, 3);
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_DoDC, DK81CommunicationInfo.Calibrate_DoDClength, data);
+            return result;
+        }
+
+        /// <summary>
+        /// 创建【直流表校准】报文
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <param name="rangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="sDCAmplitude"></param>
+        /// <returns></returns>
+        private OperateResult<byte[]> CreateCalibrate_DoDCMeter(Calibrate_DCSourceType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float sDCAmplitude)
+        {
+            if (calibrateLevel == CalibrateLevel.相位校准)
+            {
+                return new OperateResult<byte[]>(8112815, "请选择正确的校准点");
+            }
+            byte[] data = new byte[7];
+            data[0] = (byte)dCSourceType;
+            data[1] = rangeIndex;
+            data[2] = (byte)calibrateLevel;
+            ByteTransform.TransByte(sDCAmplitude).CopyTo(data, 3);
+            OperateResult<byte[]> result = CreateCommandHelper(DK81CommunicationInfo.Calibrate_DoDCMeter, DK81CommunicationInfo.Calibrate_DoDCMeterLength, data);
+            return result;
+        }
+        #endregion 校准指令【报文创建】
 
         #endregion private CommandBuilder报文创建
 
@@ -798,7 +996,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
 
-      
+
         #endregion 设备信息【操作命令】        
 
         #region 交流源（表）【操作命令】
@@ -1228,10 +1426,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="rangeIndex"></param>
         /// <param name="SData"></param>
         /// <param name="dCSourceType"></param>
-        /// <returns></returns>
-        internal OperateResult<byte[]> WriteDCSourceAmplitudeCommand(byte rangeIndex,float SData, DCSourceType dCSourceType)
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> WriteDCSourceAmplitudeCommand(byte rangeIndex, float SData, DCSourceType dCSourceType)
         {
-            OperateResult<byte[]> createResult = CreateWriteDCSourceAmplitude( rangeIndex,  SData,  dCSourceType);
+            OperateResult<byte[]> createResult = CreateWriteDCSourceAmplitude(rangeIndex, SData, dCSourceType);
             if (!createResult.IsSuccess)
             {
                 return createResult;
@@ -1245,7 +1443,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 执行【读取直流源参数】命令并返回下位机回复报文
         /// </summary>
         /// <param name="dCSourceType"></param>
-        /// <returns></returns>
+        /// <returns>下位机回复的有效报文</returns>
         internal OperateResult<byte[]> ReadDCSourceDataCommand(DCSourceType dCSourceType)
         {
             OperateResult<byte[]> createResult = CreateReadDCSourceData(dCSourceType);
@@ -1258,6 +1456,178 @@ namespace DKCommunication.Dandick.DK81Series
             return responseBytes;
         }
         #endregion 【直流源】操作命令
+
+        #region 【校准】 操作命令
+        /// <summary>
+        ///  执行【清空校准数据】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="calibrateType">校准时的操作类型</param>
+        /// <param name="uRangeIndex">电压档位索引值</param>
+        /// <param name="iRangeIndex">电流档位索引值</param>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> Calibrate_ClearDataCommand(CalibrateType calibrateType, byte uRangeIndex, byte iRangeIndex)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_ClearData(calibrateType, uRangeIndex, iRangeIndex);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【切换交流源（表）校准档位】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值</param>
+        /// <param name="iRangeIndex">电流档位索引值</param>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> Calibrate_SwitchACRangeCommand(byte uRangeIndex, byte iRangeIndex)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_SwitchACRange(uRangeIndex, iRangeIndex);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【切换交流源（表）校准点】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值</param>
+        /// <param name="iRangeIndex">电流档位索引值</param>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> Calibrate_SwitchACPointCommand(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float sUA, float sUB, float sUC, float sIA, float sIB, float sIC)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_SwitchACPoint(uRangeIndex, iRangeIndex, calibrateLevel, sUA, sUB, sUC, sIA, sIB, sIC);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【执行交流源校准】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="uRangeIndex">电压档位索引值，校验用</param>
+        /// <param name="iRangeIndex">电流档位索引值，校验用</param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="mUA">当前所接的标准表的读数</param>
+        /// <param name="mUB">当前所接的标准表的读数</param>
+        /// <param name="mUC">当前所接的标准表的读数</param>
+        /// <param name="mIA">当前所接的标准表的读数</param>
+        /// <param name="mIB">当前所接的标准表的读数</param>
+        /// <param name="mIC">当前所接的标准表的读数</param>
+        /// <returns>下位机回复的有效报文</returns>
+        internal OperateResult<byte[]> Calibrate_DoACCommand(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float mUA, float mUB, float mUC, float mIA, float mIB, float mIC)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_DoAC(uRangeIndex, iRangeIndex, calibrateLevel, mUA, mUB, mUC, mIA, mIB, mIC);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【确认交流源校准，保存校准参数】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="uRangeIndex"></param>
+        /// <param name="iRangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <returns></returns>
+        internal OperateResult<byte[]> Calibrate_SaveCommand(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_Save(uRangeIndex, iRangeIndex, calibrateLevel);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【交流标准表和钳形表校准】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="uRangeIndex"></param>
+        /// <param name="iRangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <returns></returns>
+        internal OperateResult<byte[]> Calibrate_DoACMeterCommand(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float UA, float UB, float UC, float IA, float IB, float IC)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_DoACMeter(uRangeIndex, iRangeIndex, calibrateLevel, UA, UB, UC, IA, IB, IC);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        internal OperateResult<byte[]> Calibrate_SwitchDCPointCommand(Calibrate_DCSourceType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float sDCAmplitude)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_SwitchDCPoint(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【执行直流源校准】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <param name="rangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="sDCAmplitude"></param>
+        /// <returns></returns>
+        internal OperateResult<byte[]> Calibrate_DoDCCommand(Calibrate_DCSourceType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float mDCAmplitude)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_DoDC(dCSourceType, rangeIndex, calibrateLevel, mDCAmplitude);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+
+        /// <summary>
+        /// 执行【直流表校准】命令并返回下位机回复报文
+        /// </summary>
+        /// <param name="dCSourceType"></param>
+        /// <param name="rangeIndex"></param>
+        /// <param name="calibrateLevel"></param>
+        /// <param name="sDCAmplitude"></param>
+        /// <returns></returns>
+        internal OperateResult<byte[]> Calibrate_DoDCMeterCommand(Calibrate_DCSourceType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float sDCAmplitude)
+        {
+            OperateResult<byte[]> createResult = CreateCalibrate_DoDCMeter(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
+            if (!createResult.IsSuccess)
+            {
+                return createResult;
+            }
+            //创建指令成功则获取回复数据：（已保证数据的有效性）
+            OperateResult<byte[]> responseBytes = CheckResponse(createResult.Content);
+            return responseBytes;
+        }
+        #endregion 【校准】 操作命令
         #endregion internal Commands操作命令
 
     }

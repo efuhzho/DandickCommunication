@@ -28,19 +28,6 @@ namespace DKCommunication.Dandick.DKInterface
         /// <param name="mode">模式</param>
         /// <returns>带信息的结果</returns>
         OperateResult<byte[]> SetSystemMode(TSystemMode mode);
-
-        /// <summary>
-        /// 保存校准参数
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_Save();
-
-        /// <summary>
-        /// 清除已校准的数据
-        /// </summary>
-        /// <returns></returns>
-        OperateResult<byte[]> Calibrate_ClearData();
-
         #endregion
     }    
 }
