@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("南京子越")]
 [assembly: AssemblyProduct("DKCommunication")]
-[assembly: AssemblyCopyright("Copyright ©  2022")]
+[assembly: AssemblyCopyright("Copyright ©  2022 版权所有 周付宏")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
