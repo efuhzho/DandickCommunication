@@ -1,9 +1,7 @@
-﻿using System;
+﻿using DKCommunication.BasicFramework;
+using System;
 using System.ComponentModel;
-using System.Text;
 using System.Windows;
-using DKCommunication.BasicFramework;
-using DKCommunication.Core;
 namespace DKCommunication.Dandick.DK81Series
 {
     /// <summary>
