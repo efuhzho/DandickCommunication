@@ -13,7 +13,7 @@ namespace DKCommunication.Dandick.DK81Series
         IDK_DCSource<DCSourceType>,   //直流源接口
         IDK_ElectricityModel<ElectricityType>,   //电能模块接口
         IDK_IOModel,     //开关量模块接口
-        IDK_Calibrate<CalibrateType, CalibrateLevel, Calibrate_DCSourceType>
+        IDK_Calibrate<CalibrateType, CalibrateLevel, Calibrate_DCSourceType, Calibrate_DCMeterType>
     {
 
         #region --------------------------------- 私有字段 ----------------------------------------
@@ -1742,7 +1742,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="sDCAmplitude"></param>
         /// <returns></returns>
         public OperateResult<byte[]> Calibrate_DoDCMeter(
-            Calibrate_DCSourceType dCSourceType,
+            Calibrate_DCMeterType dCSourceType,
             byte rangeIndex,
             CalibrateLevel calibrateLevel,
             float sDCAmplitude)
@@ -1765,12 +1765,6 @@ namespace DKCommunication.Dandick.DK81Series
         {
             return new OperateResult<byte[]>(110, "暂不支持的功能");
         }
-
-
-
-
-
-
 
         #region --------------------------------- private Methods Helper 解析数据------------------
 

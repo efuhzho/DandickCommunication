@@ -811,12 +811,29 @@ namespace DKCommunication.Dandick.DK81Series
     #endregion
 
     #region 直流源校准类型
+    /// <summary>
+    /// 直流源校准类型
+    /// </summary>
     public enum Calibrate_DCSourceType : byte
     {
         直流电压 = (byte)'U',
         直流电流 = (byte)'I'
     }
     #endregion
+
+    #region 直流表校准类型
+    /// <summary>
+    /// 直流表校准类型
+    /// </summary>
+    public enum Calibrate_DCMeterType : byte
+    {
+        直流电压 = 0,
+        直流电流 = 1,
+        纹波电压 = 2,
+        纹波电流 = 3
+    }
+    #endregion
+
     #endregion Enum Classes
 
     #region Structs

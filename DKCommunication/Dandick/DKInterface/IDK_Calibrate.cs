@@ -1,6 +1,6 @@
 ﻿namespace DKCommunication.Dandick.DKInterface
 {
-    internal interface IDK_Calibrate<TCalibrateType, TCalibrateLevel, TCalibrate_DCSourceType>
+    internal interface IDK_Calibrate<TCalibrateType, TCalibrateLevel, TCalibrate_DCSourceType,TCalibrate_DCMeterType>
     {
         /// <summary>
         /// 当前校准类型
@@ -144,7 +144,7 @@
         /// <param name="sDCAmplitude"></param>
         /// <returns></returns>
         OperateResult<byte[]> Calibrate_DoDCMeter(
-        TCalibrate_DCSourceType dCSourceType,
+        TCalibrate_DCMeterType dCSourceType,
         byte rangeIndex,
         TCalibrateLevel calibrateLevel,
         float sDCAmplitude);

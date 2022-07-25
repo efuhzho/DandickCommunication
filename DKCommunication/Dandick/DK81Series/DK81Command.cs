@@ -854,7 +854,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="calibrateLevel"></param>
         /// <param name="sDCAmplitude"></param>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateCalibrate_DoDCMeter(Calibrate_DCSourceType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float sDCAmplitude)
+        private OperateResult<byte[]> CreateCalibrate_DoDCMeter(Calibrate_DCMeterType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float sDCAmplitude)
         {
             if (calibrateLevel == CalibrateLevel.相位校准)
             {
@@ -1616,7 +1616,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="calibrateLevel"></param>
         /// <param name="sDCAmplitude"></param>
         /// <returns></returns>
-        internal OperateResult<byte[]> Calibrate_DoDCMeterCommand(Calibrate_DCSourceType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float sDCAmplitude)
+        internal OperateResult<byte[]> Calibrate_DoDCMeterCommand(Calibrate_DCMeterType dCSourceType, byte rangeIndex, CalibrateLevel calibrateLevel, float sDCAmplitude)
         {
             OperateResult<byte[]> createResult = CreateCalibrate_DoDCMeter(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
             if (!createResult.IsSuccess)
