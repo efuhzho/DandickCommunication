@@ -725,12 +725,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 有功功率
         /// </summary>
-        P = 0x50,
+        P =(byte)'P', //0x50,
 
         /// <summary>
         /// 无功功率
         /// </summary>
-        Q = 0x51
+        Q =(byte)'Q' //0x51
     }
     #endregion 电能校验类型
 

@@ -1752,6 +1752,7 @@ namespace DKCommunication.Dandick.DK81Series
             return response;
         }
         #endregion 校准
+
         #endregion Public Methods
 
         //TODO 暂不支持的功能
