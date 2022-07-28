@@ -62,7 +62,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 保护电流档位列表
         /// </summary>
-        private List<float> _iProtectRanges ;       //TODO 删除默认值设定？
+        private List<float> _iProtectRanges ;       
 
 
         #endregion ACSource 交流源
