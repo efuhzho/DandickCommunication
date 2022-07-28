@@ -560,7 +560,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="rangeIndex">直流表档位索引字</param>
         /// <param name="type">直流表测量类型</param>
         /// <returns>带成功标志的操作结果</returns>
-        private OperateResult<byte[]> CreateSetDCMeterRange(uint rangeIndex, DCMerterMeasureType type)
+        private OperateResult<byte[]> CreateSetDCMeterRange(byte rangeIndex, DCMerterMeasureType type)
         {
             byte[] data = new byte[2];
             data[0] = (byte)rangeIndex;
@@ -1303,7 +1303,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="rangeIndex">当前直流表档位索引字</param>
         /// <param name="type">直流表测量类型</param>
         /// <returns>带成功标志的操作结果</returns>
-        internal OperateResult<byte[]> SetDCMeterRangeCommand(uint rangeIndex, DCMerterMeasureType type)
+        internal OperateResult<byte[]> SetDCMeterRangeCommand(byte rangeIndex, DCMerterMeasureType type)
         {
             OperateResult<byte[]> result = CreateSetDCMeterRange(rangeIndex, type);
             if (!result.IsSuccess)

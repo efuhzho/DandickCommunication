@@ -52,17 +52,17 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 交流电压档位列表:如果初始化失败则默认DK-34B1档位
         /// </summary>
-        private List<float> _uRanges = new List<float> { 380f, 220f, 100f, 57.7f };
+        private List<float> _uRanges ;
 
         /// <summary>
         /// 交流电流档位列表:如果初始化失败则默认DK-34B1档位
         /// </summary>
-        private List<float> _iRanges = new List<float> { 20f, 5f, 2f, 1f };
+        private List<float> _iRanges ;
 
         /// <summary>
         /// 保护电流档位列表
         /// </summary>
-        private List<float> _iProtectRanges = new List<float> { 0, 0, 0, 0 };       //TODO 删除默认值设定？
+        private List<float> _iProtectRanges ;       //TODO 删除默认值设定？
 
 
         #endregion ACSource 交流源
@@ -1400,10 +1400,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 【设置直流表量程】
         /// </summary>
-        /// <param name="rangeIndex">当前直流表档位索引字</param>
+        /// <param name="rangeIndex">当前直流表档位索引</param>
         /// <param name="type">直流表测量类型</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> SetDCMeterRange(uint rangeIndex, DCMerterMeasureType type)
+        public OperateResult<byte[]> SetDCMeterRange(byte rangeIndex, DCMerterMeasureType type)
         {
             OperateResult<byte[]> result = SetDCMeterRangeCommand(rangeIndex, type);
             if (result.IsSuccess)

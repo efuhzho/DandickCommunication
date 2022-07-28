@@ -57,7 +57,7 @@ namespace DKCommunication.Dandick.DKInterface
         /// <param name="rangeIndex">当前直流表档位索引字</param>
         /// <param name="type">直流表测量类型</param>
         /// <returns></returns>
-        OperateResult<byte[]> SetDCMeterRange(uint rangeIndex, TDCMeterMeasureType type);
+        OperateResult<byte[]> SetDCMeterRange(byte rangeIndex, TDCMeterMeasureType type);
 
         /// <summary>
         /// 读直流表测量参数/数据
