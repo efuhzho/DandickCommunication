@@ -199,7 +199,7 @@ namespace DKCommunication.Dandick.DK81Series
         }
 
         /// <summary>
-        /// 创建完整的指令，带CRC校验码，可直接发送给串口
+        /// 创建完整的指令，带CRC校验码，可直接发送给串口。
         /// </summary>
         /// <param name="commandCode">命令码</param>
         /// <param name="commandLength">报文长度</param>
