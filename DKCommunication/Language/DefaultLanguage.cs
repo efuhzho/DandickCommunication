@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System. Collections. Generic;
+using System. Linq;
+using System. Text;
 
-namespace DKCommunication.Language
+namespace DKCommunication. Language
 {
     /// <summary>
     /// 系统的语言基类，默认也即是中文版本
     /// </summary>
     public class DefaultLanguage
     {
-////#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
+        ////#pragma warning disable CS1591 // 缺少对公共可见类型或成员的 XML 注释
 
         /***********************************************************************************
          * 
@@ -25,7 +25,7 @@ namespace DKCommunication.Language
         public virtual string ErrorIb => "故障：Ib；";
         public virtual string ErrorIc => "故障：Ic；";
         public virtual string ErrorI0 => "故障：I0；";
-        public virtual string ErrorDC => "故障：DC；"; 
+        public virtual string ErrorDC => "故障：DC；";
         public virtual string CRCCheckFailed => "CRC校验检查失败：";
 
 
@@ -178,7 +178,7 @@ namespace DKCommunication.Language
         public virtual string LogNetFatal => "致命";
         public virtual string LogNetAbandon => "放弃";
         public virtual string LogNetAll => "全部";
-        
+
         /***********************************************************************************
          * 
          *    Modbus相关
@@ -199,6 +199,6 @@ namespace DKCommunication.Language
         public virtual string ModbusLRCCheckFailed => "Modbus的LRC校验检查失败";
         public virtual string ModbusMatchFailed => "不是标准的modbus协议";
 
-//#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
+        //#pragma warning restore CS1591 // 缺少对公共可见类型或成员的 XML 注释
     }
 }
