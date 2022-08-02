@@ -52,17 +52,17 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 交流电压档位列表:如果初始化失败则默认DK-34B1档位
         /// </summary>
-        private List<float> _uRanges ;
+        private List<float> _uRanges;
 
         /// <summary>
         /// 交流电流档位列表:如果初始化失败则默认DK-34B1档位
         /// </summary>
-        private List<float> _iRanges ;
+        private List<float> _iRanges;
 
         /// <summary>
         /// 保护电流档位列表
         /// </summary>
-        private List<float> _iProtectRanges ;       
+        private List<float> _iProtectRanges;
 
 
         #endregion ACSource 交流源
@@ -118,7 +118,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 无参构造方法，默认ID = 0;
         /// </summary>
-        public DK81Device() : base()
+        public DK81Device( ) : base()
         {
 
         }
@@ -849,7 +849,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【并非所有设备都会返回准确的设备信息】
         /// </summary>
         /// <returns>包含信息的操作结果</returns>
-        public OperateResult<byte[]> Handshake()
+        public OperateResult<byte[]> Handshake( )
         {
             OperateResult<byte[]> response = HandshakeCommand();
 
@@ -901,7 +901,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取【交流源档位】，初始化设备只读属性
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadACSourceRanges()
+        public OperateResult<byte[]> ReadACSourceRanges( )
         {
             OperateResult<byte[]> response = ReadACSourceRangesCommand();
             if (response.IsSuccess)
@@ -915,7 +915,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 交流源关闭命令,返回OK
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> StopACSource()
+        public OperateResult<byte[]> StopACSource( )
         {
             OperateResult<byte[]> response = StopACSourceCommand();
             return response;
@@ -925,7 +925,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【交流源打开】命令,返回OK
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> StartACSource()
+        public OperateResult<byte[]> StartACSource( )
         {
             OperateResult<byte[]> response = StartACSourceCommand();
             return response;
@@ -1253,13 +1253,18 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取交流源当前输出值】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadACSourceData()
+        public OperateResult<byte[]> ReadACSourceData( )
         {
             OperateResult<byte[]> response = ReadACSourceDataCommmand();
             if (response.IsSuccess)
             {
                 //命令执行成功则解析数据
                 AnalysisReadACSourceData(response.Content);
+            }
+            if (ReadACSourceStatus().IsSuccess)
+
+            {
+                AnalysisReadACStatus(ReadACSourceStatus().Content);
             }
             return response;
         }
@@ -1268,7 +1273,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取当前交流源输出状态】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadACSourceStatus()
+        public OperateResult<byte[]> ReadACSourceStatus( )
         {
             OperateResult<byte[]> response = ReadACStatusCommmand();
             if (response.IsSuccess)
@@ -1369,7 +1374,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// Messege：错误信息，IsSuccess为True时忽略；       
         /// Content：下位机回复的原始报文，通常可忽略，当怀疑回复数据解析有误的时候才需要观阅 ；       
         /// </returns>
-        public OperateResult<byte[]> ReadElectricityDeviation()
+        public OperateResult<byte[]> ReadElectricityDeviation( )
         {
             OperateResult<byte[]> response = ReadElectricityDeviationCommmand();
             if (response.IsSuccess)
@@ -1387,7 +1392,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取【直流表档位】，初始化设备只读属性
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadDCMeterRanges()
+        public OperateResult<byte[]> ReadDCMeterRanges( )
         {
             OperateResult<byte[]> response = ReadDCMeterRangesCommand();
             if (response.IsSuccess)
@@ -1418,7 +1423,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【设置直流表测量类型】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> SetDCMeterMesureType()
+        public OperateResult<byte[]> SetDCMeterMesureType( )
         {
             return new OperateResult<byte[]>(110, "不支持的功能");
         }
@@ -1427,7 +1432,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取直流表测量数据】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadDCMeterData()
+        public OperateResult<byte[]> ReadDCMeterData( )
         {
             OperateResult<byte[]> result = ReadDCMeterDataCommand();
             if (result.IsSuccess)
@@ -1444,7 +1449,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取【直流源档位】，初始化设备只读属性
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadDCSourceRanges()
+        public OperateResult<byte[]> ReadDCSourceRanges( )
         {
             OperateResult<byte[]> response = ReadDCSourceRangesCommand();
             if (response.IsSuccess)
@@ -1485,7 +1490,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【关闭直流源】
         /// </summary>       
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> StopDCSource()
+        public OperateResult<byte[]> StopDCSource( )
         {
             OperateResult<byte[]> response = StopDCSourceCommand(DCS_Type);
 
@@ -1509,7 +1514,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【设置直流源档位为自动量程】/【支持自动换挡模式的设备有效】
         /// </summary>
         /// <returns></returns>
-        public OperateResult<byte[]> SetDCSourceRangeAuto()
+        public OperateResult<byte[]> SetDCSourceRangeAuto( )
         {
             OperateResult<byte[]> response = SetDCSourceRangeCommand(0xFF, DCS_Type);
             return response;
@@ -1756,13 +1761,13 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion Public Methods
 
         //TODO 暂不支持的功能
-        public OperateResult<byte[]> ReadDCMeterDataWithTwoCh()
+        public OperateResult<byte[]> ReadDCMeterDataWithTwoCh( )
         {
             return new OperateResult<byte[]>(110, "暂不支持的功能");
         }
 
         //TODO 暂不支持的功能
-        public OperateResult<byte[]> SetDCMeterDataWithTwoCh()
+        public OperateResult<byte[]> SetDCMeterDataWithTwoCh( )
         {
             return new OperateResult<byte[]>(110, "暂不支持的功能");
         }
@@ -1883,6 +1888,7 @@ namespace DKCommunication.Dandick.DK81Series
             WireMode = (WireMode)response[128];
             CloseLoopMode = (CloseLoopMode)response[129];
             HarmonicMode = (HarmonicMode)response[130];
+
         }
 
         /// <summary>
