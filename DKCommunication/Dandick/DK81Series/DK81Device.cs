@@ -1,19 +1,19 @@
-﻿using DKCommunication.Dandick.DKInterface;
+﻿using DKCommunication. Dandick. DKInterface;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System. Collections. Generic;
+using System. Linq;
+using System. Text;
 
-namespace DKCommunication.Dandick.DK81Series
+namespace DKCommunication. Dandick. DK81Series
 {
     public class DK81Device : DK81Command,
-        IDK_BaseInterface<DisplayPage, SystemMode>, //系统接口
-        IDK_ACSource<WireMode, CloseLoopMode, HarmonicMode, ChannelsHarmonic, Harmonics, ChannelWattPower, ChannelWattLessPower>,    //交流源接口
+        IDK_BaseInterface<DisplayPage , SystemMode>, //系统接口
+        IDK_ACSource<WireMode , CloseLoopMode , HarmonicMode , ChannelsHarmonic , Harmonics , ChannelWattPower , ChannelWattLessPower>,    //交流源接口
         IDK_DCMeter<DCMerterMeasureType>,    //直流表接口
         IDK_DCSource<DCSourceType>,   //直流源接口
         IDK_ElectricityModel<ElectricityType>,   //电能模块接口
         IDK_IOModel,     //开关量模块接口
-        IDK_Calibrate<CalibrateType, CalibrateLevel, Calibrate_DCSourceType, Calibrate_DCMeterType>
+        IDK_Calibrate<CalibrateType , CalibrateLevel , Calibrate_DCSourceType , Calibrate_DCMeterType>
     {
 
         #region --------------------------------- 私有字段 ----------------------------------------
@@ -52,17 +52,17 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 交流电压档位列表:如果初始化失败则默认DK-34B1档位
         /// </summary>
-        private List<float> _uRanges ;
+        private List<float> _uRanges;
 
         /// <summary>
         /// 交流电流档位列表:如果初始化失败则默认DK-34B1档位
         /// </summary>
-        private List<float> _iRanges ;
+        private List<float> _iRanges;
 
         /// <summary>
         /// 保护电流档位列表
         /// </summary>
-        private List<float> _iProtectRanges ;       
+        private List<float> _iProtectRanges;
 
 
         #endregion ACSource 交流源
@@ -118,7 +118,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 无参构造方法，默认ID = 0;
         /// </summary>
-        public DK81Device() : base()
+        public DK81Device ( ) : base ( )
         {
 
         }
@@ -127,7 +127,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// 指定ID的默认构造方法
         /// </summary>
         /// <param name="id"></param>
-        public DK81Device(ushort id) : base(id)
+        public DK81Device ( ushort id ) : base ( id )
         {
 
         }
@@ -139,12 +139,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 当前显示页面
         /// </summary>
-        public DisplayPage DisplayPage { get; set; } = DisplayPage.PageDefault;
+        public DisplayPage DisplayPage { get; set; } = DisplayPage. PageDefault;
 
         /// <summary>
         /// 系统模式
         /// </summary>
-        public SystemMode SystemMode { get; set; } = SystemMode.ModeDefault;
+        public SystemMode SystemMode { get; set; } = SystemMode. ModeDefault;
 
         #endregion Base 系统信号
 
@@ -243,7 +243,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 接线模式枚举
         /// </summary>
-        public WireMode WireMode { get; set; } = WireMode.WireMode_3P4L;
+        public WireMode WireMode { get; set; } = WireMode. WireMode_3P4L;
 
         /// <summary>
         /// 闭环模式枚举
@@ -274,7 +274,7 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _harmonicCount; }
             set
             {
-                if (_harmonicCount >= 0 && _harmonicCount < 28) //协议建议长度超过256最好分批发送
+                if ( _harmonicCount >= 0 && _harmonicCount < 28 ) //协议建议长度超过256最好分批发送
                 {
                     _harmonicCount = value;
                 }
@@ -289,7 +289,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 当前所有谐波输出数据
         /// </summary>
-        public Harmonics[] Harmonics { get; set; }
+        public Harmonics [ ] Harmonics { get; set; }
 
 
         private float _UA;
@@ -666,7 +666,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 电能校验类型（ 电能测量）
         /// </summary>
-        public ElectricityType ElectricityType { get; set; } = ElectricityType.P;
+        public ElectricityType ElectricityType { get; set; } = ElectricityType. P;
         /// <summary>
         /// 电能测量有功常数
         /// </summary>
@@ -800,7 +800,7 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 直流表测量类型
         /// </summary>
-        public DCMerterMeasureType DCM_MeasureType { get; set; } = DCMerterMeasureType.DCM_Voltage;
+        public DCMerterMeasureType DCM_MeasureType { get; set; } = DCMerterMeasureType. DCM_Voltage;
 
         private byte _DCM_RangeIndex;
         /// <summary>
@@ -849,13 +849,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【并非所有设备都会返回准确的设备信息】
         /// </summary>
         /// <returns>包含信息的操作结果</returns>
-        public OperateResult<byte[]> Handshake()
+        public OperateResult<byte [ ]> Handshake ( )
         {
-            OperateResult<byte[]> response = HandshakeCommand();
+            OperateResult<byte [ ]> response = HandshakeCommand ( );
 
-            if (response.IsSuccess)
+            if ( response. IsSuccess )
             {
-                AnalysisHandshake(response.Content);
+                AnalysisHandshake ( response. Content );
 
                 //TODO 需要删除
                 //ReadACSourceRanges();
@@ -870,10 +870,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="mode">系统模式</param>
         /// <returns>返回OK,下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> SetSystemMode(SystemMode mode)
+        public OperateResult<byte [ ]> SetSystemMode ( SystemMode mode )
         {
-            OperateResult<byte[]> response = SetSystemModeCommand(mode);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = SetSystemModeCommand ( mode );
+            if ( response. IsSuccess )
             {
                 SystemMode = mode;
             }
@@ -885,10 +885,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="page">要设置的显示页面</param>
         /// <returns>返回OK,下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> SetDisplayPage(DisplayPage page)
+        public OperateResult<byte [ ]> SetDisplayPage ( DisplayPage page )
         {
-            OperateResult<byte[]> response = SetDisplayPageCommand(page);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = SetDisplayPageCommand ( page );
+            if ( response. IsSuccess )
             {
                 DisplayPage = page;
             }
@@ -901,12 +901,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取【交流源档位】，初始化设备只读属性
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadACSourceRanges()
+        public OperateResult<byte [ ]> ReadACSourceRanges ( )
         {
-            OperateResult<byte[]> response = ReadACSourceRangesCommand();
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = ReadACSourceRangesCommand ( );
+            if ( response. IsSuccess )
             {
-                AnalysisReadACSourceRanges(response.Content);
+                AnalysisReadACSourceRanges ( response. Content );
             }
             return response;
         }
@@ -915,9 +915,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 交流源关闭命令,返回OK
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> StopACSource()
+        public OperateResult<byte [ ]> StopACSource ( )
         {
-            OperateResult<byte[]> response = StopACSourceCommand();
+            OperateResult<byte [ ]> response = StopACSourceCommand ( );
             return response;
         }
 
@@ -925,9 +925,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【交流源打开】命令,返回OK
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> StartACSource()
+        public OperateResult<byte [ ]> StartACSource ( )
         {
-            OperateResult<byte[]> response = StartACSourceCommand();
+            OperateResult<byte [ ]> response = StartACSourceCommand ( );
             return response;
         }
 
@@ -940,10 +940,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="ACI_RangesIndex">交流电流档位的索引值，最大档位索引为0</param>
         /// <param name="IProtect_RangesIndex">【仅DK-51F】保护电流档位的索引值，最大档位索引为0</param>
         /// <returns></returns>
-        public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex, int IProtect_RangesIndex)  //TODO 档位有效值在属性中限定
+        public OperateResult<byte [ ]> SetACSourceRange ( int ACU_RangesIndex , int ACI_RangesIndex , int IProtect_RangesIndex )  //TODO 档位有效值在属性中限定
         {
-            OperateResult<byte[]> response = SetACSourceRangeCommand(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangesIndex);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = SetACSourceRangeCommand ( ACU_RangesIndex , ACI_RangesIndex , IProtect_RangesIndex );
+            if ( response. IsSuccess )
             {
                 ACU_RangeIndex = ACU_RangesIndex;
                 ACI_RangeIndex = ACI_RangesIndex;
@@ -958,9 +958,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="ACU_RangesIndex">交流电压档位的索引值，最大档位索引为0</param>
         /// <param name="ACI_RangesIndex">交流电流档位的索引值，最大档位索引为0</param>
         /// <returns></returns>
-        public OperateResult<byte[]> SetACSourceRange(int ACU_RangesIndex, int ACI_RangesIndex)  //TODO 档位有效值在属性中限定
+        public OperateResult<byte [ ]> SetACSourceRange ( int ACU_RangesIndex , int ACI_RangesIndex )  //TODO 档位有效值在属性中限定
         {
-            OperateResult<byte[]> response = SetACSourceRange(ACU_RangesIndex, ACI_RangesIndex, IProtect_RangeIndex);
+            OperateResult<byte [ ]> response = SetACSourceRange ( ACU_RangesIndex , ACI_RangesIndex , IProtect_RangeIndex );
             return response;
         }
         #endregion 【档位设置】
@@ -972,13 +972,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="data">将要设定的幅值（6个或9个浮点数据：UA,UB,UC,IA,IB,IC,IPA(可选),IPB(可选),IPC(可选)）</param>
         /// <returns>操作结果</returns>
-        public OperateResult<byte[]> WriteACSourceAmplitude(float[] data)
+        public OperateResult<byte [ ]> WriteACSourceAmplitude ( float [ ] data )
         {
-            if (data.Length != 6 && data.Length != 9)
+            if ( data. Length != 6 && data. Length != 9 )
             {
-                return new OperateResult<byte[]>("请输入6个浮点数据或9个浮点数据!");
+                return new OperateResult<byte [ ]> ( "请输入6个浮点数据或9个浮点数据!" );
             }
-            OperateResult<byte[]> response = WriteACSourceAmplitudeCommand(data);
+            OperateResult<byte [ ]> response = WriteACSourceAmplitudeCommand ( data );
             return response;
         }
 
@@ -995,10 +995,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="IPB">相保护电流幅值</param>
         /// <param name="IPC">相保护电流幅值</param>
         /// <returns></returns>
-        public OperateResult<byte[]> WriteACSourceAmplitude(float UA, float UB, float UC, float IA, float IB, float IC, float IPA, float IPB, float IPC)
+        public OperateResult<byte [ ]> WriteACSourceAmplitude ( float UA , float UB , float UC , float IA , float IB , float IC , float IPA , float IPB , float IPC )
         {
-            float[] data = new float[9] { UA, UB, UC, IA, IB, IC, IPA, IPB, IPC };
-            return WriteACSourceAmplitude(data);
+            float [ ] data = new float [ 9 ] { UA , UB , UC , IA , IB , IC , IPA , IPB , IPC };
+            return WriteACSourceAmplitude ( data );
         }
 
         /// <summary>
@@ -1011,10 +1011,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="IB">B相电流幅值</param>
         /// <param name="IC">C相电流幅值</param>
         /// <returns></returns>
-        public OperateResult<byte[]> WriteACSourceAmplitude(float UA, float UB, float UC, float IA, float IB, float IC)
+        public OperateResult<byte [ ]> WriteACSourceAmplitude ( float UA , float UB , float UC , float IA , float IB , float IC )
         {
-            float[] data = new float[9] { UA, UB, UC, IA, IB, IC, 0, 0, 0 };
-            return WriteACSourceAmplitude(data);
+            float [ ] data = new float [ 9 ] { UA , UB , UC , IA , IB , IC , 0 , 0 , 0 };
+            return WriteACSourceAmplitude ( data );
         }
 
         /// <summary>
@@ -1024,10 +1024,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="I">三相电流幅值</param>
         /// <param name="IP">三相保护电流幅值</param>
         /// <returns></returns>
-        public OperateResult<byte[]> WriteACSourceAmplitude(float U, float I, float IP)
+        public OperateResult<byte [ ]> WriteACSourceAmplitude ( float U , float I , float IP )
         {
-            float[] data = new float[9] { U, U, U, I, I, I, IP, IP, IP };
-            return WriteACSourceAmplitude(data);
+            float [ ] data = new float [ 9 ] { U , U , U , I , I , I , IP , IP , IP };
+            return WriteACSourceAmplitude ( data );
         }
 
         /// <summary>
@@ -1036,10 +1036,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="U">三相电压幅值</param>
         /// <param name="I">三相电流幅值</param>
         /// <returns></returns>
-        public OperateResult<byte[]> WriteACSourceAmplitude(float U, float I)
+        public OperateResult<byte [ ]> WriteACSourceAmplitude ( float U , float I )
         {
-            float[] data = new float[9] { U, U, U, I, I, I, 0, 0, 0 };
-            return WriteACSourceAmplitude(data);
+            float [ ] data = new float [ 9 ] { U , U , U , I , I , I , 0 , 0 , 0 };
+            return WriteACSourceAmplitude ( data );
         }
         #endregion 【设置交流源幅度】
 
@@ -1050,13 +1050,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="data">6个浮点数据：PhaseUA（基准相位必须是0）,PhaseUB,PhaseUC,PhaseIA,PhaseIB,PhaseIC</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WritePhase(float[] data)
+        public OperateResult<byte [ ]> WritePhase ( float [ ] data )
         {
-            if (data.Length != 6)
+            if ( data. Length != 6 )
             {
-                return new OperateResult<byte[]>("请输入正确的频率值组合：必须是6个浮点型数据");
+                return new OperateResult<byte [ ]> ( "请输入正确的频率值组合：必须是6个浮点型数据" );
             }
-            OperateResult<byte[]> response = WritePhaseCommand(data);
+            OperateResult<byte [ ]> response = WritePhaseCommand ( data );
             return response;
         }
 
@@ -1069,10 +1069,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="PhaseIb"></param>
         /// <param name="PhaseIc"></param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WritePhase(float PhaseUb, float PhaseUc, float PhaseIa, float PhaseIb, float PhaseIc)
+        public OperateResult<byte [ ]> WritePhase ( float PhaseUb , float PhaseUc , float PhaseIa , float PhaseIb , float PhaseIc )
         {
-            float[] data = new float[] { 0f, PhaseUb, PhaseUc, PhaseIa, PhaseIb, PhaseIc };
-            OperateResult<byte[]> response = WritePhase(data);
+            float [ ] data = new float [ ] { 0f , PhaseUb , PhaseUc , PhaseIa , PhaseIb , PhaseIc };
+            OperateResult<byte [ ]> response = WritePhase ( data );
             return response;
         }
         #endregion 【设置源相位】
@@ -1084,22 +1084,22 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="data">浮点数组：FrequencyA，FrequencyB(必须等于A相)，FrequencyC</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteFrequency(float[] data)
+        public OperateResult<byte [ ]> WriteFrequency ( float [ ] data )
         {
             //数据长度不是3：直接返回失败结果
-            if (data.Length != 3 || data == null)
+            if ( data. Length != 3 || data == null )
             {
-                return new OperateResult<byte[]>("请输入正确的频率值个数");
+                return new OperateResult<byte [ ]> ( "请输入正确的频率值个数" );
             }
 
             //数据长度是3
             byte Flag = 3;
-            if (data[0] == data[1] && data[0] != data[2])
+            if ( data [ 0 ] == data [ 1 ] && data [ 0 ] != data [ 2 ] )
             {
                 Flag = 2;
             }
 
-            OperateResult<byte[]> response = WriteFrequencyCommand(data, Flag);
+            OperateResult<byte [ ]> response = WriteFrequencyCommand ( data , Flag );
             return response;
         }
 
@@ -1108,9 +1108,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="frequencyAll">设置三相频率值</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteFrequency(float frequencyAll)
+        public OperateResult<byte [ ]> WriteFrequency ( float frequencyAll )
         {
-            return WriteFrequency(frequencyAll, frequencyAll);
+            return WriteFrequency ( frequencyAll , frequencyAll );
         }
 
         /// <summary>
@@ -1119,15 +1119,15 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="frequencyAB">设置AB相频率值</param>
         /// <param name="frequencyC">设置C相频率值</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteFrequency(float frequencyAB, float frequencyC)
+        public OperateResult<byte [ ]> WriteFrequency ( float frequencyAB , float frequencyC )
         {
-            float[] data = new float[] { frequencyAB, frequencyAB, frequencyC };
-            if (WriteFrequency(data).IsSuccess)
+            float [ ] data = new float [ ] { frequencyAB , frequencyAB , frequencyC };
+            if ( WriteFrequency ( data ). IsSuccess )
             {
                 Frequency = frequencyAB;
                 FrequencyC = frequencyC;
             }
-            return WriteFrequency(data);
+            return WriteFrequency ( data );
         }
         #endregion 【设置源频率】
 
@@ -1136,10 +1136,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="wireMode">枚举接线方式</param>
         /// <returns></returns>
-        public OperateResult<byte[]> SetWireMode(WireMode wireMode)
+        public OperateResult<byte [ ]> SetWireMode ( WireMode wireMode )
         {
-            OperateResult<byte[]> response = SetWireModeCommmand(wireMode);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = SetWireModeCommmand ( wireMode );
+            if ( response. IsSuccess )
             {
                 WireMode = wireMode;
             }
@@ -1154,10 +1154,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="closeLoopMode">枚举闭环模式</param>
         /// <param name="harmonicMode">枚举谐波模式</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> SetClosedLoop(CloseLoopMode closeLoopMode, HarmonicMode harmonicMode)
+        public OperateResult<byte [ ]> SetClosedLoop ( CloseLoopMode closeLoopMode , HarmonicMode harmonicMode )
         {
-            OperateResult<byte[]> response = SetClosedLoopCommmand(closeLoopMode, harmonicMode);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = SetClosedLoopCommmand ( closeLoopMode , harmonicMode );
+            if ( response. IsSuccess )
             {
                 CloseLoopMode = closeLoopMode;
                 HarmonicMode = harmonicMode;
@@ -1170,9 +1170,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="closeLoopMode">枚举闭环模式</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> SetClosedLoop(CloseLoopMode closeLoopMode)
+        public OperateResult<byte [ ]> SetClosedLoop ( CloseLoopMode closeLoopMode )
         {
-            return SetClosedLoop(closeLoopMode, HarmonicMode);
+            return SetClosedLoop ( closeLoopMode , HarmonicMode );
         }
 
         /// <summary>
@@ -1180,9 +1180,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="harmonicMode">枚举谐波模式</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> SetClosedLoop(HarmonicMode harmonicMode)
+        public OperateResult<byte [ ]> SetClosedLoop ( HarmonicMode harmonicMode )
         {
-            return SetClosedLoop(CloseLoopMode, harmonicMode);
+            return SetClosedLoop ( CloseLoopMode , harmonicMode );
         }
         #endregion 设置闭环模式
 
@@ -1197,9 +1197,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 使用方法举例2：this.WriteHarmonics(HarmonicChannels.Channel_Ua,data)则表示选择了Ua通道
         /// </remarks>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteHarmonics(ChannelsHarmonic harmonicChannels, Harmonics[] harmonics)
+        public OperateResult<byte [ ]> WriteHarmonics ( ChannelsHarmonic harmonicChannels , Harmonics [ ] harmonics )
         {
-            OperateResult<byte[]> response = WriteHarmonicsCommmand(harmonicChannels, harmonics);
+            OperateResult<byte [ ]> response = WriteHarmonicsCommmand ( harmonicChannels , harmonics );
             return response;
         }
 
@@ -1209,10 +1209,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="harmonicChannels">谐波通道选择</param>
         /// <param name="harmonic">谐波参数</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteHarmonics(ChannelsHarmonic harmonicChannels, Harmonics harmonic)
+        public OperateResult<byte [ ]> WriteHarmonics ( ChannelsHarmonic harmonicChannels , Harmonics harmonic )
         {
-            Harmonics[] data = new Harmonics[1] { harmonic };
-            OperateResult<byte[]> response = WriteHarmonicsCommmand(harmonicChannels, data);
+            Harmonics [ ] data = new Harmonics [ 1 ] { harmonic };
+            OperateResult<byte [ ]> response = WriteHarmonicsCommmand ( harmonicChannels , data );
             return response;
         }
 
@@ -1220,9 +1220,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【清空谐波】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ClearHarmonics(ChannelsHarmonic channelsHarmonic)
+        public OperateResult<byte [ ]> ClearHarmonics ( ChannelsHarmonic channelsHarmonic )
         {
-            return WriteHarmonicsClearCommmand(channelsHarmonic);
+            return WriteHarmonicsClearCommmand ( channelsHarmonic );
         }
 
         #endregion 设置谐波参数
@@ -1233,9 +1233,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="channel">0-Pa，1-Pb，2-Pc，3-ΣP</param>
         /// <param name="p">有功功率设定值</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteWattPower(ChannelWattPower channel, float p)
+        public OperateResult<byte [ ]> WriteWattPower ( ChannelWattPower channel , float p )
         {
-            return WriteWattPowerCommmand(channel, p);
+            return WriteWattPowerCommmand ( channel , p );
         }
 
         /// <summary>
@@ -1244,22 +1244,22 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="channel">0-Qa，1-Qb，2-Qc，3-ΣQ</param>
         /// <param name="p">无功功率设定值</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> WriteWattLessPower(ChannelWattLessPower channel, float q)
+        public OperateResult<byte [ ]> WriteWattLessPower ( ChannelWattLessPower channel , float q )
         {
-            return WriteWattPowerLessCommmand(channel, q);
+            return WriteWattPowerLessCommmand ( channel , q );
         }
 
         /// <summary>
         /// 【读取交流源当前输出值】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadACSourceData()
+        public OperateResult<byte [ ]> ReadACSourceData ( )
         {
-            OperateResult<byte[]> response = ReadACSourceDataCommmand();
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = ReadACSourceDataCommmand ( );
+            if ( response. IsSuccess )
             {
                 //命令执行成功则解析数据
-                AnalysisReadACSourceData(response.Content);
+                AnalysisReadACSourceData ( response. Content );
             }
             return response;
         }
@@ -1268,13 +1268,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【读取当前交流源输出状态】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadACSourceStatus()
+        public OperateResult<byte [ ]> ReadACSourceStatus ( )
         {
-            OperateResult<byte[]> response = ReadACStatusCommmand();
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = ReadACStatusCommmand ( );
+            if ( response. IsSuccess )
             {
                 //命令执行成功则解析数据
-                AnalysisReadACStatus(response.Content);
+                AnalysisReadACStatus ( response. Content );
             }
             return response;
         }
@@ -1295,21 +1295,21 @@ namespace DKCommunication.Dandick.DK81Series
         /// Messege:错误信息：IsSuccess为True时忽略
         /// Content:下位机回复的原始报文：通常可忽略，当怀疑回复数据解析有误的时候才需要观阅
         /// </returns>
-        public OperateResult<byte[]> WriteElectricity(
-            ElectricityType electricityType,
-            float meterPConst,
-            float meterQConst,
-            uint meterDIV,
-            uint meterRounds)
+        public OperateResult<byte [ ]> WriteElectricity (
+            ElectricityType electricityType ,
+            float meterPConst ,
+            float meterQConst ,
+            uint meterDIV ,
+            uint meterRounds )
         {
-            OperateResult<byte[]> response = WriteElectricityCommmand(
-                electricityType,
-                meterPConst,
-                meterQConst,
-                ElectricitySourcePConst,
-                ElectricitySourceQConst,
-                meterDIV,
-                meterRounds);
+            OperateResult<byte [ ]> response = WriteElectricityCommmand (
+                electricityType ,
+                meterPConst ,
+                meterQConst ,
+                ElectricitySourcePConst ,
+                ElectricitySourceQConst ,
+                meterDIV ,
+                meterRounds );
             return response;
         }
 
@@ -1323,16 +1323,16 @@ namespace DKCommunication.Dandick.DK81Series
         /// Messege:错误信息：IsSuccess为True时忽略
         /// Content:下位机回复的原始报文：通常可忽略，当怀疑回复数据解析有误的时候才需要观阅
         /// </returns>
-        public OperateResult<byte[]> WriteElectricity(float sourceConst)
+        public OperateResult<byte [ ]> WriteElectricity ( float sourceConst )
         {
-            OperateResult<byte[]> response = WriteElectricityCommmand(
-                ElectricityType,
-                ElectricityMeterPConst,
-                ElectricityMeterQConst,
-                sourceConst,
-                sourceConst,
-                ElectricityMeterDIV,
-                ElectricitySetMeterRounds);
+            OperateResult<byte [ ]> response = WriteElectricityCommmand (
+                ElectricityType ,
+                ElectricityMeterPConst ,
+                ElectricityMeterQConst ,
+                sourceConst ,
+                sourceConst ,
+                ElectricityMeterDIV ,
+                ElectricitySetMeterRounds );
             return response;
         }
 
@@ -1347,16 +1347,16 @@ namespace DKCommunication.Dandick.DK81Series
         /// Messege:错误信息：IsSuccess为True时忽略
         /// Content:下位机回复的原始报文：通常可忽略，当怀疑回复数据解析有误的时候才需要观阅
         /// </returns>
-        public OperateResult<byte[]> WriteElectricity(float sourcePConst, float sourceQConst)
+        public OperateResult<byte [ ]> WriteElectricity ( float sourcePConst , float sourceQConst )
         {
-            OperateResult<byte[]> response = WriteElectricityCommmand(
-                ElectricityType,
-                ElectricityMeterPConst,
-                ElectricityMeterQConst,
-                sourcePConst,
-                sourceQConst,
-                ElectricityMeterDIV,
-                ElectricitySetMeterRounds);
+            OperateResult<byte [ ]> response = WriteElectricityCommmand (
+                ElectricityType ,
+                ElectricityMeterPConst ,
+                ElectricityMeterQConst ,
+                sourcePConst ,
+                sourceQConst ,
+                ElectricityMeterDIV ,
+                ElectricitySetMeterRounds );
             return response;
         }
 
@@ -1369,13 +1369,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// Messege：错误信息，IsSuccess为True时忽略；       
         /// Content：下位机回复的原始报文，通常可忽略，当怀疑回复数据解析有误的时候才需要观阅 ；       
         /// </returns>
-        public OperateResult<byte[]> ReadElectricityDeviation()
+        public OperateResult<byte [ ]> ReadElectricityDeviation ( )
         {
-            OperateResult<byte[]> response = ReadElectricityDeviationCommmand();
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = ReadElectricityDeviationCommmand ( );
+            if ( response. IsSuccess )
             {
                 //命令执行成功则解析数据
-                AnalysisReadElectricityDeviation(response.Content);
+                AnalysisReadElectricityDeviation ( response. Content );
             }
             return response;
         }
@@ -1387,12 +1387,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取【直流表档位】，初始化设备只读属性
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadDCMeterRanges()
+        public OperateResult<byte [ ]> ReadDCMeterRanges ( )
         {
-            OperateResult<byte[]> response = ReadDCMeterRangesCommand();
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = ReadDCMeterRangesCommand ( );
+            if ( response. IsSuccess )
             {
-                AnalysisReadDCMeterRanges(response.Content);
+                AnalysisReadDCMeterRanges ( response. Content );
             }
             return response;
         }
@@ -1403,10 +1403,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="rangeIndex">当前直流表档位索引</param>
         /// <param name="type">直流表测量类型</param>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> SetDCMeterRange(byte rangeIndex, DCMerterMeasureType type)
+        public OperateResult<byte [ ]> SetDCMeterRange ( byte rangeIndex , DCMerterMeasureType type )
         {
-            OperateResult<byte[]> result = SetDCMeterRangeCommand(rangeIndex, type);
-            if (result.IsSuccess)
+            OperateResult<byte [ ]> result = SetDCMeterRangeCommand ( rangeIndex , type );
+            if ( result. IsSuccess )
             {
                 //执行成功则更新直流表测量类型属性
                 DCM_MeasureType = type;
@@ -1418,22 +1418,22 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【设置直流表测量类型】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> SetDCMeterMesureType()
+        public OperateResult<byte [ ]> SetDCMeterMesureType ( )
         {
-            return new OperateResult<byte[]>(110, "不支持的功能");
+            return new OperateResult<byte [ ]> ( 110 , "不支持的功能" );
         }
 
         /// <summary>
         /// 【读取直流表测量数据】
         /// </summary>
         /// <returns>带成功标志的操作结果</returns>
-        public OperateResult<byte[]> ReadDCMeterData()
+        public OperateResult<byte [ ]> ReadDCMeterData ( )
         {
-            OperateResult<byte[]> result = ReadDCMeterDataCommand();
-            if (result.IsSuccess)
+            OperateResult<byte [ ]> result = ReadDCMeterDataCommand ( );
+            if ( result. IsSuccess )
             {
                 //执行成功则解析下位机回复的报文
-                AnalysisReadDCMeterData(result.Content);
+                AnalysisReadDCMeterData ( result. Content );
             }
             return result;
         }
@@ -1444,12 +1444,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// 读取【直流源档位】，初始化设备只读属性
         /// </summary>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadDCSourceRanges()
+        public OperateResult<byte [ ]> ReadDCSourceRanges ( )
         {
-            OperateResult<byte[]> response = ReadDCSourceRangesCommand();
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = ReadDCSourceRangesCommand ( );
+            if ( response. IsSuccess )
             {
-                AnalysisReadDCSourceRanges(response.Content);
+                AnalysisReadDCSourceRanges ( response. Content );
             }
             return response;
         }
@@ -1459,10 +1459,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="dCSourceType">直流源输出类型</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> StartDCSource(DCSourceType dCSourceType)
+        public OperateResult<byte [ ]> StartDCSource ( DCSourceType dCSourceType )
         {
-            OperateResult<byte[]> response = StartDCSourceCommand(dCSourceType);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = StartDCSourceCommand ( dCSourceType );
+            if ( response. IsSuccess )
             {
                 DCS_Type = dCSourceType;
             }
@@ -1474,9 +1474,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="dCSourceType">直流源输出类型</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> StopDCSource(DCSourceType dCSourceType)
+        public OperateResult<byte [ ]> StopDCSource ( DCSourceType dCSourceType )
         {
-            OperateResult<byte[]> response = StopDCSourceCommand(dCSourceType);
+            OperateResult<byte [ ]> response = StopDCSourceCommand ( dCSourceType );
 
             return response;
         }
@@ -1485,9 +1485,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【关闭直流源】
         /// </summary>       
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> StopDCSource()
+        public OperateResult<byte [ ]> StopDCSource ( )
         {
-            OperateResult<byte[]> response = StopDCSourceCommand(DCS_Type);
+            OperateResult<byte [ ]> response = StopDCSourceCommand ( DCS_Type );
 
             return response;
         }
@@ -1498,9 +1498,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="rangeIndex">当前档位索引值</param>
         /// <param name="dCSourceType">直流源输出类型</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> SetDCSourceRange(byte rangeIndex, DCSourceType dCSourceType)
+        public OperateResult<byte [ ]> SetDCSourceRange ( byte rangeIndex , DCSourceType dCSourceType )
         {
-            OperateResult<byte[]> response = SetDCSourceRangeCommand(rangeIndex, dCSourceType);
+            OperateResult<byte [ ]> response = SetDCSourceRangeCommand ( rangeIndex , dCSourceType );
 
             return response;
         }
@@ -1509,9 +1509,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// 【设置直流源档位为自动量程】/【支持自动换挡模式的设备有效】
         /// </summary>
         /// <returns></returns>
-        public OperateResult<byte[]> SetDCSourceRangeAuto()
+        public OperateResult<byte [ ]> SetDCSourceRangeAuto ( )
         {
-            OperateResult<byte[]> response = SetDCSourceRangeCommand(0xFF, DCS_Type);
+            OperateResult<byte [ ]> response = SetDCSourceRangeCommand ( 0xFF , DCS_Type );
             return response;
         }
 
@@ -1522,9 +1522,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="SData"></param>
         /// <param name="dCSourceType"></param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> WriteDCSourceAmplitude(byte rangeIndex, float SData, DCSourceType dCSourceType)
+        public OperateResult<byte [ ]> WriteDCSourceAmplitude ( byte rangeIndex , float SData , DCSourceType dCSourceType )
         {
-            OperateResult<byte[]> response = WriteDCSourceAmplitudeCommand(rangeIndex, SData, dCSourceType);
+            OperateResult<byte [ ]> response = WriteDCSourceAmplitudeCommand ( rangeIndex , SData , dCSourceType );
 
             return response;
         }
@@ -1534,12 +1534,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="dCSourceType"></param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> ReadDCSourceData(DCSourceType dCSourceType)
+        public OperateResult<byte [ ]> ReadDCSourceData ( DCSourceType dCSourceType )
         {
-            OperateResult<byte[]> response = ReadDCSourceDataCommand(dCSourceType);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = ReadDCSourceDataCommand ( dCSourceType );
+            if ( response. IsSuccess )
             {
-                AnalysisReadDCSourceData(response.Content);
+                AnalysisReadDCSourceData ( response. Content );
             }
             return response;
         }
@@ -1553,15 +1553,15 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="uRangeIndex">电压档位索引值</param>
         /// <param name="iRangeIndex">电流档位索引值</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> Calibrate_ClearData(CalibrateType calibrateType, byte uRangeIndex, byte iRangeIndex)
+        public OperateResult<byte [ ]> Calibrate_ClearData ( CalibrateType calibrateType , byte uRangeIndex , byte iRangeIndex )
         {
-            if ((int)calibrateType == 3 || (int)calibrateType == 4)
+            if ( ( int ) calibrateType == 3 || ( int ) calibrateType == 4 )
             {
-                return new OperateResult<byte[]>(8113, "请使用直流源（表）数据清空方法:Calibrate_ClearDCU_Data或者Calibrate_ClearDCI_Data");
+                return new OperateResult<byte [ ]> ( 8113 , "请使用直流源（表）数据清空方法:Calibrate_ClearDCU_Data或者Calibrate_ClearDCI_Data" );
             }
 
-            OperateResult<byte[]> response = Calibrate_ClearDataCommand(calibrateType, uRangeIndex, iRangeIndex);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = Calibrate_ClearDataCommand ( calibrateType , uRangeIndex , iRangeIndex );
+            if ( response. IsSuccess )
             {
                 _CalibrateType = calibrateType;
             }
@@ -1574,10 +1574,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="calibrateType">校准时的操作类型</param>
         /// <param name="uRangeIndex">电压档位索引值</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> Calibrate_ClearDCU_Data(CalibrateType calibrateType, byte uRangeIndex)
+        public OperateResult<byte [ ]> Calibrate_ClearDCU_Data ( CalibrateType calibrateType , byte uRangeIndex )
         {
-            OperateResult<byte[]> response = Calibrate_ClearDataCommand(calibrateType, uRangeIndex, 100);    //100：保护无需清空的电压档位数据
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = Calibrate_ClearDataCommand ( calibrateType , uRangeIndex , 100 );    //100：保护无需清空的电压档位数据
+            if ( response. IsSuccess )
             {
                 _CalibrateType = calibrateType;
             }
@@ -1590,10 +1590,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="calibrateType">校准时的操作类型</param>
         /// <param name="iRange">电流档位索引值</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> Calibrate_ClearDCI_Data(CalibrateType calibrateType, byte iRangeIndex)
+        public OperateResult<byte [ ]> Calibrate_ClearDCI_Data ( CalibrateType calibrateType , byte iRangeIndex )
         {
-            OperateResult<byte[]> response = Calibrate_ClearDataCommand(calibrateType, 100, iRangeIndex);    //100：保护无需清空的电流档位数据
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = Calibrate_ClearDataCommand ( calibrateType , 100 , iRangeIndex );    //100：保护无需清空的电流档位数据
+            if ( response. IsSuccess )
             {
                 _CalibrateType = calibrateType;
             }
@@ -1606,9 +1606,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="uRangeIndex">电压档位索引值</param>
         /// <param name="iRangeIndex">电流档位索引值</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> Calibrate_SwitchACRange(byte uRangeIndex, byte iRangeIndex)
+        public OperateResult<byte [ ]> Calibrate_SwitchACRange ( byte uRangeIndex , byte iRangeIndex )
         {
-            OperateResult<byte[]> response = Calibrate_SwitchACRangeCommand(uRangeIndex, iRangeIndex);
+            OperateResult<byte [ ]> response = Calibrate_SwitchACRangeCommand ( uRangeIndex , iRangeIndex );
 
             return response;
         }
@@ -1626,10 +1626,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="sIB">校准点的标准值</param>
         /// <param name="sIC">校准点的标准值</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> Calibrate_SwitchACPoint(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float sUA, float sUB, float sUC, float sIA, float sIB, float sIC)
+        public OperateResult<byte [ ]> Calibrate_SwitchACPoint ( byte uRangeIndex , byte iRangeIndex , CalibrateLevel calibrateLevel , float sUA , float sUB , float sUC , float sIA , float sIB , float sIC )
         {
-            OperateResult<byte[]> response = Calibrate_SwitchACPointCommand(uRangeIndex, iRangeIndex, calibrateLevel, sUA, sUB, sUC, sIA, sIB, sIC);
-            if (response.IsSuccess)
+            OperateResult<byte [ ]> response = Calibrate_SwitchACPointCommand ( uRangeIndex , iRangeIndex , calibrateLevel , sUA , sUB , sUC , sIA , sIB , sIC );
+            if ( response. IsSuccess )
             {
                 CalibrateLevel = calibrateLevel;
             }
@@ -1642,9 +1642,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="uRangeIndex">电压档位索引值，校验用</param>
         /// <param name="iRangeIndex">电流档位索引值，校验用</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> Calibrate_SwitchACPoint_Phase(byte uRangeIndex, byte iRangeIndex)
+        public OperateResult<byte [ ]> Calibrate_SwitchACPoint_Phase ( byte uRangeIndex , byte iRangeIndex )
         {
-            return Calibrate_SwitchACPoint(uRangeIndex, iRangeIndex, (CalibrateLevel)3, 0, 120f, 240f, 0, 120f, 240f);
+            return Calibrate_SwitchACPoint ( uRangeIndex , iRangeIndex , ( CalibrateLevel ) 3 , 0 , 120f , 240f , 0 , 120f , 240f );
         }
 
         /// <summary>
@@ -1660,9 +1660,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="mIB">当前所接的标准表的读数：必须在标准值±20%范围内，否则下位机不执行校准命令</param>
         /// <param name="mIC">当前所接的标准表的读数：必须在标准值±20%范围内，否则下位机不执行校准命令</param>
         /// <returns>下位机回复的原始报文，用于自主解析，通常可忽略</returns>
-        public OperateResult<byte[]> Calibrate_DoAC(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float mUA, float mUB, float mUC, float mIA, float mIB, float mIC)
+        public OperateResult<byte [ ]> Calibrate_DoAC ( byte uRangeIndex , byte iRangeIndex , CalibrateLevel calibrateLevel , float mUA , float mUB , float mUC , float mIA , float mIB , float mIC )
         {
-            OperateResult<byte[]> response = Calibrate_SwitchACPointCommand(uRangeIndex, iRangeIndex, calibrateLevel, mUA, mUB, mUC, mIA, mIB, mIC);
+            OperateResult<byte [ ]> response = Calibrate_SwitchACPointCommand ( uRangeIndex , iRangeIndex , calibrateLevel , mUA , mUB , mUC , mIA , mIB , mIC );
 
             return response;
         }
@@ -1674,9 +1674,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="iRangeIndex">电流档位索引，用作核验，只对5A有效</param>
         /// <param name="calibrateLevel"></param>
         /// <returns></returns>
-        public OperateResult<byte[]> Calibrate_Save(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel)
+        public OperateResult<byte [ ]> Calibrate_Save ( byte uRangeIndex , byte iRangeIndex , CalibrateLevel calibrateLevel )
         {
-            OperateResult<byte[]> response = Calibrate_SaveCommand(uRangeIndex, iRangeIndex, calibrateLevel);
+            OperateResult<byte [ ]> response = Calibrate_SaveCommand ( uRangeIndex , iRangeIndex , calibrateLevel );
 
             return response;
         }
@@ -1688,9 +1688,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="iRangeIndex"></param>
         /// <param name="calibrateLevel"></param>
         /// <returns></returns>
-        public OperateResult<byte[]> Calibrate_DoACMeter(byte uRangeIndex, byte iRangeIndex, CalibrateLevel calibrateLevel, float UA, float UB, float UC, float IA, float IB, float IC)
+        public OperateResult<byte [ ]> Calibrate_DoACMeter ( byte uRangeIndex , byte iRangeIndex , CalibrateLevel calibrateLevel , float UA , float UB , float UC , float IA , float IB , float IC )
         {
-            OperateResult<byte[]> response = Calibrate_DoACMeterCommand(uRangeIndex, iRangeIndex, calibrateLevel, UA, UB, UC, IA, IB, IC);
+            OperateResult<byte [ ]> response = Calibrate_DoACMeterCommand ( uRangeIndex , iRangeIndex , calibrateLevel , UA , UB , UC , IA , IB , IC );
 
             return response;
         }
@@ -1703,13 +1703,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="calibrateLevel"></param>
         /// <param name="sDCAmplitude"></param>
         /// <returns></returns>
-        public OperateResult<byte[]> Calibrate_SwitchDCPoint(
-            Calibrate_DCSourceType dCSourceType,
-            byte rangeIndex,
-            CalibrateLevel calibrateLevel,
-            float sDCAmplitude)
+        public OperateResult<byte [ ]> Calibrate_SwitchDCPoint (
+            Calibrate_DCSourceType dCSourceType ,
+            byte rangeIndex ,
+            CalibrateLevel calibrateLevel ,
+            float sDCAmplitude )
         {
-            OperateResult<byte[]> response = Calibrate_SwitchDCPointCommand(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
+            OperateResult<byte [ ]> response = Calibrate_SwitchDCPointCommand ( dCSourceType , rangeIndex , calibrateLevel , sDCAmplitude );
 
             return response;
         }
@@ -1722,13 +1722,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="calibrateLevel"></param>
         /// <param name="sDCAmplitude"></param>
         /// <returns></returns>
-        public OperateResult<byte[]> Calibrate_DoDC(
-          Calibrate_DCSourceType dCSourceType,
-          byte rangeIndex,
-          CalibrateLevel calibrateLevel,
-          float sDCAmplitude)
+        public OperateResult<byte [ ]> Calibrate_DoDC (
+          Calibrate_DCSourceType dCSourceType ,
+          byte rangeIndex ,
+          CalibrateLevel calibrateLevel ,
+          float sDCAmplitude )
         {
-            OperateResult<byte[]> response = Calibrate_DoDCCommand(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
+            OperateResult<byte [ ]> response = Calibrate_DoDCCommand ( dCSourceType , rangeIndex , calibrateLevel , sDCAmplitude );
 
             return response;
         }
@@ -1741,13 +1741,13 @@ namespace DKCommunication.Dandick.DK81Series
         /// <param name="calibrateLevel"></param>
         /// <param name="sDCAmplitude"></param>
         /// <returns></returns>
-        public OperateResult<byte[]> Calibrate_DoDCMeter(
-            Calibrate_DCMeterType dCSourceType,
-            byte rangeIndex,
-            CalibrateLevel calibrateLevel,
-            float sDCAmplitude)
+        public OperateResult<byte [ ]> Calibrate_DoDCMeter (
+            Calibrate_DCMeterType dCSourceType ,
+            byte rangeIndex ,
+            CalibrateLevel calibrateLevel ,
+            float sDCAmplitude )
         {
-            OperateResult<byte[]> response = Calibrate_DoDCMeterCommand(dCSourceType, rangeIndex, calibrateLevel, sDCAmplitude);
+            OperateResult<byte [ ]> response = Calibrate_DoDCMeterCommand ( dCSourceType , rangeIndex , calibrateLevel , sDCAmplitude );
 
             return response;
         }
@@ -1756,15 +1756,15 @@ namespace DKCommunication.Dandick.DK81Series
         #endregion Public Methods
 
         //TODO 暂不支持的功能
-        public OperateResult<byte[]> ReadDCMeterDataWithTwoCh()
+        public OperateResult<byte [ ]> ReadDCMeterDataWithTwoCh ( )
         {
-            return new OperateResult<byte[]>(110, "暂不支持的功能");
+            return new OperateResult<byte [ ]> ( 110 , "暂不支持的功能" );
         }
 
         //TODO 暂不支持的功能
-        public OperateResult<byte[]> SetDCMeterDataWithTwoCh()
+        public OperateResult<byte [ ]> SetDCMeterDataWithTwoCh ( )
         {
-            return new OperateResult<byte[]>(110, "暂不支持的功能");
+            return new OperateResult<byte [ ]> ( 110 , "暂不支持的功能" );
         }
 
         #region --------------------------------- private Methods Helper 解析数据------------------
@@ -1773,36 +1773,36 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 解析设备信息：并非所有设备都会回复有效信息
         /// </summary>
-        private void AnalysisHandshake(byte[] response)
+        private void AnalysisHandshake ( byte [ ] response )
         {
             //byte[] data = response;
-            List<byte> responseList = response.ToList();    //可忽略null异常
+            List<byte> responseList = response. ToList ( );    //可忽略null异常
 
             //解析设备型号
-            int endIndex = responseList.IndexOf(0x00, 6);
+            int endIndex = responseList. IndexOf ( 0x00 , 6 );
             int modelLength = endIndex - 5;    //model字节长度，包含0x00结束符           
-            Model = ByteTransform.TransString(response, 6, modelLength, Encoding.ASCII);
+            Model = ByteTransform. TransString ( response , 6 , modelLength , Encoding. ASCII );
 
             //解析下位机版本号
-            byte verA = response[modelLength + 6];
-            byte verB = response[modelLength + 7];
+            byte verA = response [ modelLength + 6 ];
+            byte verB = response [ modelLength + 7 ];
             Version = $"V{verA}.{verB}";
 
             //解析设备编号
-            int serialEndIndex = responseList.IndexOf(0x00, 8 + modelLength);
+            int serialEndIndex = responseList. IndexOf ( 0x00 , 8 + modelLength );
             int serialLength = serialEndIndex - 7 - modelLength;     //设备编号字节长度，包含0x00结束符            
-            SN = ByteTransform.TransString(response, 8 + modelLength, serialLength, Encoding.ASCII);
+            SN = ByteTransform. TransString ( response , 8 + modelLength , serialLength , Encoding. ASCII );
 
             //解析基本功能激活状态
-            byte funcB = response[response.Length - 3];
+            byte funcB = response [ response. Length - 3 ];
             // byte funcS = data[data.Length - 2];
-            var funb = DK81CommunicationInfo.GetFunctionB(funcB);
-            IsACI_Activated = funb[0];   //交流电流源
-            IsACU_Activated = funb[0];   //交流电压源
-            IsDCU_Activated = funb[2];   //直流电压源功能
-            IsDCI_Activated = funb[2];   //直流电流源功能
-            IsDCM_Activated = funb[3];   //直流表功能
-            IsElectricity_Activated = funb[4];    //电能校验功能
+            var funb = DK81CommunicationInfo. GetFunctionB ( funcB );
+            IsACI_Activated = funb [ 0 ];   //交流电流源
+            IsACU_Activated = funb [ 0 ];   //交流电压源
+            IsDCU_Activated = funb [ 2 ];   //直流电压源功能
+            IsDCI_Activated = funb [ 2 ];   //直流电流源功能
+            IsDCM_Activated = funb [ 3 ];   //直流表功能
+            IsElectricity_Activated = funb [ 4 ];    //电能校验功能
 
 
             //TODO var funs = DK81CommunicationInfo.GetFunctionS(funcS);    //特殊功能状态解析，暂不处理
@@ -1814,31 +1814,31 @@ namespace DKCommunication.Dandick.DK81Series
         /// 解析交流源档位，并初始化设备属性
         /// </summary>
         /// <param name="response">下位机回复的档位信息报文</param>
-        private void AnalysisReadACSourceRanges(byte[] response)
+        private void AnalysisReadACSourceRanges ( byte [ ] response )
         {
-            _uRangesCount = response[6];
-            _uRanges_Asingle = response[7];
-            _iRangesCount = response[8];
-            _iRanges_Asingle = response[9];
-            _iProtectRangesCount = response[10];
-            _iProtectRanges_Asingle = response[11];
+            _uRangesCount = response [ 6 ];
+            _uRanges_Asingle = response [ 7 ];
+            _iRangesCount = response [ 8 ];
+            _iRanges_Asingle = response [ 9 ];
+            _iProtectRangesCount = response [ 10 ];
+            _iProtectRanges_Asingle = response [ 11 ];
 
-            if (_uRangesCount > 0)
+            if ( _uRangesCount > 0 )
             {
-                float[] uRanges = ByteTransform.TransSingle(response, 12, _uRangesCount);
-                _uRanges = uRanges.ToList();
+                float [ ] uRanges = ByteTransform. TransSingle ( response , 12 , _uRangesCount );
+                _uRanges = uRanges. ToList ( );
             }
 
-            if (_iRangesCount > 0)
+            if ( _iRangesCount > 0 )
             {
-                float[] iRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount, _iRangesCount);
-                _iRanges = iRanges.ToList();
+                float [ ] iRanges = ByteTransform. TransSingle ( response , 12 + 4 * _uRangesCount , _iRangesCount );
+                _iRanges = iRanges. ToList ( );
             }
 
-            if (_iProtectRangesCount > 0)
+            if ( _iProtectRangesCount > 0 )
             {
-                float[] iProtectRanges = ByteTransform.TransSingle(response, 12 + 4 * _uRangesCount + 4 * _iRangesCount, _iProtectRangesCount);
-                _iProtectRanges = iProtectRanges.ToList();
+                float [ ] iProtectRanges = ByteTransform. TransSingle ( response , 12 + 4 * _uRangesCount + 4 * _iRangesCount , _iProtectRangesCount );
+                _iProtectRanges = iProtectRanges. ToList ( );
             }
         }
 
@@ -1846,76 +1846,76 @@ namespace DKCommunication.Dandick.DK81Series
         /// 解析【读取交流源当前输出值】回复报文
         /// </summary>
         /// <param name="response"></param>
-        private void AnalysisReadACSourceData(byte[] response)
+        private void AnalysisReadACSourceData ( byte [ ] response )
         {
-            Frequency = ByteTransform.TransSingle(response, 6);
-            ACU_RangeIndex = response[7];
-            ACI_RangeIndex = response[10];
+            Frequency = ByteTransform. TransSingle ( response , 6 );
+            ACU_RangeIndex = response [ 7 ];
+            ACI_RangeIndex = response [ 10 ];
 
-            _UA = ByteTransform.TransSingle(response, 16);
-            _UB = ByteTransform.TransSingle(response, 20);
-            _UC = ByteTransform.TransSingle(response, 24);
-            _IA = ByteTransform.TransSingle(response, 28);
-            _IB = ByteTransform.TransSingle(response, 32);
-            _IC = ByteTransform.TransSingle(response, 36);
-            _UaPhase = ByteTransform.TransSingle(response, 40);
-            _UbPhase = ByteTransform.TransSingle(response, 44);
-            _UcPhase = ByteTransform.TransSingle(response, 48);
-            _IaPhase = ByteTransform.TransSingle(response, 52);
-            _IbPhase = ByteTransform.TransSingle(response, 56);
-            _IcPhase = ByteTransform.TransSingle(response, 60);
-            _Pa = ByteTransform.TransSingle(response, 64);
-            _Pb = ByteTransform.TransSingle(response, 68);
-            _Pc = ByteTransform.TransSingle(response, 72);
-            _P = ByteTransform.TransSingle(response, 76);
-            _Qa = ByteTransform.TransSingle(response, 80);
-            _Qb = ByteTransform.TransSingle(response, 84);
-            _Qc = ByteTransform.TransSingle(response, 88);
-            _Q = ByteTransform.TransSingle(response, 92);
-            _Sa = ByteTransform.TransSingle(response, 96);
-            _Sb = ByteTransform.TransSingle(response, 100);
-            _Sc = ByteTransform.TransSingle(response, 104);
-            _S = ByteTransform.TransSingle(response, 108);
-            _CosFaiA = ByteTransform.TransSingle(response, 112);
-            _CosFaiB = ByteTransform.TransSingle(response, 116);
-            _CosFaiC = ByteTransform.TransSingle(response, 120);
-            _CosFai = ByteTransform.TransSingle(response, 124);
-            WireMode = (WireMode)response[128];
-            CloseLoopMode = (CloseLoopMode)response[129];
-            HarmonicMode = (HarmonicMode)response[130];
+            _UA = ByteTransform. TransSingle ( response , 16 );
+            _UB = ByteTransform. TransSingle ( response , 20 );
+            _UC = ByteTransform. TransSingle ( response , 24 );
+            _IA = ByteTransform. TransSingle ( response , 28 );
+            _IB = ByteTransform. TransSingle ( response , 32 );
+            _IC = ByteTransform. TransSingle ( response , 36 );
+            _UaPhase = ByteTransform. TransSingle ( response , 40 );
+            _UbPhase = ByteTransform. TransSingle ( response , 44 );
+            _UcPhase = ByteTransform. TransSingle ( response , 48 );
+            _IaPhase = ByteTransform. TransSingle ( response , 52 );
+            _IbPhase = ByteTransform. TransSingle ( response , 56 );
+            _IcPhase = ByteTransform. TransSingle ( response , 60 );
+            _Pa = ByteTransform. TransSingle ( response , 64 );
+            _Pb = ByteTransform. TransSingle ( response , 68 );
+            _Pc = ByteTransform. TransSingle ( response , 72 );
+            _P = ByteTransform. TransSingle ( response , 76 );
+            _Qa = ByteTransform. TransSingle ( response , 80 );
+            _Qb = ByteTransform. TransSingle ( response , 84 );
+            _Qc = ByteTransform. TransSingle ( response , 88 );
+            _Q = ByteTransform. TransSingle ( response , 92 );
+            _Sa = ByteTransform. TransSingle ( response , 96 );
+            _Sb = ByteTransform. TransSingle ( response , 100 );
+            _Sc = ByteTransform. TransSingle ( response , 104 );
+            _S = ByteTransform. TransSingle ( response , 108 );
+            _CosFaiA = ByteTransform. TransSingle ( response , 112 );
+            _CosFaiB = ByteTransform. TransSingle ( response , 116 );
+            _CosFaiC = ByteTransform. TransSingle ( response , 120 );
+            _CosFai = ByteTransform. TransSingle ( response , 124 );
+            WireMode = ( WireMode ) response [ 128 ];
+            CloseLoopMode = ( CloseLoopMode ) response [ 129 ];
+            HarmonicMode = ( HarmonicMode ) response [ 130 ];
         }
 
         /// <summary>
         /// 解析【读取当前交流源输出状态】回复报文
         /// </summary>
         /// <param name="response"></param>
-        private void AnalysisReadACStatus(byte[] response)
+        private void AnalysisReadACStatus ( byte [ ] response )
         {
-            _Flag_A = response[6];
-            _Flag_B = response[7];
-            _Flag_C = response[8];
-            Frequency = ByteTransform.TransSingle(response, 9);
-            FrequencyC = ByteTransform.TransSingle(response, 17);
-            _IProtectA = ByteTransform.TransSingle(response, 21);
-            _IProtectB = ByteTransform.TransSingle(response, 25);
-            _IProtectC = ByteTransform.TransSingle(response, 29);
-            _ACU_Range = ByteTransform.TransSingle(response, 33);
-            _ACI_Range = ByteTransform.TransSingle(response, 37);
-            _IProtect_Range = ByteTransform.TransSingle(response, 41);
+            _Flag_A = response [ 6 ];
+            _Flag_B = response [ 7 ];
+            _Flag_C = response [ 8 ];
+            Frequency = ByteTransform. TransSingle ( response , 9 );
+            FrequencyC = ByteTransform. TransSingle ( response , 17 );
+            _IProtectA = ByteTransform. TransSingle ( response , 21 );
+            _IProtectB = ByteTransform. TransSingle ( response , 25 );
+            _IProtectC = ByteTransform. TransSingle ( response , 29 );
+            _ACU_Range = ByteTransform. TransSingle ( response , 33 );
+            _ACI_Range = ByteTransform. TransSingle ( response , 37 );
+            _IProtect_Range = ByteTransform. TransSingle ( response , 41 );
         }
         #endregion
 
         #region 解析【电能】
-        private void AnalysisReadElectricityDeviation(byte[] response)
+        private void AnalysisReadElectricityDeviation ( byte [ ] response )
         {
             //Flag=0 表示EV值无效，Flag=80 表示EV值为有功电能校验误差，Flag=81 表示EV值为无功电能校验误差
-            _ElectricityDeviationDataFlag = response[6];
+            _ElectricityDeviationDataFlag = response [ 6 ];
 
             //电能校验误差数据
-            _ElectricityDeviationData = ByteTransform.TransSingle(response, 7);
+            _ElectricityDeviationData = ByteTransform. TransSingle ( response , 7 );
 
             //当前校验圈数
-            _ElectricityMeasuredRounds = ByteTransform.TransUInt32(response, 11);
+            _ElectricityMeasuredRounds = ByteTransform. TransUInt32 ( response , 11 );
         }
         #endregion
 
@@ -1924,33 +1924,33 @@ namespace DKCommunication.Dandick.DK81Series
         /// 解析读取直流表测量数据
         /// </summary>
         /// <param name="response">下位机回复的有效原始报文</param>
-        private void AnalysisReadDCMeterData(byte[] response)
+        private void AnalysisReadDCMeterData ( byte [ ] response )
         {
             //当前选择的直流表档位索引
-            _DCM_RangeIndex = response[6];
+            _DCM_RangeIndex = response [ 6 ];
 
             //当前直流表的测量数据
-            _DCM_Data = ByteTransform.TransSingle(response, 7);
+            _DCM_Data = ByteTransform. TransSingle ( response , 7 );
 
             //当前直流表的测量类型
-            DCM_MeasureType = (DCMerterMeasureType)response[11];
+            DCM_MeasureType = ( DCMerterMeasureType ) response [ 11 ];
         }
 
         /// <summary>
         /// 解析直流表档位，并初始化设备属性
         /// </summary>
         /// <param name="response">经过验证的有效回复数据</param>
-        private void AnalysisReadDCMeterRanges(byte[] response)
+        private void AnalysisReadDCMeterRanges ( byte [ ] response )
         {
-            if (response.Length > 10)
+            if ( response. Length > 10 )
             {
                 //TODO 测试异常是否能在底层被完全捕获，确保response数据有效性
-                _DCMeterURangesCount = response[8];
-                _DCMeterIRangesCount = response[9];
-                float[] dcmURanges = ByteTransform.TransSingle(response, 10, _DCMeterURangesCount);
-                float[] dcmIanges = ByteTransform.TransSingle(response, 10 + 4 * _DCMeterURangesCount, _DCMeterIRangesCount);
-                _DCMeterURanges = dcmURanges.ToList();
-                _DCMeterIRanges = dcmIanges.ToList();
+                _DCMeterURangesCount = response [ 8 ];
+                _DCMeterIRangesCount = response [ 9 ];
+                float [ ] dcmURanges = ByteTransform. TransSingle ( response , 10 , _DCMeterURangesCount );
+                float [ ] dcmIanges = ByteTransform. TransSingle ( response , 10 + 4 * _DCMeterURangesCount , _DCMeterIRangesCount );
+                _DCMeterURanges = dcmURanges. ToList ( );
+                _DCMeterIRanges = dcmIanges. ToList ( );
             }
         }
         #endregion
@@ -1960,16 +1960,16 @@ namespace DKCommunication.Dandick.DK81Series
         /// 解析直流源档位，并初始化设备属性
         /// </summary>
         /// <param name="response"></param>
-        private void AnalysisReadDCSourceRanges(byte[] response)
+        private void AnalysisReadDCSourceRanges ( byte [ ] response )
         {
-            if (response.Length > 8)
+            if ( response. Length > 8 )
             {
-                _DCURangesCount = response[6];
-                _DCIRangesCount = response[7];
-                float[] dcuRanges = ByteTransform.TransSingle(response, 8, _DCURangesCount);
-                float[] dciRanges = ByteTransform.TransSingle(response, 8 + _DCURangesCount * 4, _DCIRangesCount);
-                _DCURanges = dcuRanges.ToList();
-                _DCIRanges = dciRanges.ToList();
+                _DCURangesCount = response [ 6 ];
+                _DCIRangesCount = response [ 7 ];
+                float [ ] dcuRanges = ByteTransform. TransSingle ( response , 8 , _DCURangesCount );
+                float [ ] dciRanges = ByteTransform. TransSingle ( response , 8 + _DCURangesCount * 4 , _DCIRangesCount );
+                _DCURanges = dcuRanges. ToList ( );
+                _DCIRanges = dciRanges. ToList ( );
             }
         }
 
@@ -1977,14 +1977,14 @@ namespace DKCommunication.Dandick.DK81Series
         /// 解析读取直流源参数
         /// </summary>
         /// <param name="response"></param>
-        private void AnalysisReadDCSourceData(byte[] response)
+        private void AnalysisReadDCSourceData ( byte [ ] response )
         {
-            if (response.Length > 8)
+            if ( response. Length > 8 )
             {
-                DCSourceRangeIndex = response[6];
-                _DCSourceData = ByteTransform.TransSingle(response, 7);
-                DCS_Type = (DCSourceType)response[11];
-                _DCS_Status = ByteTransform.TransBool(response, 12);
+                DCSourceRangeIndex = response [ 6 ];
+                _DCSourceData = ByteTransform. TransSingle ( response , 7 );
+                DCS_Type = ( DCSourceType ) response [ 11 ];
+                _DCS_Status = ByteTransform. TransBool ( response , 12 );
             }
         }
         #endregion 解析【直流源】
