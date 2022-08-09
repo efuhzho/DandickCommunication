@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft. Json. Linq;
+using System;
+using System. Collections. Generic;
+using System. Drawing;
 //#if !NETSTANDARD2_0
 ////using System.Windows.Forms;
 //#endif
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Cryptography;
-using System.Drawing;
+using System. IO;
+using System. Runtime. Serialization. Formatters. Binary;
+using System. Security. Cryptography;
+using System. Text;
 
-namespace DKCommunication.BasicFramework
+namespace DKCommunication. BasicFramework
 {
     /// <summary>
     /// 一个软件基础类，提供常用的一些静态方法 ->
