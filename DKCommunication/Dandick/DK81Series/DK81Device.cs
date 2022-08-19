@@ -1261,6 +1261,11 @@ namespace DKCommunication. Dandick. DK81Series
                 //命令执行成功则解析数据
                 AnalysisReadACSourceData ( response. Content );
             }
+            if (ReadACSourceStatus().IsSuccess)
+
+            {
+                AnalysisReadACStatus(ReadACSourceStatus().Content);
+            }
             return response;
         }
 
