@@ -11,7 +11,9 @@ namespace DKCommunication.Dandick.DKInterface
         TChannelWattPower,
         TChannelWattLessPower>
     {
-        #region                                  
+        #region 属性   
+
+        /// <summary>
         /// 指示是否具有交流电压输出功能
         /// </summary>
         bool IsACU_Activated { get; set; }
