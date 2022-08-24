@@ -287,24 +287,20 @@ namespace DKCommunication.Dandick.DK81Series
             OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.SetDisplayPage, DK81CommunicationInfo.SetDisplayPageCommandLength, page);
             return bytesHeader;
         }
-        #endregion 系统命令【报文创建】
+        #endregion 系统命令【报文创建】           
 
-        #region 设备信息【报文创建】
+        #region 交流表源命令【报文创建】
         /// <summary>
         /// 创建读取交流标准源和标准表档位信息报文
         /// </summary>
         /// <returns></returns>
-        private OperateResult<byte[]> CreateReadACSourceRanges()
+        private OperateResult<byte[]> CreateReadACSourceRanges ( )
         {
-            OperateResult<byte[]> bytesHeader = CreateCommandHelper(DK81CommunicationInfo.ReadACSourceRanges, DK81CommunicationInfo.ReadACSourceRangesLength);
+            OperateResult<byte[]> bytesHeader = CreateCommandHelper ( DK81CommunicationInfo. ReadACSourceRanges , DK81CommunicationInfo. ReadACSourceRangesLength );
 
             return bytesHeader;
         }
 
-
-        #endregion 设备信息【报文创建】       
-
-        #region 交流表源命令【报文创建】
         /// <summary>
         /// 创建一个【交流源关闭】命令
         /// </summary>
