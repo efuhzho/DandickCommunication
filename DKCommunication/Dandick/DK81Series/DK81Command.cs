@@ -529,8 +529,8 @@ namespace DKCommunication. Dandick. DK81Series
             ByteTransform. TransByte ( meterQConst ). CopyTo ( data , 5 );
             ByteTransform. TransByte ( sourcePConst ). CopyTo ( data , 9 );
             ByteTransform. TransByte ( sourceQConst ). CopyTo ( data , 13 );
-            ByteTransform. TransByte ( meterDIV ). CopyTo ( data , 17 );
-            ByteTransform. TransByte ( meterRounds ). CopyTo ( data , 21 );
+            BitConverter. GetBytes ( meterDIV ). CopyTo ( data , 17 );
+            BitConverter. GetBytes ( meterRounds ). CopyTo ( data , 21 );
 
             //返回创建好的完整报文
             OperateResult<byte[]> bytes = CreateCommandHelper ( DK81CommunicationInfo. WriteElectricity , DK81CommunicationInfo. WriteElectricityLength , data );

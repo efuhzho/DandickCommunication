@@ -1,8 +1,8 @@
-﻿using DKCommunication.BasicFramework;
+﻿using DKCommunication. BasicFramework;
 using System;
-using System.ComponentModel;
-using System.Windows;
-namespace DKCommunication.Dandick.DK81Series
+using System. ComponentModel;
+using System. Windows;
+namespace DKCommunication. Dandick. DK81Series
 {
     /// <summary>
     /// 丹迪克81协议的相关信息
@@ -166,7 +166,7 @@ namespace DKCommunication.Dandick.DK81Series
         public const byte ReadDCMeterDataLength = 7;
 
         /// <summary>
-        /// 设置直流表测量类型：DCU or DCI
+        /// 设置直流表测量类型：0-直流；1-纹波
         /// </summary>
         public const byte SetDCMeterMesureType = 0x63;
 
@@ -298,37 +298,37 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="Error_Code">接收的下位机错误码</param>
         /// <returns>错误消息</returns>
-        public static string GetErrorMessageByErrorCode(byte Error_Code)
+        public static string GetErrorMessageByErrorCode ( byte Error_Code )
         {
-            string errorMessage = StringResources.Language.ExceptionMessage;
+            string errorMessage = StringResources. Language. ExceptionMessage;
 
-            if ((Error_Code & 0x01) == 0x01)
+            if ( ( Error_Code & 0x01 ) == 0x01 )
             {
-                errorMessage += StringResources.Language.ErrorUa;
+                errorMessage += StringResources. Language. ErrorUa;
             }
-            if ((Error_Code & 0x02) == 0x02)
+            if ( ( Error_Code & 0x02 ) == 0x02 )
             {
-                errorMessage += StringResources.Language.ErrorUb;
+                errorMessage += StringResources. Language. ErrorUb;
             }
-            if ((Error_Code & 0x04) == 0x04)
+            if ( ( Error_Code & 0x04 ) == 0x04 )
             {
-                errorMessage += StringResources.Language.ErrorUc;
+                errorMessage += StringResources. Language. ErrorUc;
             }
-            if ((Error_Code & 0x08) == 0x08)
+            if ( ( Error_Code & 0x08 ) == 0x08 )
             {
-                errorMessage += StringResources.Language.ErrorIa;
+                errorMessage += StringResources. Language. ErrorIa;
             }
-            if ((Error_Code & 0x10) == 0x10)
+            if ( ( Error_Code & 0x10 ) == 0x10 )
             {
-                errorMessage += StringResources.Language.ErrorIb;
+                errorMessage += StringResources. Language. ErrorIb;
             }
-            if ((Error_Code & 0x20) == 0x20)
+            if ( ( Error_Code & 0x20 ) == 0x20 )
             {
-                errorMessage += StringResources.Language.ErrorIc;
+                errorMessage += StringResources. Language. ErrorIc;
             }
-            if ((Error_Code & 0x40) == 0x40)
+            if ( ( Error_Code & 0x40 ) == 0x40 )
             {
-                errorMessage += StringResources.Language.ErrorDC;
+                errorMessage += StringResources. Language. ErrorDC;
             }
             return errorMessage;
         }
@@ -338,9 +338,9 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="inByte">读取的功能信息</param>
         /// <returns>含有3个功能指示的数组：1为具备功能，0为不具备；Index(0)=直流源，Index(1)=直流表，Index(2)=电能校验</returns>
-        public static bool[] GetFunctionB(byte inByte)
+        public static bool[] GetFunctionB ( byte inByte )
         {
-            bool[] functions = SoftBasic.ByteToBoolArray(inByte); //0x01:ACS;0x02:ACM;0x04:DCS;0x08:DCM;0x10:PQ            
+            bool[] functions = SoftBasic. ByteToBoolArray ( inByte ); //0x01:ACS;0x02:ACM;0x04:DCS;0x08:DCM;0x10:PQ            
             bool[] funcB = new bool[5];
             funcB[0] = functions[0]; //交流源
             funcB[1] = functions[1]; //交流表
@@ -356,12 +356,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="sendBytes">需要校验的数据，不包含CRC字节，包含报文头0x81</param>
         /// <returns>返回CRC校验码</returns>
-        public static byte CRCcalculator(byte[] sendBytes)
+        public static byte CRCcalculator ( byte[] sendBytes )
         {
             byte crc = 0;
 
             //从第二个字节开始执行异或:忽略报文头
-            for (int i = 1; i < sendBytes.Length; i++)
+            for ( int i = 1 ; i < sendBytes. Length ; i++ )
             {
                 crc ^= sendBytes[i];
             }
@@ -373,18 +373,18 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         /// <param name="responseBytes">下位机回复的报文</param>
         /// <returns>核验结果</returns>
-        public static bool CheckCRC(byte[] responseBytes)
+        public static bool CheckCRC ( byte[] responseBytes )
         {
-            if (responseBytes == null) return false;
-            if (responseBytes.Length < 2) return false;
+            if ( responseBytes == null ) return false;
+            if ( responseBytes. Length < 2 ) return false;
 
-            int length = responseBytes.Length;
+            int length = responseBytes. Length;
             byte[] buf = new byte[length - 1];
-            Array.Copy(responseBytes, 0, buf, 0, buf.Length);
+            Array. Copy ( responseBytes , 0 , buf , 0 , buf. Length );
 
             //断言
-            byte CRC_Code = CRCcalculator(buf);
-            if (CRC_Code == responseBytes[length - 1])
+            byte CRC_Code = CRCcalculator ( buf );
+            if ( CRC_Code == responseBytes[length - 1] )
             {
                 return true;
             }
@@ -400,63 +400,7 @@ namespace DKCommunication.Dandick.DK81Series
 
     /*****************************************************************************************************/
 
-    #region Enum Classes
-
-    #region DK81Device所支持的设备型号
-    /// <summary>
-    /// DK81Device所支持的设备型号
-    /// </summary>
-    public enum DK_DeviceModel
-    {
-        [Description("DK-34B1交流采样变送器检定装置")]
-        DK_34B1 = 81,
-
-        [Description("DK-34B2")]
-        DK_34B2 = 81,
-
-        [Description("DK-34B3")]
-        DK_34B3 = 55,
-
-        [Description("DK-34F1")]
-        DK_34F1 = 81,
-
-        [Description("DK-PTS1")]
-        DK_PTS1 = 55,
-    }
-    #endregion
-
-    #region 交流输出档位枚举
-    /// <summary>
-    /// 交流输出档位枚举
-    /// </summary>
-    [Flags] //TODO 删除
-    public enum RangeAC : byte
-    {
-        [Description("交流电压380V")]
-        ACU_380V = 0b_0000_0000,    //0
-
-        [Description("交流电压220V")]
-        ACU_220V = 0b_0000_0001,    //1
-
-        [Description("交流电压100V")]
-        ACU_100V = 0b_0000_0010,    //2
-
-        [Description("交流电压57.7V")]
-        ACU_57V = 0b_0000_0011,     //3
-
-        [Description("交流电流20A")]
-        ACI_20A = 0b_0000_0000,     //0
-
-        [Description("交流电流5A")]
-        ACI_5A = 0b_0000_0001,      //1
-
-        [Description("交流电流2A")]
-        ACI_2A = 0b_0000_0010,      //2
-
-        [Description("交流电流1A")]
-        ACI_1A = 0b_0000_0011,      //3
-    }
-    #endregion
+    #region Enum Classes      
 
     #region Mode Declaration 系统模式定义
 
@@ -477,11 +421,10 @@ namespace DKCommunication.Dandick.DK81Series
         /// </summary>
         ModeStandardMeterClamp = 2,
 
-        //TODO 核实协议里的数字是10进制还是16进制，暂时认为是10进制
         /// <summary>
         /// 标准源校准模式
         /// </summary>
-        ModeStandardSourceCalibrate = 10,    //?需确认是0x10还是10
+        ModeStandardSourceCalibrate = 10,
 
         /// <summary>
         /// 标准表校准模式
@@ -684,9 +627,9 @@ namespace DKCommunication.Dandick.DK81Series
         Channel_Ia = 0b_0000_1000,  // 0x08 // 8
         Channel_Ib = 0b_0001_0000,  // 0x10 // 16
         Channel_Ic = 0b_0010_0000,  // 0x20 // 32
-        Channel_U = 0b_0000_0111,   // 0x07 // 7
-        Channel_I = 0b_0011_1000,   // 0x38 // 56
-        Channel_All = 0b_0011_1111, // 0x3F // 63
+        Channel_U = Channel_Ua | Channel_Ub | Channel_Uc,   // 0x07 // 7
+        Channel_I = Channel_Ia | Channel_Ib | Channel_Ic,   // 0x38 // 56
+        Channel_All = Channel_U | Channel_I               // 0x3F // 63
     }
     #endregion 设置谐波参数Channel
 
@@ -714,7 +657,7 @@ namespace DKCommunication.Dandick.DK81Series
         Channel_Qc = 2,
         Channel_Qall = 3
     }
-    #endregion 设置有功功率 Channel
+    #endregion 设置无功功率 Channel
 
     #region 电能校验类型
     /// <summary>
@@ -725,12 +668,12 @@ namespace DKCommunication.Dandick.DK81Series
         /// <summary>
         /// 有功功率
         /// </summary>
-        P =(byte)'P', //0x50,
+        P = ( byte ) 'P', //0x50,
 
         /// <summary>
         /// 无功功率
         /// </summary>
-        Q =(byte)'Q' //0x51
+        Q = ( byte ) 'Q' //0x51
     }
     #endregion 电能校验类型
 
@@ -768,9 +711,9 @@ namespace DKCommunication.Dandick.DK81Series
     /// </summary>
     public enum DCSourceType : byte
     {
-        DCSourceType_U = (byte)'U', //85;0x55
-        DCSourceType_I = (byte)'I', //73;0x49
-        DCSourceType_R = (byte)'R'  //82;0x52
+        DCSourceType_U = ( byte ) 'U', //85;0x55
+        DCSourceType_I = ( byte ) 'I', //73;0x49
+        DCSourceType_R = ( byte ) 'R'  //82;0x52
     }
     #endregion
 
@@ -814,8 +757,8 @@ namespace DKCommunication.Dandick.DK81Series
     /// </summary>
     public enum Calibrate_DCSourceType : byte
     {
-        直流电压 = (byte)'U',
-        直流电流 = (byte)'I'
+        直流电压 = ( byte ) 'U',
+        直流电流 = ( byte ) 'I'
     }
     #endregion
 
@@ -850,13 +793,13 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _harmonicTimes; }
             set
             {
-                if (value > 1 && value < 32)    //谐波次数为2到31次
+                if ( value > 1 && value < 32 )    //谐波次数为2到31次
                 {
                     _harmonicTimes = value;
                 }
                 else
                 {
-                    MessageBox.Show("谐波次数支持范围为2至31次");
+                    MessageBox. Show ( "谐波次数支持范围为2至31次" );
                 }
             }
         }
@@ -870,13 +813,13 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _amplitude; }
             set
             {
-                if (value >= 0 && value <= 0.4F)  //谐波幅度叠加不超过40%；
+                if ( value >= 0 && value <= 0.4F )  //谐波幅度叠加不超过40%；
                 {
                     _amplitude = value;
                 }
                 else
                 {
-                    MessageBox.Show("幅度支持范围为0至0.4，单位‘%’");
+                    MessageBox. Show ( "幅度支持范围为0至0.4，单位‘%’" );
                 }
             }
         }
@@ -890,13 +833,13 @@ namespace DKCommunication.Dandick.DK81Series
             get { return _angle; }
             set
             {
-                if (value >= 0 && value <= 359.99F)
+                if ( value >= 0 && value <= 359.99F )
                 {
                     _angle = value;
                 }
                 else
                 {
-                    MessageBox.Show("谐波相位支持范围为0.00至359.99，单位‘°’");
+                    MessageBox. Show ( "谐波相位支持范围为0.00至359.99，单位‘°’" );
                 }
             }
         }
