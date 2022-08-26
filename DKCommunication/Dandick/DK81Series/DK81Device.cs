@@ -1854,9 +1854,9 @@ namespace DKCommunication. Dandick. DK81Series
         private void AnalysisReadACSourceData ( byte [ ] response )
         {
             Frequency = ByteTransform. TransSingle ( response , 6 );
-            ACU_RangeIndex = response [ 7 ];
-            ACI_RangeIndex = response [ 10 ];
 
+            ACU_RangeIndex = response [ 10 ];
+            ACI_RangeIndex = response [ 13 ];
             _UA = ByteTransform. TransSingle ( response , 16 );
             _UB = ByteTransform. TransSingle ( response , 20 );
             _UC = ByteTransform. TransSingle ( response , 24 );
